@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DID Sentiment Tracker — Williams Park</title>
+  <meta name="description" content="Quick 30-second check-in to help shape Williams Park. Powered by Community Play Tools and SPDP." />
+  <meta name="theme-color" content="#0a1628" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body, #root { margin: 0; padding: 0; min-height: 100vh; }
+    body { background: #0a1628; font-family: 'DM Sans', system-ui, sans-serif; color: #e2e8f0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+    button { cursor: pointer; font-family: inherit; }
+    textarea { font-family: inherit; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1e3050; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.9/babel.min.js"></script>
+  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js" crossorigin></script>
+  <script src="https://unpkg.com/recharts@2.15.3/umd/Recharts.js" crossorigin></script>
+  <script>
+    // Verify libraries loaded
+    window.addEventListener('DOMContentLoaded', function() {
+      var missing = [];
+      if (!window.React) missing.push('React');
+      if (!window.ReactDOM) missing.push('ReactDOM');
+      if (!window.Recharts) missing.push('Recharts');
+      if (!window.Babel) missing.push('Babel');
+      if (missing.length) {
+        document.getElementById('root').innerHTML =
+          '<div style="padding:40px;text-align:center;color:#ef4444;font-family:system-ui">' +
+          '<h2>Failed to load: ' + missing.join(', ') + '</h2>' +
+          '<p style="color:#8899b3">Make sure you are serving this file over HTTP (not file://). ' +
+          'Use <code>npx serve .</code> or deploy to Netlify.</p></div>';
+      }
+    });
+  </script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useMemo } = React;
+    const { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } = Recharts;
+
+    /* ═══════════════════════════════════════════════
+       SUPABASE CONFIG
+       ═══════════════════════════════════════════════ */
+    const SB_URL = "https://nzcogxjcihgtevjiuipf.supabase.co";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56Y29neGpjaWhndGV2aml1aXBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTIxMzcsImV4cCI6MjA4NjQyODEzN30.hGREfoM3QWXWVKndGBmy3TGbHO7o1tt-eNH3NWbtOZU";
+    const PROJECT = "did-sentiment";
+
+    const sbHeaders = {
+      "Content-Type": "application/json",
+      apikey: SB_KEY,
+      Authorization: `Bearer ${SB_KEY}`,
+    };
+
+    async function sbInsert(table, data) {
+      const res = await fetch(`${SB_URL}/rest/v1/${table}`, {
+        method: "POST",
+        headers: { ...sbHeaders, Prefer: "return=representation" },
+        body: JSON.stringify(Array.isArray(data) ? data : [data]),
+      });
+      if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
+      return res.json();
+    }
+
+    async function sbSelect(table, query = "") {
+      const res = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {
+        headers: sbHeaders,
+      });
+      if (!res.ok) throw new Error(`Supabase ${res.status}`);
+      return res.json();
+    }
+
+    /* ═══════════════════════════════════════════════
+       CONSTANTS
+       ═══════════════════════════════════════════════ */
+    const P = {
+      bg: "#0a1628", card: "#111d33", cardHover: "#162440",
+      accent: "#22d3a7", accentDim: "#1a9e7e",
+      warm: "#f59e0b", danger: "#ef4444",
+      text: "#e2e8f0", textDim: "#8899b3", border: "#1e3050",
+      chart1: "#22d3a7", chart2: "#6366f1", chart3: "#f59e0b", chart4: "#ec4899", chart5: "#06b6d4",
+    };
+    const CHART_COLORS = [P.chart1, P.chart2, P.chart3, P.chart4, P.chart5];
+
+    const LOCATIONS = [
+      { id: "north-entrance", label: "North Entrance", short: "N" },
+      { id: "south-entrance", label: "South Entrance", short: "S" },
+      { id: "east-benches", label: "East Benches", short: "E" },
+      { id: "west-gathering", label: "West Gathering", short: "W" },
+      { id: "ike-kiosk", label: "IKE Kiosk", short: "IKE" },
+      { id: "fountain-area", label: "Fountain Area", short: "F" },
+    ];
+
+    const QUESTIONS = [
+      { id: "safety", title: "Safety", question: "How safe do you feel in this area right now?",
+        options: [
+          { emoji: "😊", label: "Very safe", value: 5 },
+          { emoji: "🙂", label: "Safe", value: 4 },
+          { emoji: "😐", label: "Neutral", value: 3 },
+          { emoji: "😟", label: "Somewhat unsafe", value: 2 },
+          { emoji: "😨", label: "Unsafe", value: 1 },
+        ]},
+      { id: "cleanliness", title: "Cleanliness", question: "How would you rate the cleanliness here today?",
+        options: [
+          { emoji: "⭐⭐⭐⭐⭐", label: "Excellent", value: 5 },
+          { emoji: "⭐⭐⭐⭐", label: "Good", value: 4 },
+          { emoji: "⭐⭐⭐", label: "Fair", value: 3 },
+          { emoji: "⭐⭐", label: "Poor", value: 2 },
+          { emoji: "⭐", label: "Very poor", value: 1 },
+        ]},
+      { id: "vibrancy", title: "Vibrancy", question: "How active/vibrant does the park feel right now?",
+        options: [
+          { emoji: "🔥", label: "Buzzing with activity", value: 5 },
+          { emoji: "👥", label: "Comfortably busy", value: 4 },
+          { emoji: "🚶", label: "Quiet but pleasant", value: 3 },
+          { emoji: "😴", label: "Too quiet/empty", value: 2 },
+          { emoji: "🏚️", label: "Feels abandoned", value: 1 },
+        ]},
+      { id: "amenities", title: "Amenities", question: "Are the park amenities meeting your needs?",
+        options: [
+          { emoji: "✅", label: "Everything I need", value: 5 },
+          { emoji: "👍", label: "Mostly good", value: 4 },
+          { emoji: "🤷", label: "Just okay", value: 3 },
+          { emoji: "👎", label: "Missing key things", value: 2 },
+          { emoji: "❌", label: "Poor condition", value: 1 },
+        ]},
+      { id: "recommend", title: "Overall", question: "Would you recommend this park to a friend today?",
+        options: [
+          { emoji: "💯", label: "Absolutely (10)", value: 5 },
+          { emoji: "😊", label: "Yes (7-9)", value: 4 },
+          { emoji: "😐", label: "Maybe (4-6)", value: 3 },
+          { emoji: "😕", label: "Probably not (1-3)", value: 2 },
+          { emoji: "❌", label: "No (0)", value: 1 },
+        ]},
+    ];
+
+    /* ═══════════════════════════════════════════════
+       URL PARAM DETECTION (for QR codes)
+       ═══════════════════════════════════════════════ */
+    function getLocationFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const loc = params.get("loc") || params.get("location");
+      if (loc && LOCATIONS.find(l => l.id === loc)) return loc;
+      return null;
+    }
+
+    /* ═══════════════════════════════════════════════
+       SURVEY VIEW
+       ═══════════════════════════════════════════════ */
+    function SurveyView({ onComplete }) {
+      const urlLocation = useMemo(() => getLocationFromURL(), []);
+      const [step, setStep] = useState(urlLocation ? "questions" : "location");
+      const [location, setLocation] = useState(urlLocation);
+      const [answers, setAnswers] = useState({});
+      const [comment, setComment] = useState("");
+      const [currentQ, setCurrentQ] = useState(0);
+      const [selected, setSelected] = useState(null);
+      const [animating, setAnimating] = useState(false);
+      const [submitting, setSubmitting] = useState(false);
+      const [error, setError] = useState(null);
+
+      const handleLocationSelect = (loc) => { setLocation(loc); setStep("questions"); };
+
+      const handleAnswer = (value) => {
+        setSelected(value);
+        setAnimating(true);
+        setTimeout(() => {
+          const newAnswers = { ...answers, [QUESTIONS[currentQ].id]: value };
+          setAnswers(newAnswers);
+          setSelected(null);
+          setAnimating(false);
+          if (currentQ < QUESTIONS.length - 1) setCurrentQ(currentQ + 1);
+          else setStep("comment");
+        }, 350);
+      };
+
+      const handleSubmit = async () => {
+        setSubmitting(true);
+        setError(null);
+        try {
+          // 1. Insert response
+          const [response] = await sbInsert("sentiment_responses", {
+            project: PROJECT,
+            location: location,
+            submitted_at: new Date().toISOString(),
+          });
+
+          // 2. Insert answers
+          const answerRows = Object.entries(answers).map(([qid, val]) => ({
+            response_id: response.id,
+            question_id: qid,
+            value: val,
+          }));
+          await sbInsert("sentiment_answers", answerRows);
+
+          // 3. Insert comment if present
+          if (comment.trim()) {
+            await sbInsert("sentiment_comments", {
+              response_id: response.id,
+              body: comment.trim(),
+            });
+          }
+
+          onComplete && onComplete();
+          setStep("thanks");
+        } catch (e) {
+          console.error("Submit error:", e);
+          setError("Submission failed — please try again.");
+        }
+        setSubmitting(false);
+      };
+
+      const reset = () => {
+        setStep(urlLocation ? "questions" : "location");
+        setLocation(urlLocation);
+        setCurrentQ(0);
+        setAnswers({});
+        setComment("");
+        setError(null);
+      };
+
+      // ── Location Select ──
+      if (step === "location") {
+        return (
+          <div style={s.surveyWrap}>
+            <div style={{ textAlign: "center", marginBottom: 32, animation: "fadeIn 0.4s ease" }}>
+              <div style={s.logoMark}>CPT</div>
+              <h1 style={s.surveyTitle}>Williams Park Check-In</h1>
+              <p style={s.dim15}>Help shape your park · 30 seconds</p>
+            </div>
+            <p style={{ fontSize: 17, fontWeight: 600, textAlign: "center", marginBottom: 16 }}>Where are you right now?</p>
+            <div style={s.locGrid}>
+              {LOCATIONS.map(loc => (
+                <button key={loc.id} onClick={() => handleLocationSelect(loc.id)} style={s.locBtn}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = P.accent; e.currentTarget.style.background = P.cardHover; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = P.border; e.currentTarget.style.background = P.card; }}>
+                  <span style={{ fontSize: 22, fontWeight: 800, color: P.accent, letterSpacing: 1 }}>{loc.short}</span>
+                  <span style={{ fontSize: 13, color: P.textDim }}>{loc.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      // ── Questions ──
+      if (step === "questions") {
+        const q = QUESTIONS[currentQ];
+        const progress = (currentQ / QUESTIONS.length) * 100;
+        return (
+          <div style={s.surveyWrap}>
+            <div style={s.progressBar}><div style={{ ...s.progressFill, width: `${progress}%` }} /></div>
+            <p style={{ fontSize: 13, color: P.textDim, textAlign: "center", margin: "0 0 8px" }}>{currentQ + 1} of {QUESTIONS.length}</p>
+            <h2 style={{ fontSize: 20, fontWeight: 600, textAlign: "center", margin: "0 0 24px", lineHeight: 1.4, animation: "fadeIn 0.3s ease" }}>{q.question}</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {q.options.map(opt => (
+                <button key={opt.value} onClick={() => !animating && handleAnswer(opt.value)}
+                  style={{
+                    ...s.optionBtn,
+                    ...(selected === opt.value ? { borderColor: P.accent, background: `${P.accent}18`, boxShadow: `0 0 20px ${P.accent}20` } : {}),
+                    opacity: animating && selected !== opt.value ? 0.4 : 1,
+                    transform: selected === opt.value ? "scale(1.03)" : "scale(1)",
+                  }}
+                  onMouseEnter={e => { if (!animating && selected !== opt.value) { e.currentTarget.style.borderColor = P.accent; e.currentTarget.style.background = P.cardHover; }}}
+                  onMouseLeave={e => { if (selected !== opt.value) { e.currentTarget.style.borderColor = P.border; e.currentTarget.style.background = P.card; }}}>
+                  <span style={{ fontSize: 22, minWidth: 48, textAlign: "center" }}>{opt.emoji}</span>
+                  <span style={{ fontSize: 15, fontWeight: 500 }}>{opt.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      // ── Comment ──
+      if (step === "comment") {
+        return (
+          <div style={s.surveyWrap}>
+            <div style={s.progressBar}><div style={{ ...s.progressFill, width: "100%" }} /></div>
+            <h2 style={{ fontSize: 20, fontWeight: 600, textAlign: "center", margin: "0 0 8px" }}>Anything else we should know?</h2>
+            <p style={{ fontSize: 13, color: P.textDim, textAlign: "center", margin: "0 0 16px" }}>Optional · 280 characters max</p>
+            <textarea
+              style={s.textarea}
+              maxLength={280}
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              placeholder="Share a thought, suggestion, or compliment..."
+              rows={4}
+            />
+            <p style={{ fontSize: 12, color: P.textDim, textAlign: "right", margin: "6px 0 16px" }}>{comment.length}/280</p>
+            {error && <p style={{ color: P.danger, fontSize: 13, textAlign: "center", margin: "0 0 12px" }}>{error}</p>}
+            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+              <button onClick={handleSubmit} style={s.skipBtn} disabled={submitting}>Skip & Submit</button>
+              <button onClick={handleSubmit} style={s.submitBtn} disabled={submitting}>
+                {submitting ? "Sending..." : "Submit Check-In ✓"}
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      // ── Thanks ──
+      return (
+        <div style={{ ...s.surveyWrap, animation: "popIn 0.4s ease" }}>
+          <div style={{ textAlign: "center", padding: "48px 0" }}>
+            <div style={{ fontSize: 56, marginBottom: 16 }}>🌴</div>
+            <h2 style={{ fontSize: 28, fontWeight: 700, margin: "0 0 12px" }}>Thank you!</h2>
+            <p style={{ fontSize: 16, color: P.textDim, margin: "0 0 8px", lineHeight: 1.5 }}>Your feedback helps make Williams Park better for everyone.</p>
+            <p style={{ fontSize: 13, color: P.textDim, margin: "0 0 28px", opacity: 0.6 }}>Powered by Community Play Tools × SPDP</p>
+            <button onClick={reset} style={s.submitBtn}>Submit Another</button>
+          </div>
+        </div>
+      );
+    }
+
+    /* ═══════════════════════════════════════════════
+       DASHBOARD VIEW
+       ═══════════════════════════════════════════════ */
+    function DashboardView() {
+      const [loading, setLoading] = useState(true);
+      const [responses, setResponses] = useState([]);
+      const [answers, setAnswers] = useState([]);
+      const [comments, setComments] = useState([]);
+      const [timeRange, setTimeRange] = useState("30d");
+      const [activeTab, setActiveTab] = useState("overview");
+      const [error, setError] = useState(null);
+
+      const fetchData = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const [r, a, c] = await Promise.all([
+            sbSelect("sentiment_responses", `project=eq.${PROJECT}&order=submitted_at.desc&limit=5000`),
+            sbSelect("sentiment_answers", `order=created_at.desc&limit=25000`),
+            sbSelect("sentiment_comments", `order=created_at.desc&limit=500`),
+          ]);
+          setResponses(r);
+          setAnswers(a);
+          setComments(c);
+        } catch (e) {
+          console.error("Fetch error:", e);
+          setError("Could not load dashboard data.");
+        }
+        setLoading(false);
+      }, []);
+
+      useEffect(() => { fetchData(); }, [fetchData]);
+
+      // Build joined data
+      const data = useMemo(() => {
+        if (!responses.length) return null;
+        const now = Date.now();
+        const days = { "7d": 7, "30d": 30, "90d": 90 }[timeRange] || 30;
+        const cutoff = now - days * 86400000;
+
+        const filtered = responses.filter(r => new Date(r.submitted_at).getTime() >= cutoff);
+        if (!filtered.length) return null;
+
+        const responseIds = new Set(filtered.map(r => r.id));
+        const filteredAnswers = answers.filter(a => responseIds.has(a.response_id));
+        const filteredComments = comments.filter(c => responseIds.has(c.response_id));
+
+        // Answer map: response_id -> { question_id: value }
+        const answerMap = {};
+        filteredAnswers.forEach(a => {
+          if (!answerMap[a.response_id]) answerMap[a.response_id] = {};
+          answerMap[a.response_id][a.question_id] = a.value;
+        });
+
+        // Category stats
+        const categories = {};
+        QUESTIONS.forEach(q => {
+          const vals = filteredAnswers.filter(a => a.question_id === q.id).map(a => a.value);
+          const avg = vals.length ? vals.reduce((s, v) => s + v, 0) / vals.length : 0;
+          categories[q.id] = {
+            avg,
+            count: vals.length,
+            dist: [1,2,3,4,5].map(v => vals.filter(x => x === v).length),
+          };
+        });
+
+        // Safety %
+        const safetyVals = filteredAnswers.filter(a => a.question_id === "safety");
+        const safetyPct = safetyVals.length ? safetyVals.filter(a => a.value >= 4).length / safetyVals.length : 0;
+
+        // Recommend %
+        const recVals = filteredAnswers.filter(a => a.question_id === "recommend");
+        const recPct = recVals.length ? recVals.filter(a => a.value >= 4).length / recVals.length : 0;
+
+        // Unsafe alerts (last 2 hours)
+        const twoHoursAgo = now - 2 * 3600000;
+        const recentUnsafe = filtered.filter(r => {
+          const ts = new Date(r.submitted_at).getTime();
+          if (ts < twoHoursAgo) return false;
+          const am = answerMap[r.id];
+          return am && am.safety && am.safety <= 2;
+        }).length;
+
+        // Daily trends
+        const dayMap = {};
+        filtered.forEach(r => {
+          const day = new Date(r.submitted_at).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+          if (!dayMap[day]) dayMap[day] = { day, responses: [] };
+          dayMap[day].responses.push(r);
+        });
+        const trend = Object.values(dayMap).reverse().map(d => {
+          const ids = new Set(d.responses.map(r => r.id));
+          const da = filteredAnswers.filter(a => ids.has(a.response_id));
+          const out = { day: d.day, count: d.responses.length };
+          QUESTIONS.forEach(q => {
+            const vals = da.filter(a => a.question_id === q.id).map(a => a.value);
+            out[q.id] = vals.length ? +(vals.reduce((s,v) => s+v, 0) / vals.length).toFixed(2) : 0;
+          });
+          return out;
+        });
+
+        // Location breakdown
+        const locMap = {};
+        LOCATIONS.forEach(l => {
+          const locR = filtered.filter(r => r.location === l.id);
+          if (!locR.length) return;
+          const locIds = new Set(locR.map(r => r.id));
+          const locA = filteredAnswers.filter(a => locIds.has(a.response_id));
+          const safetyA = locA.filter(a => a.question_id === "safety").map(a => a.value);
+          const allA = locA.map(a => a.value);
+          locMap[l.id] = {
+            label: l.label, short: l.short, count: locR.length,
+            avgSafety: safetyA.length ? safetyA.reduce((s,v)=>s+v,0)/safetyA.length : 0,
+            avgOverall: allA.length ? allA.reduce((s,v)=>s+v,0)/allA.length : 0,
+          };
+        });
+
+        // Time of day
+        const todBuckets = { Morning: [], Afternoon: [], Evening: [] };
+        filtered.forEach(r => {
+          const h = new Date(r.submitted_at).getHours();
+          const period = h < 12 ? "Morning" : h < 17 ? "Afternoon" : "Evening";
+          todBuckets[period].push(r);
+        });
+        const timeOfDay = Object.entries(todBuckets).map(([period, rs]) => {
+          const ids = new Set(rs.map(r => r.id));
+          const pa = filteredAnswers.filter(a => ids.has(a.response_id));
+          const sv = pa.filter(a => a.question_id === "safety").map(a => a.value);
+          return {
+            period, count: rs.length,
+            avgSafety: sv.length ? +(sv.reduce((s,v)=>s+v,0)/sv.length).toFixed(2) : 0,
+          };
+        });
+
+        // Comments with context
+        const commentList = filteredComments.map(c => {
+          const r = filtered.find(r => r.id === c.response_id);
+          const am = answerMap[c.response_id] || {};
+          const vals = Object.values(am);
+          const sentiment = vals.length ? vals.reduce((s,v) => s+v, 0) / vals.length : 3;
+          return {
+            text: c.body,
+            location: r ? (LOCATIONS.find(l => l.id === r.location)?.label || r.location) : "Unknown",
+            date: r ? new Date(r.submitted_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "",
+            sentiment,
+          };
+        });
+
+        return { categories, safetyPct, recPct, recentUnsafe, trend, locMap, timeOfDay, comments: commentList, total: filtered.length };
+      }, [responses, answers, comments, timeRange]);
+
+      const sentimentColor = v => v >= 4 ? P.accent : v >= 3 ? P.warm : P.danger;
+
+      if (loading) {
+        return (
+          <div style={{ textAlign: "center", padding: 64 }}>
+            <div style={{ width: 32, height: 32, border: `3px solid ${P.border}`, borderTopColor: P.accent, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+            <p style={{ color: P.textDim, fontSize: 14 }}>Loading dashboard...</p>
+          </div>
+        );
+      }
+
+      if (error) {
+        return (
+          <div style={{ textAlign: "center", padding: 64 }}>
+            <p style={{ color: P.danger, fontSize: 15 }}>{error}</p>
+            <button onClick={fetchData} style={s.submitBtn}>Retry</button>
+          </div>
+        );
+      }
+
+      if (!data) {
+        return (
+          <div style={{ textAlign: "center", padding: 64, color: P.textDim }}>
+            <p style={{ fontSize: 36, margin: "0 0 12px" }}>📊</p>
+            <p style={{ fontSize: 16 }}>No data yet for this period.</p>
+            <p style={{ fontSize: 14 }}>Complete some check-ins to see results!</p>
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          {/* Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20, flexWrap: "wrap", gap: 16 }}>
+            <div>
+              <h1 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 4px" }}>Williams Park · DID Sentiment</h1>
+              <p style={{ fontSize: 14, color: P.textDim, margin: 0 }}>{data.total} responses · SPDP Downtown Improvement District</p>
+            </div>
+            <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+              {["7d","30d","90d"].map(r => (
+                <button key={r} onClick={() => setTimeRange(r)}
+                  style={{ ...s.rangeBtn, ...(timeRange === r ? { background: P.card, borderColor: P.accent, color: P.accent } : {}) }}>
+                  {r}
+                </button>
+              ))}
+              <button onClick={fetchData} style={{ ...s.rangeBtn, marginLeft: 8 }} title="Refresh">↻</button>
+            </div>
+          </div>
+
+          {/* Alert */}
+          {data.recentUnsafe >= 2 && (
+            <div style={{ background: `${P.danger}18`, border: `1px solid ${P.danger}40`, borderRadius: 10, padding: "12px 18px", marginBottom: 20, fontSize: 14, fontWeight: 500, color: P.danger }}>
+              ⚠️ {data.recentUnsafe} "unsafe" responses in the last 2 hours — review recommended
+            </div>
+          )}
+
+          {/* Tabs */}
+          <div style={{ display: "flex", gap: 2, marginBottom: 24, borderBottom: `1px solid ${P.border}` }}>
+            {["overview","trends","locations","comments"].map(t => (
+              <button key={t} onClick={() => setActiveTab(t)}
+                style={{ ...s.tab, ...(activeTab === t ? { borderBottomColor: P.accent, color: P.accent } : {}) }}>
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* ── OVERVIEW ── */}
+          {activeTab === "overview" && (
+            <div>
+              <div style={s.snapGrid}>
+                <div style={s.snapCard}>
+                  <div style={s.snapLabel}>Safety Confidence</div>
+                  <div style={{ ...s.snapValue, color: sentimentColor(data.safetyPct * 5) }}>{(data.safetyPct * 100).toFixed(0)}%</div>
+                  <div style={s.snapMeta}>felt safe or very safe</div>
+                </div>
+                {QUESTIONS.map(q => (
+                  <div key={q.id} style={s.snapCard}>
+                    <div style={s.snapLabel}>{q.title}</div>
+                    <div style={{ ...s.snapValue, color: sentimentColor(data.categories[q.id].avg) }}>{data.categories[q.id].avg.toFixed(1)}</div>
+                    <div style={s.snapMeta}>avg out of 5.0</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={s.chartCard}>
+                <h3 style={s.chartTitle}>Response Distribution by Category</h3>
+                <div style={{ width: "100%", height: 280 }}>
+                  <ResponsiveContainer>
+                    <BarChart data={QUESTIONS.map(q => ({
+                      name: q.title,
+                      "5 (Best)": data.categories[q.id].dist[4],
+                      "4": data.categories[q.id].dist[3],
+                      "3": data.categories[q.id].dist[2],
+                      "2": data.categories[q.id].dist[1],
+                      "1 (Worst)": data.categories[q.id].dist[0],
+                    }))}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={P.border} />
+                      <XAxis dataKey="name" tick={{ fill: P.textDim, fontSize: 12 }} />
+                      <YAxis tick={{ fill: P.textDim, fontSize: 12 }} />
+                      <Tooltip contentStyle={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 8, color: P.text }} />
+                      <Legend />
+                      <Bar dataKey="5 (Best)" stackId="a" fill={P.chart1} />
+                      <Bar dataKey="4" stackId="a" fill={P.chart2} />
+                      <Bar dataKey="3" stackId="a" fill={P.chart3} />
+                      <Bar dataKey="2" stackId="a" fill={P.chart4} />
+                      <Bar dataKey="1 (Worst)" stackId="a" fill={P.danger} radius={[4,4,0,0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div style={s.chartCard}>
+                <h3 style={s.chartTitle}>Sentiment by Time of Day</h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+                  {data.timeOfDay.map(t => (
+                    <div key={t.period} style={{ background: P.bg, borderRadius: 10, padding: 16, textAlign: "center", border: `1px solid ${P.border}` }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6, color: P.textDim }}>{t.period}</div>
+                      <div style={{ fontSize: 28, fontWeight: 800, color: sentimentColor(t.avgSafety) }}>{t.avgSafety.toFixed(1)}</div>
+                      <div style={{ fontSize: 11, color: P.textDim, marginTop: 4 }}>safety · {t.count} responses</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── TRENDS ── */}
+          {activeTab === "trends" && (
+            <div>
+              <div style={s.chartCard}>
+                <h3 style={s.chartTitle}>Daily Sentiment Trends</h3>
+                <div style={{ width: "100%", height: 320 }}>
+                  <ResponsiveContainer>
+                    <LineChart data={data.trend}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={P.border} />
+                      <XAxis dataKey="day" tick={{ fill: P.textDim, fontSize: 11 }} interval={Math.max(0, Math.floor(data.trend.length / 8))} />
+                      <YAxis domain={[1, 5]} tick={{ fill: P.textDim, fontSize: 12 }} />
+                      <Tooltip contentStyle={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 8, color: P.text }} />
+                      <Legend />
+                      {QUESTIONS.map((q, i) => (
+                        <Line key={q.id} type="monotone" dataKey={q.id} name={q.title} stroke={CHART_COLORS[i]} strokeWidth={2} dot={false} />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div style={s.chartCard}>
+                <h3 style={s.chartTitle}>Daily Response Volume</h3>
+                <div style={{ width: "100%", height: 200 }}>
+                  <ResponsiveContainer>
+                    <BarChart data={data.trend}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={P.border} />
+                      <XAxis dataKey="day" tick={{ fill: P.textDim, fontSize: 11 }} interval={Math.max(0, Math.floor(data.trend.length / 8))} />
+                      <YAxis tick={{ fill: P.textDim, fontSize: 12 }} />
+                      <Tooltip contentStyle={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 8, color: P.text }} />
+                      <Bar dataKey="count" name="Responses" fill={P.accent} radius={[4,4,0,0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── LOCATIONS ── */}
+          {activeTab === "locations" && (
+            <div style={s.chartCard}>
+              <h3 style={s.chartTitle}>Location Comparison</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {Object.values(data.locMap).sort((a, b) => b.avgOverall - a.avgOverall).map(loc => (
+                  <div key={loc.label} style={{ background: P.bg, border: `1px solid ${P.border}`, borderRadius: 10, padding: 16 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                      <span style={{ fontWeight: 600, fontSize: 14 }}>{loc.label}</span>
+                      <span style={{ fontSize: 12, color: P.textDim }}>{loc.count} check-ins</span>
+                    </div>
+                    <div style={{ display: "flex", gap: 24, marginBottom: 10 }}>
+                      <div>
+                        <span style={{ fontSize: 11, color: P.textDim, marginRight: 6 }}>Safety</span>
+                        <span style={{ fontSize: 18, fontWeight: 700, color: sentimentColor(loc.avgSafety) }}>{loc.avgSafety.toFixed(1)}</span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: 11, color: P.textDim, marginRight: 6 }}>Overall</span>
+                        <span style={{ fontSize: 18, fontWeight: 700, color: sentimentColor(loc.avgOverall) }}>{loc.avgOverall.toFixed(1)}</span>
+                      </div>
+                    </div>
+                    <div style={{ height: 6, background: P.border, borderRadius: 3, overflow: "hidden" }}>
+                      <div style={{ height: "100%", borderRadius: 3, width: `${(loc.avgOverall/5)*100}%`, background: sentimentColor(loc.avgOverall), transition: "width 0.4s" }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── COMMENTS ── */}
+          {activeTab === "comments" && (
+            <div style={s.chartCard}>
+              <h3 style={s.chartTitle}>Recent Feedback ({data.comments.length})</h3>
+              {data.comments.length === 0 && <p style={{ color: P.textDim, fontSize: 14 }}>No comments yet</p>}
+              {data.comments.map((c, i) => (
+                <div key={i} style={{ padding: "14px 0", borderBottom: `1px solid ${P.border}` }}>
+                  <div style={{ fontSize: 14, lineHeight: 1.5, marginBottom: 6, fontStyle: "italic" }}>"{c.text}"</div>
+                  <div style={{ fontSize: 12, color: P.textDim, display: "flex", gap: 6, alignItems: "center" }}>
+                    <span>{c.location}</span>
+                    <span style={{ opacity: 0.4 }}>·</span>
+                    <span>{c.date}</span>
+                    <span style={{ opacity: 0.4 }}>·</span>
+                    <span style={{ color: sentimentColor(c.sentiment) }}>
+                      {c.sentiment >= 4 ? "Positive" : c.sentiment >= 3 ? "Neutral" : "Negative"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Stakeholder Snapshot */}
+          <div style={s.chartCard}>
+            <h3 style={s.chartTitle}>Stakeholder Snapshot</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12 }}>
+              {[
+                { emoji: "🛡️", stat: `${(data.safetyPct*100).toFixed(0)}%`, label: "felt safe this period" },
+                { emoji: "⭐", stat: `${data.categories.cleanliness.avg.toFixed(1)}/5`, label: "cleanliness rating" },
+                { emoji: "💯", stat: `${(data.recPct*100).toFixed(0)}%`, label: "would recommend" },
+                { emoji: "📊", stat: `${data.total}`, label: "total check-ins" },
+              ].map((item, i) => (
+                <div key={i} style={{ background: P.bg, border: `1px solid ${P.border}`, borderRadius: 10, padding: 20, textAlign: "center" }}>
+                  <div style={{ fontSize: 28, marginBottom: 8 }}>{item.emoji}</div>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: P.accent }}>{item.stat}</div>
+                  <div style={{ fontSize: 12, color: P.textDim, marginTop: 4 }}>{item.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ═══════════════════════════════════════════════
+       MAIN APP
+       ═══════════════════════════════════════════════ */
+    function App() {
+      const [view, setView] = useState("survey");
+
+      return (
+        <div style={{ minHeight: "100vh", background: `linear-gradient(180deg, ${P.bg} 0%, #0d1f3c 100%)` }}>
+          {/* Nav */}
+          <nav style={{ background: "rgba(10,22,40,0.92)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${P.border}`, position: "sticky", top: 0, zIndex: 100 }}>
+            <div style={{ maxWidth: 1100, margin: "0 auto", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ background: `linear-gradient(135deg, ${P.accent}, ${P.chart2})`, color: "#fff", fontWeight: 800, fontSize: 13, padding: "4px 8px", borderRadius: 6, letterSpacing: 1 }}>CPT</span>
+                <span style={{ fontWeight: 600, fontSize: 15 }}>DID Sentiment Tracker</span>
+              </div>
+              <div style={{ display: "flex", gap: 4 }}>
+                <button onClick={() => setView("survey")}
+                  style={{ ...s.navBtn, ...(view === "survey" ? { background: P.card, borderColor: P.border, color: P.accent } : {}) }}>
+                  📋 Check-In
+                </button>
+                <button onClick={() => setView("dashboard")}
+                  style={{ ...s.navBtn, ...(view === "dashboard" ? { background: P.card, borderColor: P.border, color: P.accent } : {}) }}>
+                  📊 Dashboard
+                </button>
+              </div>
+            </div>
+          </nav>
+
+          {/* Content */}
+          <main style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 20px" }}>
+            {view === "survey" ? <SurveyView /> : <DashboardView />}
+          </main>
+
+          {/* Footer */}
+          <footer style={{ textAlign: "center", padding: "24px 20px", fontSize: 12, color: P.textDim, opacity: 0.5 }}>
+            Community Play Tools × SPDP · Williams Park Renovation Project
+          </footer>
+        </div>
+      );
+    }
+
+    /* ═══════════════════════════════════════════════
+       SHARED STYLES
+       ═══════════════════════════════════════════════ */
+    const s = {
+      surveyWrap: { maxWidth: 480, margin: "0 auto", padding: "0 8px" },
+      logoMark: { display: "inline-block", background: `linear-gradient(135deg, ${P.accent}, ${P.chart2})`, color: "#fff", fontWeight: 800, fontSize: 16, padding: "6px 12px", borderRadius: 8, letterSpacing: 1.5, marginBottom: 16 },
+      surveyTitle: { fontSize: 26, fontWeight: 700, margin: "0 0 6px" },
+      dim15: { fontSize: 15, color: P.textDim, margin: 0 },
+      locGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 },
+      locBtn: { background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: "16px 12px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, transition: "all 0.2s", color: P.text, fontFamily: "inherit" },
+      progressBar: { height: 4, background: P.border, borderRadius: 2, marginBottom: 24, overflow: "hidden" },
+      progressFill: { height: "100%", background: `linear-gradient(90deg, ${P.accent}, ${P.chart2})`, borderRadius: 2, transition: "width 0.4s ease" },
+      optionBtn: { background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14, transition: "all 0.25s ease", color: P.text, fontFamily: "inherit" },
+      textarea: { width: "100%", background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: 16, color: P.text, fontSize: 15, resize: "none", outline: "none", boxSizing: "border-box", fontFamily: "inherit" },
+      skipBtn: { background: "transparent", border: `1px solid ${P.border}`, color: P.textDim, padding: "12px 24px", borderRadius: 10, fontSize: 14, fontWeight: 500, fontFamily: "inherit" },
+      submitBtn: { background: `linear-gradient(135deg, ${P.accent}, ${P.accentDim})`, border: "none", color: "#fff", padding: "12px 28px", borderRadius: 10, fontSize: 14, fontWeight: 600, fontFamily: "inherit", boxShadow: `0 4px 16px ${P.accent}30` },
+      navBtn: { background: "transparent", border: "1px solid transparent", color: P.textDim, padding: "7px 16px", borderRadius: 8, fontSize: 14, fontWeight: 500, transition: "all 0.2s", fontFamily: "inherit" },
+      rangeBtn: { background: "transparent", border: `1px solid ${P.border}`, color: P.textDim, padding: "6px 14px", borderRadius: 6, fontSize: 13, fontWeight: 500, fontFamily: "inherit" },
+      snapGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 24 },
+      snapCard: { background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: "18px 16px", textAlign: "center" },
+      snapLabel: { fontSize: 12, color: P.textDim, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 },
+      snapValue: { fontSize: 32, fontWeight: 800, lineHeight: 1.1 },
+      snapMeta: { fontSize: 11, color: P.textDim, marginTop: 4 },
+      chartCard: { background: P.card, border: `1px solid ${P.border}`, borderRadius: 14, padding: "20px 20px 16px", marginBottom: 20 },
+      chartTitle: { fontSize: 16, fontWeight: 600, margin: "0 0 16px" },
+      tab: { background: "transparent", border: "none", borderBottom: "2px solid transparent", color: P.textDim, padding: "10px 18px", fontSize: 14, fontWeight: 500, fontFamily: "inherit", transition: "all 0.2s" },
+    };
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

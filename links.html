@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links — Community Play Tools</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0f1117;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+        }
+
+        .container {
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #888;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        h1 span { color: #5ce0b8; }
+
+        /*
+            =============================================
+            TO ADD A NEW LINK:
+            Copy one <a> block below and change the
+            href and text. That's it!
+            =============================================
+        */
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: #1e2029;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .links a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: #161821;
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .links a:hover {
+            background: #1c1f2b;
+            color: #5ce0b8;
+        }
+
+        .links a::after {
+            content: '→';
+            color: #444;
+            transition: color 0.15s, transform 0.15s;
+        }
+
+        .links a:hover::after {
+            color: #5ce0b8;
+            transform: translateX(3px);
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 2px 7px;
+            border-radius: 4px;
+            margin-left: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .tag.demo { background: #5ce0b822; color: #5ce0b8; }
+        .tag.tool { background: #5c9ee022; color: #5c9ee0; }
+        .tag.page { background: #e0c45c22; color: #e0c45c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span>CPT</span> — Project Links</h1>
+
+        <div class="links">
+            <!-- ✏️ Add new links here — just copy an <a> block -->
+            <a href="/meeting-stone.html">Meeting Stone Demo <span class="tag demo">demo</span></a>
+            <a href="/williams-park.html">Park Survey <span class="tag tool">tool</span></a>
+            <a href="/gelato-selector_demo.html">Gelato Menu Quiz <span class="tag demo">demo</span></a>
+            <a href="/gelato-sorter_demo.html">Gelato Preselect <span class="tag demo">demo</span></a>
+            <a href="/did-sentiment.html">DID Survey <span class="tag tool">tool</span></a>
+            <a href="/cmapp.html">Community Merit — Local Rewards <span class="tag tool">tool</span></a>
+            <a href="/ga-host.html">Gather Again - Event tool <span class="tag tool">tool</span></a>
+            <a href="/work.html">Collected Works <span class="tag page">page</span></a>
+        </div>
+    </div>
+</body>
+</html>

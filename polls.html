@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Polls</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --orange: #E86A33;
+            --orange-hover: #D55A25;
+            --orange-light: rgba(232, 106, 51, 0.12);
+            --teal: #1A3A3A;
+            --teal-light: #2D5454;
+            --white: #FAFAFA;
+            --white-off: #F0F0F0;
+            --gray: #6B7280;
+            --green: #16a34a;
+            --green-light: rgba(34, 197, 94, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--white-off);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(165deg, var(--teal) 0%, var(--teal-light) 100%);
+            padding: 1.5rem 1.5rem 2rem;
+            position: relative;
+        }
+
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .brand svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .page-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.35rem;
+        }
+
+        .page-subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+        }
+
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            color: var(--white);
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.5rem 0.85rem;
+            border-radius: 2rem;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .location-badge:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .location-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 600px;
+            margin: -1rem auto 0;
+            padding: 0 1rem 2rem;
+            position: relative;
+        }
+
+        /* Map Card */
+        .map-card {
+            background: var(--white);
+            border-radius: 1.25rem;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 1.25rem;
+        }
+
+        .map-container {
+            height: 220px;
+        }
+
+        #pollsMap {
+            height: 100%;
+            width: 100%;
+        }
+
+        .map-footer {
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--white-off);
+        }
+
+        .map-legend {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.active {
+            background: var(--orange);
+        }
+
+        .legend-dot.closed {
+            background: var(--gray);
+        }
+
+        .map-count {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .map-count strong {
+            color: var(--teal);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--white);
+            border: 2px solid var(--white);
+            border-radius: 0.75rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab:hover {
+            border-color: var(--white-off);
+        }
+
+        .tab.active {
+            background: var(--orange-light);
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+
+        .tab .count {
+            display: inline-block;
+            background: var(--white-off);
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            margin-left: 0.35rem;
+        }
+
+        .tab.active .count {
+            background: var(--orange);
+            color: white;
+        }
+
+        /* Poll Cards */
+        .polls-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .poll-card {
+            background: var(--white);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .poll-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .poll-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .poll-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.3rem 0.6rem;
+            border-radius: 1rem;
+        }
+
+        .poll-status-badge.active {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .poll-status-badge.closed {
+            background: var(--white-off);
+            color: var(--gray);
+        }
+
+        .poll-status-badge::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .poll-distance {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .poll-question {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--teal);
+            line-height: 1.35;
+            margin-bottom: 0.85rem;
+        }
+
+        .poll-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .poll-votes {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .poll-votes strong {
+            color: var(--teal);
+        }
+
+        .poll-action {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--orange);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .poll-action svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Results Preview (for closed polls) */
+        .results-preview {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--white-off);
+        }
+
+        .result-mini {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-mini:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-mini-label {
+            font-size: 0.8rem;
+            color: var(--teal);
+            width: 100px;
+            flex-shrink: 0;
+        }
+
+        .result-mini-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--white-off);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .result-mini-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: var(--orange);
+        }
+
+        .result-mini-fill.secondary {
+            background: var(--teal);
+        }
+
+        .result-mini-pct {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--teal);
+            width: 36px;
+            text-align: right;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            background: var(--white);
+            border-radius: 1rem;
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-text {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Loading */
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--white-off);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Leaflet popup overrides */
+        .leaflet-popup-content-wrapper {
+            border-radius: 0.75rem;
+            padding: 0;
+        }
+
+        .leaflet-popup-content {
+            margin: 0.75rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .popup-title {
+            font-weight: 600;
+            color: var(--teal);
+            margin-bottom: 0.25rem;
+        }
+
+        .popup-votes {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Header -->
+    <header class="page-header">
+        <div class="header-content">
+            <div class="brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Community Polls
+            </div>
+            <h1 class="page-title">Polls Near You</h1>
+            <p class="page-subtitle">Vote on issues that affect your neighborhood</p>
+            <div class="location-badge" id="locationBadge" onclick="requestLocation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                    <circle cx="12" cy="9" r="2.5"/>
+                </svg>
+                <span id="locationText">Enable location</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Map -->
+        <div class="map-card">
+            <div class="map-container">
+                <div id="pollsMap"></div>
+            </div>
+            <div class="map-footer">
+                <div class="map-legend">
+                    <div class="legend-item">
+                        <span class="legend-dot active"></span>
+                        <span>Active</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot closed"></span>
+                        <span>Closed</span>
+                    </div>
+                </div>
+                <div class="map-count"><strong id="pollCount">0</strong> polls nearby</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="active" onclick="switchTab('active')">
+                Active
+                <span class="count" id="activeCount">0</span>
+            </button>
+            <button class="tab" data-tab="closed" onclick="switchTab('closed')">
+                Closed
+                <span class="count" id="closedCount">0</span>
+            </button>
+        </div>
+
+        <!-- Polls List -->
+        <div class="polls-list" id="pollsList">
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading polls...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Configuration
+        const SUPABASE_URL = 'https://mjrhmtxfazapdnzfvvja.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcmhtdHhmYXphcGRuemZ2dmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxODIwNzEsImV4cCI6MjA4NDc1ODA3MX0.T2z0tJHy1StsKWDjdU3hYw-7F36XC81DQxfLq_t23nM';
+
+        // State
+        let userLocation = null;
+        let map = null;
+        let currentTab = 'active';
+        let polls = [];
+
+        // For MVP, we'll define polls statically since we don't have a polls table yet
+        // In production, this would come from a polls table in Supabase
+        const STATIC_POLLS = [
+            {
+                id: 'traffic-calming-1',
+                question: 'What traffic calming would you like to see at this intersection?',
+                options: ['4-Way Stop', 'Mini Traffic Circle'],
+                lat: 27.7676,
+                lng: -82.6403,
+                status: 'active',
+                closes_at: null,
+                url: '/poll'
+            }
+            // Add more polls here as you create them
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            initMap();
+            await loadPolls();
+            
+            // Check for existing location permission
+            if (navigator.permissions) {
+                const permission = await navigator.permissions.query({ name: 'geolocation' });
+                if (permission.state === 'granted') {
+                    requestLocation();
+                }
+            }
+        });
+
+        function initMap() {
+            // Default to St. Petersburg, FL
+            const defaultCenter = [27.7676, -82.6403];
+            
+            map = L.map('pollsMap').setView(defaultCenter, 12);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+        }
+
+        function requestLocation() {
+            document.getElementById('locationText').textContent = 'Finding location...';
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    document.getElementById('locationText').textContent = 'Location enabled';
+                    document.getElementById('locationBadge').style.background = 'rgba(34, 197, 94, 0.2)';
+                    
+                    // Center map on user
+                    map.setView([userLocation.lat, userLocation.lng], 14);
+                    
+                    // Add user marker
+                    L.circleMarker([userLocation.lat, userLocation.lng], {
+                        radius: 8,
+                        fillColor: '#3b82f6',
+                        color: '#fff',
+                        weight: 3,
+                        opacity: 1,
+                        fillOpacity: 1
+                    }).addTo(map).bindPopup('You are here');
+
+                    // Recalculate distances
+                    renderPolls();
+                },
+                (error) => {
+                    document.getElementById('locationText').textContent = 'Location unavailable';
+                    console.error('Location error:', error);
+                }
+            );
+        }
+
+        async function loadPolls() {
+            // For each static poll, fetch vote counts from Supabase
+            polls = await Promise.all(STATIC_POLLS.map(async (poll) => {
+                try {
+                    const response = await fetch(
+                        `${SUPABASE_URL}/rest/v1/votes?poll_id=eq.${poll.id}&select=choice`,
+                        {
+                            headers: {
+                                'apikey': SUPABASE_KEY,
+                                'Authorization': `Bearer ${SUPABASE_KEY}`
+                            }
+                        }
+                    );
+                    const votes = await response.json();
+                    
+                    // Calculate results
+                    const counts = {};
+                    poll.options.forEach(opt => counts[opt] = 0);
+                    
+                    votes.forEach(v => {
+                        if (v.choice === '4way_stop') counts['4-Way Stop']++;
+                        if (v.choice === 'mini_circle') counts['Mini Traffic Circle']++;
+                    });
+
+                    return {
+                        ...poll,
+                        totalVotes: votes.length,
+                        results: counts
+                    };
+                } catch (e) {
+                    console.error('Error loading poll:', poll.id, e);
+                    return { ...poll, totalVotes: 0, results: {} };
+                }
+            }));
+
+            // Update counts
+            const activePolls = polls.filter(p => p.status === 'active');
+            const closedPolls = polls.filter(p => p.status === 'closed');
+            
+            document.getElementById('activeCount').textContent = activePolls.length;
+            document.getElementById('closedCount').textContent = closedPolls.length;
+            document.getElementById('pollCount').textContent = polls.length;
+
+            // Add markers to map
+            addPollMarkers();
+
+            // Render list
+            renderPolls();
+        }
+
+        function addPollMarkers() {
+            polls.forEach(poll => {
+                const color = poll.status === 'active' ? '#E86A33' : '#6B7280';
+                
+                const marker = L.circleMarker([poll.lat, poll.lng], {
+                    radius: 12,
+                    fillColor: color,
+                    color: '#fff',
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 0.9
+                }).addTo(map);
+
+                marker.bindPopup(`
+                    <div class="popup-title">${poll.question.substring(0, 50)}...</div>
+                    <div class="popup-votes">${poll.totalVotes} votes</div>
+                `);
+
+                marker.on('click', () => {
+                    window.location.href = poll.url;
+                });
+            });
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            renderPolls();
+        }
+
+        function renderPolls() {
+            const filteredPolls = polls.filter(p => p.status === currentTab);
+            const container = document.getElementById('pollsList');
+
+            if (filteredPolls.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">${currentTab === 'active' ? '🗳️' : '📊'}</div>
+                        <h3 class="empty-title">No ${currentTab} polls</h3>
+                        <p class="empty-text">${currentTab === 'active' 
+                            ? 'Check back soon for new polls in your area' 
+                            : 'Completed polls will appear here'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by distance if we have user location
+            if (userLocation) {
+                filteredPolls.sort((a, b) => {
+                    const distA = getDistance(userLocation.lat, userLocation.lng, a.lat, a.lng);
+                    const distB = getDistance(userLocation.lat, userLocation.lng, b.lat, b.lng);
+                    return distA - distB;
+                });
+            }
+
+            container.innerHTML = filteredPolls.map(poll => {
+                const distance = userLocation 
+                    ? formatDistance(getDistance(userLocation.lat, userLocation.lng, poll.lat, poll.lng))
+                    : '';
+
+                const resultsHtml = poll.status === 'closed' ? renderResultsPreview(poll) : '';
+
+                return `
+                    <a href="${poll.url}" class="poll-card">
+                        <div class="poll-card-header">
+                            <span class="poll-status-badge ${poll.status}">${poll.status === 'active' ? 'Voting Open' : 'Closed'}</span>
+                            ${distance ? `<span class="poll-distance">${distance}</span>` : ''}
+                        </div>
+                        <h3 class="poll-question">${poll.question}</h3>
+                        <div class="poll-meta-row">
+                            <span class="poll-votes"><strong>${poll.totalVotes}</strong> votes</span>
+                            <span class="poll-action">
+                                ${poll.status === 'active' ? 'Vote now' : 'View results'}
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </span>
+                        </div>
+                        ${resultsHtml}
+                    </a>
+                `;
+            }).join('');
+        }
+
+        function renderResultsPreview(poll) {
+            const total = poll.totalVotes || 1;
+            const entries = Object.entries(poll.results);
+            
+            return `
+                <div class="results-preview">
+                    ${entries.map(([ label, count ], i) => {
+                        const pct = Math.round((count / total) * 100);
+                        return `
+                            <div class="result-mini">
+                                <span class="result-mini-label">${label}</span>
+                                <div class="result-mini-bar">
+                                    <div class="result-mini-fill ${i > 0 ? 'secondary' : ''}" style="width: ${pct}%"></div>
+                                </div>
+                                <span class="result-mini-pct">${pct}%</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // Haversine distance formula
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 3959; // Earth's radius in miles
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function formatDistance(miles) {
+            if (miles < 0.1) return 'Nearby';
+            if (miles < 1) return `${Math.round(miles * 5280)} ft away`;
+            return `${miles.toFixed(1)} mi away`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Flavor Finder — Smarter Menus for Local Shops · St. Pete</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0D0A06;--cream:#FDF6E3;--sand:#E8D5B0;--caramel:#C07934;--rust:#B84A1A;--chocolate:#3D1F0D;--berry:#8B2252;--mint:#2D7A5F;--vanilla:#F5E6C3;--white:#fff;--gold:#E8B84B}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--cream);overflow-x:hidden}
+.page{display:none}.page.active{display:block}
+
+/* LANDING */
+#page-landing{min-height:100vh;position:relative;overflow:hidden}
+.landing-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 20%,rgba(192,121,52,.18) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 20% 80%,rgba(139,34,82,.15) 0%,transparent 60%),var(--ink)}
+.landing-inner{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;padding:0 24px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:24px 0 0}
+.topbar-logo{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(253,246,227,.45);font-weight:600}
+.topbar-dot{width:6px;height:6px;border-radius:50%;background:var(--caramel);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px 0 40px}
+.hero-eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--caramel);font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--caramel)}
+.hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,14vw,80px);line-height:.92;letter-spacing:.02em;color:var(--cream);margin-bottom:28px}
+.hero-headline em{color:var(--caramel);font-style:normal}
+.hero-headline .strike{position:relative;display:inline-block}
+.hero-headline .strike::after{content:'';position:absolute;left:0;right:0;top:50%;height:4px;background:var(--rust);transform:translateY(-50%) rotate(-2deg)}
+.hero-body{font-size:16px;line-height:1.65;color:rgba(253,246,227,.7);max-width:340px;margin-bottom:44px;font-weight:300}
+.hero-body strong{color:var(--cream);font-weight:600}
+.btn-hero{display:inline-flex;align-items:center;gap:12px;background:var(--caramel);color:var(--ink);border:none;border-radius:4px;padding:20px 32px;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .15s;align-self:flex-start;box-shadow:0 8px 32px rgba(192,121,52,.35)}
+.btn-hero:hover{background:var(--gold);transform:translateY(-2px)}.btn-hero:active{transform:scale(.97)}
+.btn-hero-arrow{font-size:20px;transition:transform .2s}.btn-hero:hover .btn-hero-arrow{transform:translateX(4px)}
+.stats-strip{display:flex;border-top:1px solid rgba(253,246,227,.1);padding:32px 0 40px;margin-top:auto}
+.stat{flex:1;padding-right:20px;border-right:1px solid rgba(253,246,227,.1);margin-right:20px}
+.stat:last-child{border-right:none;margin-right:0;padding-right:0}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--caramel);line-height:1;margin-bottom:4px}
+.stat-label{font-size:11px;color:rgba(253,246,227,.45);letter-spacing:.06em;text-transform:uppercase;line-height:1.4}
+.scroll-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.35;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.scroll-arrow{width:20px;height:20px;border-right:2px solid var(--cream);border-bottom:2px solid var(--cream);transform:rotate(45deg);animation:bounce 1.5s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(4px)}}
+
+/* QUIZ */
+#page-quiz{background:var(--cream);color:var(--chocolate);min-height:100vh}
+.quiz-wrap{min-height:100vh;position:relative;overflow:hidden}
+.quiz-header{position:sticky;top:0;z-index:10;background:var(--cream);padding:16px 24px 12px;border-bottom:1px solid var(--sand);display:flex;align-items:center;justify-content:space-between}
+.quiz-brand{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.05em;color:var(--chocolate)}
+.quiz-step-text{font-size:12px;color:var(--caramel);font-weight:500;letter-spacing:.06em}
+.progress-bar{height:3px;background:var(--sand)}.progress-fill{height:100%;background:var(--caramel);transition:width .4s cubic-bezier(.4,0,.2,1)}
+.screen{display:none;min-height:calc(100vh - 65px);padding:36px 24px 40px;flex-direction:column;align-items:center;justify-content:center;animation:fadeUp .35s ease}
+.screen.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.quiz-splash-emoji{font-size:72px;margin-bottom:20px;animation:sway 3s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-4deg) scale(1)}50%{transform:rotate(4deg) scale(1.05)}}
+.quiz-splash h2{font-family:'Libre Baskerville',serif;font-size:32px;color:var(--chocolate);text-align:center;line-height:1.15;margin-bottom:10px}
+.quiz-splash h2 em{color:var(--caramel);font-style:italic}
+.quiz-splash p{font-size:15px;color:#7B5C3A;text-align:center;margin-bottom:36px;line-height:1.6;max-width:300px}
+.btn-start{background:var(--chocolate);color:var(--cream);border:none;border-radius:6px;padding:18px 48px;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:transform .15s,background .2s;box-shadow:0 6px 24px rgba(61,31,13,.25)}
+.btn-start:hover{background:var(--caramel)}.btn-start:active{transform:scale(.97)}
+.question-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--caramel);font-weight:600;margin-bottom:10px;text-align:center}
+.question-text{font-family:'Libre Baskerville',serif;font-size:24px;text-align:center;line-height:1.3;margin-bottom:8px;max-width:320px;color:var(--chocolate)}
+.question-hint{font-size:12px;color:#B09A7D;text-align:center;margin-bottom:28px;font-style:italic}
+.choice-grid{display:grid;gap:12px;width:100%;max-width:380px}.choice-grid.two{grid-template-columns:1fr 1fr}.choice-grid.three{grid-template-columns:1fr}
+.choice-card{background:white;border:2px solid var(--sand);border-radius:16px;padding:18px 14px;cursor:pointer;transition:all .2s;text-align:center;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.choice-card::before{content:'';position:absolute;inset:0;background:var(--vanilla);opacity:0;transition:opacity .2s}
+.choice-card:active{transform:scale(.97)}
+.choice-card.selected{border-color:var(--chocolate);box-shadow:0 4px 20px rgba(61,31,13,.15)}
+.choice-card.selected::before{opacity:1}
+.choice-card.selected::after{content:'✓';position:absolute;top:8px;right:10px;font-size:12px;font-weight:700;color:var(--caramel)}
+.choice-emoji{font-size:32px;margin-bottom:8px;display:block;position:relative;z-index:1}
+.choice-title{font-family:'Libre Baskerville',serif;font-size:15px;margin-bottom:4px;color:var(--chocolate);position:relative;z-index:1}
+.choice-sub{font-size:11px;color:#8B6E52;line-height:1.4;position:relative;z-index:1}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:white;border:2px solid var(--sand);border-radius:14px;padding:16px 20px;width:100%;max-width:380px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;transition:border-color .2s,background .2s}
+.toggle-row.active{border-color:var(--mint);background:#F0FAF6}
+.toggle-label{font-size:15px;font-weight:500;color:var(--chocolate)}
+.toggle-switch{width:44px;height:24px;background:var(--sand);border-radius:100px;position:relative;transition:background .25s;flex-shrink:0}
+.toggle-switch::after{content:'';position:absolute;width:18px;height:18px;background:white;border-radius:50%;top:3px;left:3px;transition:transform .25s}
+.toggle-row.active .toggle-switch{background:var(--mint)}.toggle-row.active .toggle-switch::after{transform:translateX(20px)}
+
+/* Adventure Slider */
+.dial-container{width:100%;max-width:380px;background:white;border-radius:20px;padding:28px 24px 20px;border:2px solid var(--sand);margin-bottom:8px}
+.dial-emoji-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:28px;padding:0 2px}
+.dial-emoji-row .dial-left-emoji,.dial-emoji-row .dial-right-emoji{transition:transform .3s}
+.dial-track-wrap{position:relative;padding:14px 0;margin-bottom:4px}
+input[type="range"]{input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none; 
+};width:100%;height:10px;border-radius:5px;outline:none;position:relative;z-index:2;background:transparent}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:36px;height:36px;border-radius:50%;background:var(--chocolate);cursor:pointer;border:4px solid var(--cream);box-shadow:0 3px 12px rgba(0,0,0,.25);position:relative;z-index:3}
+input[type="range"]::-moz-range-thumb{width:36px;height:36px;border-radius:50%;background:var(--chocolate);cursor:pointer;border:4px solid var(--cream);box-shadow:0 3px 12px rgba(0,0,0,.25)}
+.dial-track-bg{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:10px;border-radius:5px;background:linear-gradient(to right,#E8D5B0,#C07934 30%,#B84A1A 55%,#8B2252 80%,#6B1A6B);z-index:1;pointer-events:none}
+.dial-value{font-family:'Libre Baskerville',serif;font-size:15px;color:var(--chocolate);text-align:center;font-weight:700;min-height:52px;display:flex;align-items:center;justify-content:center;line-height:1.35}
+
+.nav-row{display:flex;gap:10px;width:100%;max-width:380px;margin-top:28px}
+.btn-next{flex:1;background:var(--chocolate);color:var(--cream);border:none;border-radius:10px;padding:16px 24px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;transition:background .2s,opacity .2s,transform .15s;box-shadow:0 4px 16px rgba(61,31,13,.2)}
+.btn-next:disabled{opacity:.35;cursor:not-allowed}.btn-next:not(:disabled):hover{background:var(--caramel)}.btn-next:not(:disabled):active{transform:scale(.97)}
+.btn-back{background:transparent;color:var(--chocolate);border:2px solid var(--sand);border-radius:10px;padding:16px 18px;font-size:16px;cursor:pointer;transition:border-color .2s;flex-shrink:0}
+.btn-back:hover{border-color:var(--chocolate)}
+
+/* Results */
+.result-cup{font-size:64px;margin-bottom:12px;animation:sway 3s ease-in-out infinite}
+.result-header{font-family:'Libre Baskerville',serif;font-size:28px;color:var(--chocolate);margin-bottom:6px}
+.size-badge{display:inline-block;background:var(--chocolate);color:var(--cream);border-radius:100px;padding:4px 16px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:24px}
+.flavors-wrap{width:100%;max-width:380px;margin-bottom:28px}
+.section-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#B09A7D;text-align:center;margin-bottom:12px}
+.flavor-pill{display:inline-flex;align-items:center;gap:6px;background:var(--sand);color:var(--chocolate);border-radius:100px;padding:8px 16px;font-size:13px;font-weight:500;margin:3px}
+.flavor-pill.hero{color:white;font-weight:600}
+.flavor-pill .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.wildcard-box{background:rgba(192,121,52,.08);border:1px dashed var(--sand);border-radius:14px;padding:16px;text-align:center}
+.wildcard-title{font-size:12px;font-weight:600;color:var(--caramel);margin-bottom:8px;letter-spacing:.04em}
+
+/* Full Menu */
+.full-menu-toggle{width:100%;max-width:380px;margin-top:16px;margin-bottom:20px}
+.full-menu-btn{width:100%;background:transparent;border:1.5px solid var(--sand);border-radius:12px;padding:14px 20px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;color:#8B6E52;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s,background .2s}
+.full-menu-btn:hover{border-color:var(--chocolate);background:rgba(192,121,52,.04)}
+.full-menu-btn .menu-arrow{transition:transform .3s;font-size:16px}
+.full-menu-btn.open .menu-arrow{transform:rotate(180deg)}
+.full-menu-btn.open{border-radius:12px 12px 0 0;border-bottom-color:transparent}
+.full-menu-list{max-height:0;overflow:hidden;transition:max-height .4s ease}.full-menu-list.open{max-height:1200px}
+.full-menu-inner{padding:16px 20px 20px;border:1.5px solid var(--sand);border-top:none;border-radius:0 0 12px 12px;background:white}
+.menu-section-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--caramel);font-weight:700;margin-bottom:8px;margin-top:14px}
+.menu-section-title:first-child{margin-top:0}
+.menu-flavor-list{font-size:13px;color:var(--chocolate);line-height:1.8}
+.menu-flavor-list span::after{content:' · ';color:var(--sand);font-weight:700}
+.menu-flavor-list span:last-child::after{content:''}
+
+.btn-sales{background:var(--caramel);color:var(--ink);border:none;border-radius:10px;padding:18px 24px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;width:100%;max-width:380px;transition:background .2s,transform .15s;box-shadow:0 4px 16px rgba(192,121,52,.3)}
+.btn-sales:hover{background:var(--rust);transform:translateY(-1px)}
+.btn-restart{background:transparent;border:2px solid var(--sand);color:var(--chocolate);border-radius:10px;padding:14px 24px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;width:100%;max-width:380px;margin-top:10px;transition:border-color .2s}
+.btn-restart:hover{border-color:var(--chocolate)}
+.powered-by{margin-top:20px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#C4A882;text-align:center}
+.powered-by a{color:#C4A882;text-decoration:none}.powered-by a:hover{color:var(--caramel)}
+
+/* SALES */
+#page-sales{background:var(--ink);color:var(--cream)}
+.sales-hero{padding:64px 24px 48px;position:relative;overflow:hidden;border-bottom:1px solid rgba(253,246,227,.08)}
+.sales-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--caramel);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sales-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--caramel)}
+.sales-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,11vw,64px);line-height:.95;letter-spacing:.02em;color:var(--cream);margin-bottom:20px}
+.sales-headline em{color:var(--caramel);font-style:normal}
+.sales-subhead{font-size:16px;line-height:1.65;color:rgba(253,246,227,.65);font-weight:300;max-width:380px}
+.sales-subhead strong{color:var(--cream);font-weight:600}
+.sales-features{padding:0 24px 48px}
+.feature-block{padding:36px 0;border-bottom:1px solid rgba(253,246,227,.07)}
+.feature-num{font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:1;color:rgba(192,121,52,.2);margin-bottom:-10px}
+.feature-title{font-family:'Libre Baskerville',serif;font-size:22px;color:var(--cream);margin-bottom:12px;line-height:1.2}
+.feature-title em{color:var(--caramel);font-style:italic}
+.feature-body{font-size:15px;line-height:1.7;color:rgba(253,246,227,.6);font-weight:300}
+.feature-body strong{color:var(--cream);font-weight:600}
+.pricing-block{margin:0 24px 48px;background:rgba(253,246,227,.04);border:1px solid rgba(253,246,227,.1);border-radius:16px;padding:32px 24px;position:relative;overflow:hidden}
+.pricing-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--caramel),var(--berry))}
+.pricing-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--caramel);font-weight:600;margin-bottom:20px}
+.pricing-tier{display:flex;align-items:baseline;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(253,246,227,.07)}
+.pricing-tier:last-of-type{border-bottom:none}
+.tier-name{font-size:14px;color:rgba(253,246,227,.6);font-weight:300}
+.tier-scans{font-size:12px;color:rgba(253,246,227,.35);margin-top:2px}
+.tier-price{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold)}
+.tier-price.free{color:var(--mint)}
+.pricing-note{font-size:12px;color:rgba(253,246,227,.4);margin-top:16px;line-height:1.5;font-style:italic}
+.about-block{padding:0 24px 40px}
+.about-tag{display:inline-block;border:1px solid rgba(253,246,227,.15);border-radius:100px;padding:6px 14px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(253,246,227,.4);margin-bottom:16px}
+.about-text{font-size:15px;line-height:1.7;color:rgba(253,246,227,.6);font-weight:300;margin-bottom:24px}
+.about-text strong{color:var(--cream);font-weight:600}
+.cta-block{padding:0 24px 60px}
+.cta-headline{font-family:'Libre Baskerville',serif;font-size:28px;color:var(--cream);line-height:1.2;margin-bottom:12px}
+.cta-headline em{color:var(--caramel);font-style:italic}
+.cta-sub{font-size:14px;color:rgba(253,246,227,.5);margin-bottom:28px;line-height:1.6}
+.btn-cta{display:block;width:100%;background:var(--caramel);color:var(--ink);border:none;border-radius:6px;padding:20px 24px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .15s;box-shadow:0 8px 32px rgba(192,121,52,.3);text-align:center;text-decoration:none;margin-bottom:12px}
+.btn-cta:hover{background:var(--gold);transform:translateY(-2px)}
+.btn-cta-ghost{display:block;width:100%;background:transparent;color:rgba(253,246,227,.5);border:1px solid rgba(253,246,227,.15);border-radius:6px;padding:16px 24px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;text-align:center;transition:border-color .2s,color .2s}
+.btn-cta-ghost:hover{border-color:rgba(253,246,227,.35);color:var(--cream)}
+.sales-footer{padding:24px;border-top:1px solid rgba(253,246,227,.07);display:flex;align-items:center;justify-content:space-between}
+.sales-footer a{text-decoration:none}
+.footer-brand{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(253,246,227,.25)}
+.footer-dot{width:4px;height:4px;border-radius:50%;background:var(--caramel);opacity:.4}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="page-landing" class="page active">
+<div class="landing-bg"></div>
+<div class="landing-inner">
+<div class="topbar"><span class="topbar-logo">Community Play Tools</span><div class="topbar-dot"></div></div>
+<div class="hero">
+<div class="hero-eyebrow">Smart menus for local shops</div>
+<h1 class="hero-headline">YOUR QUEUE<br>IS <em>COSTING</em><br>YOU <span class="strike">SALES</span></h1>
+<p class="hero-body">Your shop has 30+ flavors — and a QR code that links to a static list. <strong>This is what that QR code could do instead.</strong> Four quick questions. A personalized cup recommendation. Customers arrive at the counter knowing exactly what they want.</p>
+<button class="btn-hero" onclick="goToQuiz()">See how it works <span class="btn-hero-arrow">→</span></button>
+</div>
+<div class="stats-strip">
+<div class="stat"><div class="stat-num">45s</div><div class="stat-label">To build their perfect cup</div></div>
+<div class="stat"><div class="stat-num">15%</div><div class="stat-label">Avg cart size lift</div></div>
+<div class="stat"><div class="stat-num">$0</div><div class="stat-label">Until customers use it</div></div>
+</div>
+</div>
+<div class="scroll-hint" onclick="goToQuiz()"><div class="scroll-arrow"></div></div>
+</div>
+
+<!-- QUIZ -->
+<div id="page-quiz" class="page">
+<div class="quiz-wrap">
+<div class="quiz-header"><span class="quiz-brand">Flavor Finder</span><span class="quiz-step-text" id="step-counter">Build your cup</span></div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="screen quiz-splash active" id="screen-splash">
+<div class="quiz-splash-emoji">🍨</div>
+<h2>Find Your<br><em>Perfect Cup</em></h2>
+<p>4 quick questions. A personalized gelato recommendation. No more freezing at the case.</p>
+<button class="btn-start" onclick="startQuiz()">Let's Go →</button>
+</div>
+
+<div class="screen" id="screen-0">
+<p class="question-label">First things first</p>
+<h2 class="question-text">How hungry are you feeling?</h2>
+<div class="choice-grid three">
+<div class="choice-card" onclick="selectChoice(0,'piccolo',this)"><span class="choice-emoji">🥄</span><div class="choice-title">Just a taste</div><div class="choice-sub">Piccolo — up to 3 flavors</div></div>
+<div class="choice-card" onclick="selectChoice(0,'regolare',this)"><span class="choice-emoji">🍨</span><div class="choice-title">The classic</div><div class="choice-sub">Regolare — up to 4 flavors</div></div>
+<div class="choice-card" onclick="selectChoice(0,'grande',this)"><span class="choice-emoji">🎉</span><div class="choice-title">I came to eat</div><div class="choice-sub">Grande — up to 5 flavors</div></div>
+</div>
+<div class="nav-row"><button class="btn-next" id="next-0" disabled onclick="goNext(0)">Next →</button></div>
+</div>
+
+<div class="screen" id="screen-1">
+<p class="question-label">Dietary needs</p>
+<h2 class="question-text">Any preferences we should know about?</h2>
+<div class="toggle-row" id="toggle-dairy" onclick="toggleDairy()"><span class="toggle-label">🌿 Dairy-free only</span><div class="toggle-switch"></div></div>
+<div class="toggle-row" id="toggle-nsg" onclick="toggleNSA()"><span class="toggle-label">🩺 No sugar added</span><div class="toggle-switch"></div></div>
+<div class="nav-row"><button class="btn-back" onclick="goBack(1)">←</button><button class="btn-next" id="next-1" onclick="goNext(1)">Next →</button></div>
+</div>
+
+<div class="screen" id="screen-2">
+<p class="question-label">Your vibe</p>
+<h2 class="question-text">What flavor world are you in the mood for?</h2>
+<p class="question-hint">Pick one or more</p>
+<div class="choice-grid two">
+<div class="choice-card" onclick="toggleMood('dark',this)"><span class="choice-emoji">🍫</span><div class="choice-title">Dark &amp; rich</div><div class="choice-sub">Chocolate, espresso, hazelnut</div></div>
+<div class="choice-card" onclick="toggleMood('bright',this)"><span class="choice-emoji">🍓</span><div class="choice-title">Bright &amp; fruity</div><div class="choice-sub">Berry, citrus, tropical</div></div>
+</div>
+<div class="choice-grid two" style="margin-top:12px">
+<div class="choice-card" onclick="toggleMood('creamy',this)"><span class="choice-emoji">🍦</span><div class="choice-title">Sweet &amp; creamy</div><div class="choice-sub">Vanilla, caramel, cookie</div></div>
+<div class="choice-card" onclick="toggleMood('nutty',this)"><span class="choice-emoji">🌰</span><div class="choice-title">Nutty &amp; earthy</div><div class="choice-sub">Pistachio, almond, coffee</div></div>
+</div>
+<div class="nav-row"><button class="btn-back" onclick="goBack(2)">←</button><button class="btn-next" id="next-2" disabled onclick="goNext(2)">Next →</button></div>
+</div>
+
+<div class="screen" id="screen-3">
+<p class="question-label">Adventure level</p>
+<h2 class="question-text">How adventurous are we feeling?</h2>
+<div class="dial-container">
+<div class="dial-emoji-row"><span class="dial-left-emoji">😌</span><span style="font-size:13px;color:#B09A7D;letter-spacing:.05em;text-transform:uppercase">← drag →</span><span class="dial-right-emoji">🤪</span></div>
+<div class="dial-track-wrap"><div class="dial-track-bg"></div><input type="range" id="adventure-dial" min="0" max="100" value="40" oninput="updateDial(this.value)"></div>
+<div class="dial-value" id="dial-label"></div>
+</div>
+<div class="nav-row"><button class="btn-back" onclick="goBack(3)">←</button><button class="btn-next" id="next-3" onclick="goNext(3)">Show My Cup →</button></div>
+</div>
+
+<div class="screen" id="screen-results">
+<div class="result-cup">🍨</div>
+<div class="result-header">Your Perfect Cup</div>
+<div class="size-badge" id="result-size-badge">Regolare</div>
+<div class="flavors-wrap">
+<div class="section-label">✦ Your flavors ✦</div>
+<div id="hero-flavors"></div>
+<div class="wildcard-box" style="margin-top:14px"><div class="wildcard-title">🎲 Also worth trying…</div><div id="wildcard-flavors"></div></div>
+</div>
+<div class="full-menu-toggle">
+<button class="full-menu-btn" id="menu-toggle-btn" onclick="toggleFullMenu()"><span>📋 See the full menu</span><span class="menu-arrow">▾</span></button>
+<div class="full-menu-list" id="full-menu-list"><div class="full-menu-inner">
+<div class="menu-section-title">Gelato</div><div class="menu-flavor-list" id="menu-gelato"></div>
+<div class="menu-section-title">Dairy-Free</div><div class="menu-flavor-list" id="menu-dairyfree"></div>
+</div></div>
+</div>
+<button class="btn-sales" onclick="goToSales()">Want this at your shop? →</button>
+<button class="btn-restart" onclick="restartQuiz()">← Try Again</button>
+<p class="powered-by">Powered by <a href="https://communityplaytools.com" target="_blank">Community Play Tools</a></p>
+</div>
+</div>
+</div>
+
+<!-- SALES -->
+<div id="page-sales" class="page">
+<div class="sales-hero">
+<div class="sales-eyebrow">For shop owners &amp; managers</div>
+<h2 class="sales-headline">YOUR MENU SHOULD<br>WORK <em>HARDER</em><br>THAN THIS.</h2>
+<p class="sales-subhead">Most gelato shops have a QR code that links to a static flavor list. Customers scan it, see a wall of text, and panic. <strong>What if it linked to this instead?</strong></p>
+</div>
+<div class="sales-features">
+<div class="feature-block"><div class="feature-num">01</div><div class="feature-title">A dynamic menu that <em>guides</em> instead of lists</div><div class="feature-body">Your QR sign already tells customers to scan. We replace that static flavor list with an interactive experience — customers answer 4 quick questions and get a <strong>personalized cup recommendation</strong> built from your actual menu.</div></div>
+<div class="feature-block"><div class="feature-num">02</div><div class="feature-title">Confident customers <em>order more</em></div><div class="feature-body">Guided recommendation tools in food retail consistently show <strong>10–15% increases in average cart size</strong> — not from pressure, but from clarity. When customers know what they want, they upsize and try the wildcard flavor.</div></div>
+<div class="feature-block"><div class="feature-num">03</div><div class="feature-title">You keep your menu <em>current</em>, we handle everything else</div><div class="feature-body">Update your flavor list through a simple shared spreadsheet. <strong>No POS integration. No app to install. No technical help needed.</strong> We maintain the tool; you just keep the flavors fresh.</div></div>
+</div>
+<div class="pricing-block">
+<div class="pricing-label">Pricing — Pay When It Works</div>
+<div class="pricing-tier"><div><div class="tier-name">Getting started</div><div class="tier-scans">0 – 200 scans/month</div></div><div class="tier-price free">FREE</div></div>
+<div class="pricing-tier"><div><div class="tier-name">Active</div><div class="tier-scans">201 – 500 scans/month</div></div><div class="tier-price">$59</div></div>
+<div class="pricing-tier"><div><div class="tier-name">Busy</div><div class="tier-scans">501 – 1,000 scans/month</div></div><div class="tier-price">$79</div></div>
+<div class="pricing-tier"><div><div class="tier-name">Full capacity</div><div class="tier-scans">1,000+ scans/month</div></div><div class="tier-price">$89</div></div>
+<p class="pricing-note">Tracked by scan volume — no access to your POS or sales data required. If your customers aren't using it, you don't pay.</p>
+</div>
+<div class="about-block"><div class="about-tag">Built in St. Pete</div><p class="about-text">Community Play Tools is a local civic and business technology consultancy. We build tools that make the experience of being in a place better — for customers and operators alike. <strong>We're your neighbors, not a SaaS company in San Francisco.</strong></p></div>
+<div class="cta-block">
+<div class="cta-headline">Let's talk about<br>your <em>menu</em>.</div>
+<p class="cta-sub">Give me 10 minutes — we'll walk through how it works and answer any questions. Ryan@communityplaytools.com</p>
+<a class="btn-cta" href="mailto:rRyan@communityplaytools.com">Email us to book a demo →</a>
+<button class="btn-cta-ghost" onclick="goToQuiz();restartQuiz();">← Try the quiz again</button>
+</div>
+<div class="sales-footer"><a href="https://communityplaytools.com" target="_blank"><span class="footer-brand">Community Play Tools · St. Petersburg, FL</span></a><div class="footer-dot"></div></div>
+</div>
+
+<script>
+const ALL_GELATO=['Amarena Black Cherry Swirl','Amaretto Chocolate Chip','Amore (rum flavored)','Arabica Coffee Latte (no sugar added)','Bacio (chocolate hazelnut)','Banoffee Pie','Biscoff Cookie','Brookiedough Blizzard','Cannoli','Caramel By the Sea','Cheesecake Strawberry Swirl','Coconut','Coffee Toffee Cafe Caramel','Coffee Mocha Swirl','Cookies N Milk','Dubai Chocolate (limited time)','Dulce de Leche','Fondente - Dark Chocolate','Hazelnut','Mint Chocolate Chip','Peanut Butter Chocolate Swirl','Pistachio','Red Velvet','Stracciatella','Sugar Cookie','Texas Pecan Sea Salt Caramel','Tres Vanillas','Violet'];
+const ALL_DAIRY_FREE=['Chocolate Sorbetto','Lemon Sorbetto','Mango Sorbetto','Strawberry Sorbetto','Raspberry Sorbetto','Blueberry Coconut Milk','Strawberry Coconut Milk','Oat Milk Cookie Crunch'];
+
+const FLAVORS={
+  dark:{smooth:['Fondente - Dark Chocolate','Coffee Mocha Swirl','Arabica Coffee Latte','Hazelnut'],chunky:['Amaretto Chocolate Chip','Coffee Toffee Cafe Caramel','Stracciatella','Mint Chocolate Chip','Peanut Butter Chocolate Swirl']},
+  bright:{smooth:['Cheesecake Strawberry Swirl','Lemon Sorbetto','Strawberry Sorbetto','Mango Sorbetto','Violet'],chunky:['Cheesecake Strawberry Swirl','Amarena Black Cherry Swirl','Raspberry Sorbetto','Banoffee Pie']},
+  creamy:{smooth:['Tres Vanillas','Caramel By the Sea','Coconut','Dulce de Leche','Cannoli'],chunky:['Cookies N Milk','Biscoff Cookie','Sugar Cookie','Banoffee Pie','Red Velvet','Brookiedough Blizzard']},
+  nutty:{smooth:['Pistachio','Hazelnut','Arabica Coffee Latte','Coconut'],chunky:['Bacio (chocolate hazelnut)','Pistachio','Texas Pecan Sea Salt Caramel','Coffee Toffee Cafe Caramel','Peanut Butter Chocolate Swirl']}
+};
+const DAIRY_FREE=[...ALL_DAIRY_FREE];
+const NSA=['Arabica Coffee Latte'];
+const WILDCARDS_ALL=['Violet','Cannoli','Dulce de Leche','Texas Pecan Sea Salt Caramel','Red Velvet','Brookiedough Blizzard','Dubai Chocolate (limited time)','Amore (rum flavored)','Mint Chocolate Chip','Peanut Butter Chocolate Swirl'];
+const TOTAL_STEPS=4;
+const DIAL_LABELS={0:['Give me what I know and love','😌'],25:['Mostly familiar, one wild card','🙂'],50:['Balance of comfort and curiosity','😏'],75:['Push me a little further','😈'],100:['Surprise me completely','🤪']};
+
+let answers={size:null,dairy:false,nsa:false,moods:[],adventure:40};
+let currentStep=0;
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function goToQuiz(){showPage('page-quiz')}
+function goToSales(){showPage('page-sales')}
+function updateProgress(s){document.getElementById('progress-fill').style.width=(s/TOTAL_STEPS*100)+'%';document.getElementById('step-counter').textContent=s>0?`Step ${s} of ${TOTAL_STEPS}`:'Build your cup'}
+function showScreen(id){document.querySelectorAll('#page-quiz .screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function startQuiz(){showScreen('screen-0');updateProgress(1)}
+
+function selectChoice(step,value,el){
+  document.querySelectorAll('#screen-'+step+' .choice-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  if(step===0)answers.size=value;
+  const btn=document.getElementById('next-'+step);if(btn)btn.disabled=false;
+}
+
+function toggleMood(mood,el){
+  el.classList.toggle('selected');
+  const i=answers.moods.indexOf(mood);
+  if(i>-1)answers.moods.splice(i,1);else answers.moods.push(mood);
+  document.getElementById('next-2').disabled=answers.moods.length===0;
+}
+
+function toggleDairy(){answers.dairy=!answers.dairy;document.getElementById('toggle-dairy').classList.toggle('active',answers.dairy)}
+function toggleNSA(){answers.nsa=!answers.nsa;document.getElementById('toggle-nsg').classList.toggle('active',answers.nsa)}
+
+function updateDial(val){
+  answers.adventure=parseInt(val);
+  const keys=[0,25,50,75,100];
+  const closest=keys.reduce((a,b)=>Math.abs(b-val)<Math.abs(a-val)?b:a);
+  const[text,emoji]=DIAL_LABELS[closest];
+  document.getElementById('dial-label').innerHTML='<span style="font-size:24px;display:block;margin-bottom:4px">'+emoji+'</span>'+text;
+  const pct=val/100;
+  document.querySelector('.dial-left-emoji').style.transform='scale('+(1.3-pct*.5)+')';
+  document.querySelector('.dial-right-emoji').style.transform='scale('+(0.8+pct*.5)+')';
+}
+
+function goNext(step){if(step<TOTAL_STEPS-1){currentStep=step+1;showScreen('screen-'+currentStep);updateProgress(currentStep+1)}else showResults()}
+function goBack(step){currentStep=step-1;showScreen('screen-'+currentStep);updateProgress(currentStep+1)}
+
+function showResults(){
+  showScreen('screen-results');updateProgress(TOTAL_STEPS);
+  document.getElementById('step-counter').textContent='Your cup ✓';
+  const size=answers.size||'regolare';
+  const sizeLabels={piccolo:'Piccolo',regolare:'Regolare',grande:'Grande'};
+  document.getElementById('result-size-badge').textContent=sizeLabels[size];
+
+  const moods=answers.moods.length>0?answers.moods:['creamy'];
+  let pool=[];
+  moods.forEach(m=>{pool.push(...FLAVORS[m].smooth,...FLAVORS[m].chunky)});
+  pool=[...new Set(pool)];
+
+  if(answers.dairy)pool=pool.filter(f=>DAIRY_FREE.includes(f));
+  if(answers.nsa)pool=pool.filter(f=>NSA.includes(f));
+  if(pool.length===0)pool=answers.dairy?[...DAIRY_FREE]:[...new Set(moods.flatMap(m=>[...FLAVORS[m].smooth,...FLAVORS[m].chunky]))];
+  pool=shuffle(pool);
+
+  const HERO_TARGET=4,WILDCARD_TARGET=2;
+  const heroes=pool.slice(0,Math.min(HERO_TARGET,pool.length));
+
+  let wp=shuffle([...WILDCARDS_ALL].filter(f=>!heroes.includes(f)));
+  if(answers.dairy)wp=wp.filter(f=>DAIRY_FREE.includes(f));
+  if(answers.nsa)wp=wp.filter(f=>NSA.includes(f));
+  if(wp.length<WILDCARD_TARGET){const ov=pool.filter(f=>!heroes.includes(f)&&!wp.includes(f));wp=[...wp,...shuffle(ov)]}
+  const wildcards=wp.slice(0,Math.min(WILDCARD_TARGET,wp.length));
+
+  const colors=['#8B2252','#C07934','#2D7A5F','#1A4A6B','#6B8C3E','#7B4F2E'];
+  document.getElementById('hero-flavors').innerHTML=heroes.map((f,i)=>'<span class="flavor-pill hero" style="background:'+colors[i%colors.length]+'">🍨 '+f+'</span>').join('');
+  document.getElementById('wildcard-flavors').innerHTML=wildcards.map((f,i)=>'<span class="flavor-pill"><span class="dot" style="background:'+colors[(i+3)%colors.length]+'"></span>'+f+'</span>').join('');
+
+  document.getElementById('menu-gelato').innerHTML=ALL_GELATO.map(f=>'<span>'+f+'</span>').join('');
+  document.getElementById('menu-dairyfree').innerHTML=ALL_DAIRY_FREE.map(f=>'<span>'+f+'</span>').join('');
+  document.getElementById('menu-toggle-btn').classList.remove('open');
+  document.getElementById('full-menu-list').classList.remove('open');
+}
+
+function toggleFullMenu(){document.getElementById('menu-toggle-btn').classList.toggle('open');document.getElementById('full-menu-list').classList.toggle('open')}
+
+function restartQuiz(){
+  answers={size:null,dairy:false,nsa:false,moods:[],adventure:40};currentStep=0;
+  document.querySelectorAll('.choice-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.toggle-row').forEach(t=>t.classList.remove('active'));
+  document.getElementById('adventure-dial').value=40;updateDial(40);
+  document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
+  document.getElementById('next-1').disabled=false;
+  document.getElementById('next-3').disabled=false;
+  showScreen('screen-splash');updateProgress(0);
+}
+
+document.addEventListener('DOMContentLoaded',()=>updateDial(40));
+</script>
+</body>
+</html>

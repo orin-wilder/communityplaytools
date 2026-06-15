@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll Results - Traffic Calming</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --orange: #E86A33;
+            --orange-light: rgba(232, 106, 51, 0.15);
+            --teal: #1A3A3A;
+            --teal-light: #2D5454;
+            --white: #FAFAFA;
+            --white-off: #F0F0F0;
+            --gray: #6B7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(165deg, var(--teal) 0%, var(--teal-light) 100%);
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .results-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .results-header {
+            background: var(--white);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        }
+
+        .poll-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.4rem 0.75rem;
+            border-radius: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .poll-status.active {
+            background: rgba(34, 197, 94, 0.12);
+            color: #16a34a;
+        }
+
+        .poll-status.closed {
+            background: rgba(107, 114, 128, 0.12);
+            color: var(--gray);
+        }
+
+        .poll-status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .poll-question {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--teal);
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+
+        .poll-meta {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .results-card {
+            background: var(--white);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--gray);
+            margin-bottom: 1.25rem;
+        }
+
+        .result-option {
+            margin-bottom: 1.5rem;
+        }
+
+        .result-option:last-child {
+            margin-bottom: 0;
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .option-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 0.75rem;
+            object-fit: cover;
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-name {
+            font-weight: 600;
+            color: var(--teal);
+            font-size: 1rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .option-votes {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .option-percent {
+            font-family: 'Fraunces', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        .option-percent.winner {
+            color: var(--orange);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--white-off);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.8s ease;
+        }
+
+        .progress-fill.orange {
+            background: var(--orange);
+        }
+
+        .progress-fill.teal {
+            background: var(--teal);
+        }
+
+        .total-votes {
+            text-align: center;
+            padding-top: 1.25rem;
+            margin-top: 1.25rem;
+            border-top: 1px solid var(--white-off);
+        }
+
+        .total-number {
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--teal);
+            line-height: 1;
+        }
+
+        .total-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+        }
+
+        /* Map Section */
+        .map-container {
+            height: 280px;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        #resultsMap {
+            height: 100%;
+            width: 100%;
+        }
+
+        .map-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.orange {
+            background: var(--orange);
+        }
+
+        .legend-dot.teal {
+            background: var(--teal);
+        }
+
+        /* Action Section */
+        .action-card {
+            background: var(--teal);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        }
+
+        .action-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .action-text {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 0.85rem 1.75rem;
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: 0.6rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(232, 106, 51, 0.4);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--white);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Leaflet marker overrides */
+        .vote-marker {
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .vote-marker.orange {
+            background: var(--orange);
+        }
+
+        .vote-marker.teal {
+            background: var(--teal);
+        }
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="spinner"></div>
+            <p>Loading results...</p>
+        </div>
+
+        <!-- Results Content (hidden until loaded) -->
+        <div id="resultsContent" style="display: none;">
+            
+            <!-- Header -->
+            <div class="results-header">
+                <div class="poll-status active" id="pollStatus">
+                    <span>Voting Open</span>
+                </div>
+                <h1 class="poll-question">What traffic calming would you like to see at this intersection?</h1>
+                <p class="poll-meta" id="pollMeta">Loading...</p>
+            </div>
+
+            <!-- Vote Breakdown -->
+            <div class="results-card">
+                <h2 class="card-title">Current Results</h2>
+                
+                <div class="result-option" id="option1">
+                    <div class="option-header">
+                        <img src="allway_stop.png" alt="4-way stop" class="option-image">
+                        <div class="option-info">
+                            <div class="option-name">4-Way Stop</div>
+                            <div class="option-votes" id="option1Votes">0 votes</div>
+                        </div>
+                        <div class="option-percent" id="option1Percent">0%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill orange" id="option1Bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="result-option" id="option2">
+                    <div class="option-header">
+                        <img src="traffic_circle.png" alt="Mini traffic circle" class="option-image">
+                        <div class="option-info">
+                            <div class="option-name">Mini Traffic Circle</div>
+                            <div class="option-votes" id="option2Votes">0 votes</div>
+                        </div>
+                        <div class="option-percent" id="option2Percent">0%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill teal" id="option2Bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="total-votes">
+                    <div class="total-number" id="totalVotes">0</div>
+                    <div class="total-label">total votes</div>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="results-card">
+                <h2 class="card-title">Where Voters Are</h2>
+                <div class="map-container">
+                    <div id="resultsMap"></div>
+                </div>
+                <div class="map-legend">
+                    <div class="legend-item">
+                        <span class="legend-dot orange"></span>
+                        <span>4-Way Stop</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot teal"></span>
+                        <span>Mini Traffic Circle</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="action-card">
+                <h2 class="action-title">Make Your Voice Heard</h2>
+                <p class="action-text">Share these results with your city council representative to advocate for change at this intersection.</p>
+                <a href="#" class="action-btn" id="contactRepBtn">Contact Your Representative</a>
+            </div>
+
+            <a href="/poll" class="back-link">← Back to Poll</a>
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Configuration
+        const SUPABASE_URL = 'https://mjrhmtxfazapdnzfvvja.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcmhtdHhmYXphcGRuemZ2dmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxODIwNzEsImV4cCI6MjA4NDc1ODA3MX0.T2z0tJHy1StsKWDjdU3hYw-7F36XC81DQxfLq_t23nM';
+        const POLL_ID = 'traffic-calming-1';
+
+        // Map instance
+        let map = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadResults();
+        });
+
+        async function loadResults() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/votes?poll_id=eq.${POLL_ID}&select=choice,lat,lng,created_at`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    }
+                );
+
+                const votes = await response.json();
+                
+                // Calculate results
+                const counts = { '4way_stop': 0, 'mini_circle': 0 };
+                const locations = [];
+                let earliestVote = null;
+
+                votes.forEach(v => {
+                    counts[v.choice]++;
+                    if (v.lat && v.lng) {
+                        locations.push({
+                            lat: v.lat,
+                            lng: v.lng,
+                            choice: v.choice
+                        });
+                    }
+                    if (!earliestVote || new Date(v.created_at) < new Date(earliestVote)) {
+                        earliestVote = v.created_at;
+                    }
+                });
+
+                const total = votes.length;
+                const pct1 = total > 0 ? Math.round((counts['4way_stop'] / total) * 100) : 0;
+                const pct2 = total > 0 ? Math.round((counts['mini_circle'] / total) * 100) : 0;
+
+                // Update UI
+                document.getElementById('option1Votes').textContent = `${counts['4way_stop']} vote${counts['4way_stop'] !== 1 ? 's' : ''}`;
+                document.getElementById('option2Votes').textContent = `${counts['mini_circle']} vote${counts['mini_circle'] !== 1 ? 's' : ''}`;
+                
+                document.getElementById('option1Percent').textContent = `${pct1}%`;
+                document.getElementById('option2Percent').textContent = `${pct2}%`;
+                
+                // Highlight winner
+                if (pct1 > pct2) {
+                    document.getElementById('option1Percent').classList.add('winner');
+                } else if (pct2 > pct1) {
+                    document.getElementById('option2Percent').classList.add('winner');
+                }
+
+                document.getElementById('option1Bar').style.width = `${pct1}%`;
+                document.getElementById('option2Bar').style.width = `${pct2}%`;
+
+                document.getElementById('totalVotes').textContent = total;
+
+                // Poll meta
+                if (earliestVote) {
+                    const startDate = new Date(earliestVote).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    document.getElementById('pollMeta').textContent = `Voting started ${startDate}`;
+                } else {
+                    document.getElementById('pollMeta').textContent = 'No votes yet';
+                }
+
+                // Initialize map
+                initMap(locations);
+
+                // Show content
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('resultsContent').style.display = 'block';
+
+            } catch (e) {
+                console.error('Error loading results:', e);
+                document.getElementById('loadingState').innerHTML = `
+                    <p>Unable to load results. Please try again.</p>
+                    <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--orange); color: white; border: none; border-radius: 0.5rem; cursor: pointer;">Retry</button>
+                `;
+            }
+        }
+
+        function initMap(locations) {
+            // Default center (St. Petersburg, FL)
+            let center = [27.7676, -82.6403];
+            let zoom = 13;
+
+            // If we have votes, center on them
+            if (locations.length > 0) {
+                const lats = locations.map(l => l.lat);
+                const lngs = locations.map(l => l.lng);
+                center = [
+                    (Math.min(...lats) + Math.max(...lats)) / 2,
+                    (Math.min(...lngs) + Math.max(...lngs)) / 2
+                ];
+            }
+
+            map = L.map('resultsMap').setView(center, zoom);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Add vote markers with slight randomization for privacy
+            locations.forEach(loc => {
+                // Add small random offset (roughly 100m) for privacy
+                const jitter = 0.001;
+                const lat = loc.lat + (Math.random() - 0.5) * jitter;
+                const lng = loc.lng + (Math.random() - 0.5) * jitter;
+
+                const color = loc.choice === '4way_stop' ? '#E86A33' : '#1A3A3A';
+                
+                const marker = L.circleMarker([lat, lng], {
+                    radius: 8,
+                    fillColor: color,
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.9
+                }).addTo(map);
+            });
+
+            // Fit bounds if we have multiple points
+            if (locations.length > 1) {
+                const bounds = L.latLngBounds(locations.map(l => [l.lat, l.lng]));
+                map.fitBounds(bounds, { padding: [30, 30] });
+            }
+        }
+
+        // Contact rep button - could be customized per poll location
+        document.getElementById('contactRepBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            // For St. Pete, link to city council
+            window.open('https://www.stpete.org/government/city_council/index.php', '_blank');
+        });
+    </script>
+</body>
+</html>

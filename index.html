@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ryan Stock | Civic Catalyst & Strategic Project Lead | St. Petersburg, FL</title>
+    <meta name="description" content="Strategic project leader bridging tech innovation and urban development. 7 years at Sony PlayStation + proven civic leadership. Available for engagements in St. Petersburg.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #2C5F6F;
+            --sage-green: #7A9D7E;
+            --warm-gray: #6B6B6B;
+            --sunset-orange: #E17C54;
+            --sky-blue: #A4C8E1;
+            --off-white: #F8F9FA;
+            --charcoal: #2D2D2D;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--charcoal);
+            background-color: var(--off-white);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2.5rem; }
+        h3 { font-size: 1.8rem; }
+        h4 { font-size: 1.3rem; }
+
+        p { margin-bottom: 1rem; }
+
+        a {
+            color: var(--primary-teal);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--sunset-orange);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .container-narrow {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--sunset-orange);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: #d16843;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(225, 124, 84, 0.3);
+        }
+
+        .btn-secondary {
+    background-color: var(--white);
+    color: var(--primary-teal);
+    border: 2px solid var(--white);
+}
+
+.btn-secondary:hover {
+    background-color: transparent;
+    color: var(--white);
+    border: 2px solid var(--white);
+}
+
+        /* Section Spacing */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-compact {
+            padding: 60px 0;
+        }
+
+        .section-alt {
+            background-color: var(--white);
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .nav-brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--charcoal);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--sunset-orange);
+        }
+
+        /* Floating Contact Button */
+        .floating-cta {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .floating-cta .btn {
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            background: linear-gradient(rgba(44, 95, 111, 0.75), rgba(44, 95, 111, 0.75)), 
+                        url('hero-background.jpg') center/cover no-repeat;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subheadline {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-headshot {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            border: 4px solid var(--white);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            object-fit: cover;
+        }
+
+        .location-badge {
+            display: inline-block;
+            background-color: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Value Proposition */
+        .value-prop {
+            background: var(--white);
+        }
+
+        .value-prop-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .value-prop h2 {
+            color: var(--primary-teal);
+            margin-bottom: 2rem;
+        }
+
+        .value-statement {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+        }
+
+        .value-highlights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .value-highlight {
+            padding: 20px;
+        }
+
+        .value-highlight-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--sage-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .value-highlight-text {
+            color: var(--warm-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Featured Projects */
+        .featured-projects h2 {
+            color: var(--primary-teal);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card-mini {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .project-card-mini:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .project-image-mini {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .project-content-mini {
+            padding: 25px;
+        }
+
+        .project-content-mini h4 {
+            color: var(--primary-teal);
+            margin-bottom: 1rem;
+        }
+
+        .project-content-mini p {
+            color: var(--warm-gray);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .project-result {
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .project-link {
+            color: var(--sunset-orange);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Process Section */
+        .process-section {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+
+        .process-section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .process-number {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .process-step h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .process-step p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        /* Testimonial */
+        .testimonial-featured {
+            background: var(--white);
+        }
+
+        .testimonial-featured h2 {
+            color: var(--primary-teal);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .testimonial-box {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--off-white);
+            padding: 40px;
+            border-radius: 8px;
+            border-left: 5px solid var(--sage-green);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--charcoal);
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            color: var(--primary-teal);
+            margin-bottom: 0.3rem;
+        }
+
+        .testimonial-role {
+            color: var(--warm-gray);
+            font-size: 0.95rem;
+        }
+
+        .testimonial-cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+.testimonial-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    vertical-align: middle;
+    border: 2px solid var(--sage-green);
+}
+        /* Best Fit Section */
+        .best-fit {
+            background: var(--off-white);
+        }
+
+        .best-fit h2 {
+            color: var(--primary-teal);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .best-fit-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+        }
+
+        .fit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .fit-item {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 4px solid var(--sage-green);
+        }
+
+        .fit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .fit-item h4 {
+            color: var(--primary-teal);
+            margin-bottom: 1rem;
+        }
+
+        .fit-item p {
+            font-size: 0.95rem;
+            color: var(--warm-gray);
+            margin-bottom: 0;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(135deg, var(--primary-teal), var(--sage-green));
+            color: var(--white);
+        }
+
+        .contact h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-subheadline {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+        }
+
+        .contact-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-form {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-submit {
+            width: 100%;
+            background-color: var(--sunset-orange);
+            color: var(--white);
+            padding: 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-submit:hover {
+            background-color: #d16843;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(225, 124, 84, 0.4);
+        }
+
+        .alt-contact {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .contact-method {
+            color: var(--white);
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .contact-method:hover {
+            opacity: 1;
+            color: var(--sky-blue);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 40px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h4 {
+            margin-bottom: 1rem;
+            color: var(--sky-blue);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: var(--white);
+            opacity: 0.8;
+        }
+
+        .footer-column a:hover {
+            opacity: 1;
+            color: var(--sky-blue);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            
+            section { padding: 50px 0; }
+            .section-compact { padding: 40px 0; }
+
+            .nav-links {
+                gap: 15px;
+                font-size: 0.9rem;
+            }
+
+            .hero h1 { font-size: 2.2rem; }
+            .hero-subheadline { font-size: 1.1rem; }
+            .hero-headshot { width: 140px; height: 140px; }
+
+            .value-highlights {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .fit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .floating-cta {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .floating-cta .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="nav-brand">Ryan Stock</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="work.html">Work</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Floating Contact Button -->
+    <div class="floating-cta">
+        <a href="#contact" class="btn btn-primary">Get Started</a>
+    </div>
+    
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <img src="ryan-headshot.jpg" alt="Ryan Stock" class="hero-headshot">
+            <div class="location-badge">📍 St. Petersburg, FL</div>
+            <h1>Turning Complexity into Community.</h1>
+            <p class="hero-subheadline">Strategic project lead with 7 years at Sony PlayStation and proven civic leadership. I deliver results at the intersection of tech innovation and urban development.</p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-primary">Start a Conversation</a>
+                <a href="work.html" class="btn btn-secondary">View My Work</a>
+                <a href="Ryan_Stock_Executive_Overview.pdf" class="btn btn-secondary" download>📄 One-Page Overview</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section class="value-prop section-compact">
+        <div class="container">
+            <div class="value-prop-content">
+                <h2>Plug-and-Play Strategic Leadership</h2>
+                <p class="value-statement">I'm an innovator and civic facilitator available for engagements where you need someone to step in, lead a critical initiative, and deliver measurable outcomes. No ramp-up time. No corporate politics. Just execution.</p>
+                
+                <div class="value-highlights">
+                    <div class="value-highlight">
+                        <div class="value-highlight-number">7</div>
+                        <div class="value-highlight-text">Years at Sony PlayStation leading innovation & commerce programs</div>
+                    </div>
+                    <div class="value-highlight">
+                        <div class="value-highlight-number">$450K</div>
+                        <div class="value-highlight-text">Raised in 12 months for historic arts center restoration</div>
+                    </div>
+                    <div class="value-highlight">
+                        <div class="value-highlight-number">100%</div>
+                        <div class="value-highlight-text">Success rate navigating controversial parking district approvals</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Projects -->
+    <section class="featured-projects section-alt">
+        <div class="container">
+            <h2>Selected Work</h2>
+            <div class="projects-grid">
+                
+                <div class="project-card-mini">
+                    <img src="pb-pathways-01.jpg" alt="PB Pathways bike boulevard" class="project-image-mini">
+                    <div class="project-content-mini">
+                        <h4>PB Pathways Phase 3</h4>
+                        <p>Led controversial bike boulevard through parking district approval with data-driven community engagement and stakeholder diplomacy.</p>
+                        <p class="project-result"><strong>Result:</strong> Only project to pass with top approval vote.</p>
+                        <a href="work.html#pb-pathways" class="project-link">Read Full Case Study →</a>
+                    </div>
+                </div>
+
+                <div class="project-card-mini">
+                    <img src="pb-art-center-01.jpg" alt="Pacific Beach Art Center" class="project-image-mini">
+                    <div class="project-content-mini">
+                        <h4>Pacific Beach Art Center</h4>
+                        <p>Built coalition to acquire historic 1927 library building. Led capital campaign and partnership negotiations with YMCA and school district.</p>
+                        <p class="project-result"><strong>Result:</strong> $450K raised in 12 months (41% of goal).</p>
+                        <a href="work.html#pb-art-center" class="project-link">Read Full Case Study →</a>
+                    </div>
+                </div>
+
+                <div class="project-card-mini">
+                    <img src="sony-innovation-02.jpg" alt="Sony PlayStation commerce" class="project-image-mini">
+                    <div class="project-content-mini">
+                        <h4>PlayStation Network Commerce</h4>
+                        <p>Led program management for payment platform expansion. Coordinated cross-functional teams to implement PayPal and international tax systems.</p>
+                        <p class="project-result"><strong>Result:</strong> PS5 prerelease system launched on time.</p>
+                        <a href="work.html#playstation-commerce" class="project-link">Read Full Case Study →</a>
+                    </div>
+                </div>
+
+                <div class="project-card-mini">
+                    <div class="project-content-mini">
+                        <h4>Community Merit</h4>
+                        <p>Civic engagement platform with merit badges and multi-step events that makes community participation feel like play, not homework.</p>
+                        <p class="project-result"><strong>Result:</strong> Gamified civic action into collective neighborhood intelligence.</p>
+                        <a href="cmapp.html" class="project-link">Explore Community Merit →</a>
+                    </div>
+                </div>
+
+                <div class="project-card-mini">
+                    <div class="project-content-mini">
+                        <h4>Williams Park Counter Toy</h4>
+                        <p>Interactive public engagement tool supporting the Williams Park renovation through community data collection and visualization.</p>
+                        <p class="project-result"><strong>Result:</strong> Community-powered data informing park renovation decisions.</p>
+                        <a href="williams-park.html" class="project-link">Try the Counter Toy →</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Testimonial -->
+    <section class="testimonial-featured section-compact">
+        <div class="container">
+            <h2>What Leaders Say</h2>
+            <div class="testimonial-box">
+                <p class="testimonial-text">"The Pacific Beach Planning Group has been impressed by Ryan's leadership, which combines thoughtful humility with exceptional expertise and drive. Ryan played a key role in developing our recent community parking survey, which gathers essential on-the-ground data. This survey will inform our data-driven approach to mobility improvements, ensuring decisions are grounded in real community experiences. Ryan has raised the bar for how younger leaders can contribute to urban planning, mobility improvements, and community advocacy, demonstrating that passion and deep engagement with the details can truly drive meaningful, lasting change for our neighborhood."</p>
+                <p class="testimonial-author">
+    <img src="marcelle_bothwell.jpeg" alt="Marcella Bothwell" class="testimonial-photo">
+    Marcella Bothwell, MD, MBA
+</p>
+                <p class="testimonial-role">Chair, <a href="https://www.pbplanning.org/" target="_blank" style="color: var(--sage-green);">Pacific Beach Planning Group</a></p>
+            </div>
+            <div class="testimonial-cta">
+                <a href="about.html#testimonials" class="btn btn-secondary">Read More Testimonials</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Fit For -->
+    <section class="best-fit section-compact">
+        <div class="container">
+            <h2>Best Fit For</h2>
+            <p class="best-fit-intro">I work with organizations navigating complex stakeholder environments where strategy, community engagement, and execution all matter.</p>
+            <div class="fit-grid">
+                <div class="fit-item">
+                    <div class="fit-icon">🏙️</div>
+                    <h4>Innovation Districts</h4>
+                    <p>Operationalize Smart City pilots by bridging research institutions, industry partners, and city government.</p>
+                </div>
+                <div class="fit-item">
+                    <div class="fit-icon">🚴</div>
+                    <h4>Urban Partnerships</h4>
+                    <p>Navigate controversial transportation and mobility projects through community approval with data and diplomacy.</p>
+                </div>
+                <div class="fit-item">
+                    <div class="fit-icon">🏗️</div>
+                    <h4>Real Estate Developers</h4>
+                    <p>Facilitate community engagement for major redevelopments, turning opposition into partnership.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>Let's Build Something That Matters</h2>
+            <p class="contact-subheadline">Ready to tackle a complex challenge? Let's discuss how we can accelerate your mission.</p>
+            
+            <div class="contact-container">
+                <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field"  action="/success.html" >
+                    <input type="hidden" name="form-name" value="contact">
+                    <p style="display: none;">
+                        <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                    </p>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="form-submit">Start the Conversation</button>
+                </form>
+                
+                <div class="alt-contact">
+                    <div class="contact-methods">
+                        <a href="RyanStockPMP@gmail.com" class="contact-method">📧 <span class="__cf_email__" data-cfemail="73210a121d20071c1018233e2333141e121a1f5d101c1e">&#160;<span class="__cf_email__" data-cfemail="4f1d362e211c3b202c241f021f0f28222e2623612c2022">[email&#160;protected]</span></span></a>
+                        <a href="tel:858-414-8819" class="contact-method">📱 858-414-8819</a>
+                        <a href="https://www.linkedin.com/in/ryan-stock-bb955555/" target="_blank" class="contact-method">💼 LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="work.html">Work</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="Ryan_Stock_Executive_Overview.pdf" download>One-Page Overview (PDF)</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Projects</h4>
+                    <ul>
+                        <li><a href="https://beautifulpb.com/" target="_blank">Beautiful PB</a></li>
+                        <li><a href="https://www.pbartscenter.org/" target="_blank">PB Arts Center</a></li>
+                        <li><a href="https://beautifulpb.com/pb-pathways/" target="_blank">PB Pathways</a></li>
+                        <li><a href="https://www.pbplanning.org/" target="_blank">PB Planning Group</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="RyanStockPMP@gmail.com">Email</a></li>
+                        <li><a href="https://www.linkedin.com/in/ryan-stock-bb955555/" target="_blank">LinkedIn</a></li>
+                        <li><a href="tel:858-414-8819">858-414

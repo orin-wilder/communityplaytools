@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gather Again</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .fade-in { animation: fi 0.25s ease; }
+    @keyframes fi { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .pop { animation: pop 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+    @keyframes pop { 0%{transform:scale(0.5);opacity:0} 100%{transform:scale(1);opacity:1} }
+    @keyframes floatUp {
+      0% { opacity:1; transform:translateY(0) scale(1); }
+      100% { opacity:0; transform:translateY(-120px) scale(0.5); }
+    }
+    .float-heart { animation: floatUp 1.8s ease-out forwards; position:absolute; pointer-events:none; }
+  </style>
+</head>
+<body class="bg-stone-50">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+    const { createClient } = supabase;
+
+    // ============================================================
+    // ⚙️  CONFIG
+    // ============================================================
+ const SUPABASE_URL      = 'https://cphnmkuwrwkpfpelzvbn.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwaG5ta3V3cndrcGZwZWx6dmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2ODA2MDAsImV4cCI6MjA4MDI1NjYwMH0.w2R55BcMbaL1PLyBWsy1GPnHeDx0RI8m3fRtc0t1nQ0';
+
+    // ============================================================
+
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const MERIT_BUDGET = 3;
+
+    const norm    = (p) => p.replace(/\D/g, '');
+    const fmtPh   = (p) => { const d=(p||'').replace(/\D/g,''); return d.length===10?`(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`:p||''; };
+    const ordinal = (n) => n===1?'1st':n===2?'2nd':n===3?'3rd':`${n}th`;
+    const fmtDateShort = (d) => d ? new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+
+    const getSession = (slug) => { try { return JSON.parse(localStorage.getItem(`ga_${slug}`)||'null'); } catch { return null; } };
+    const saveSession = (slug, data) => { localStorage.setItem(`ga_${slug}`, JSON.stringify(data)); };
+
+    // Merit window check: lobby OR closed within 48h
+    const isMeritOpen = (event) => {
+      if (event.status === 'lobby') return true;
+      if (event.status === 'closed' && event.closed_at) {
+        return new Date(event.closed_at).getTime() + 48*60*60*1000 > Date.now();
+      }
+      return false;
+    };
+
+    const meritTimeLeft = (event) => {
+      if (event.status === 'lobby') return null; // no countdown during lobby
+      if (!event.closed_at) return null;
+      const ms = new Date(event.closed_at).getTime() + 48*60*60*1000 - Date.now();
+      if (ms <= 0) return 'closed';
+      const h = Math.floor(ms / 3600000);
+      const m = Math.floor((ms % 3600000) / 60000);
+      if (h < 6) return `${h}h ${m}m`;
+      if (h < 24) return `${h} hours`;
+      return h < 48 ? 'tomorrow' : 'closed';
+    };
+
+    // ── Primitives ──────────────────────────────────────────────
+
+    const BigBtn = ({ children, onClick, disabled, secondary }) => (
+      <button onClick={onClick} disabled={disabled}
+        className={`w-full py-4 text-base font-semibold rounded-2xl transition focus:outline-none select-none ${
+          secondary ? 'bg-stone-100 text-stone-700 hover:bg-stone-200 disabled:opacity-50'
+            : 'bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-50 shadow-sm'
+        }`}>{children}</button>
+    );
+
+    const BackBtn = ({ onClick }) => (
+      <button onClick={onClick} className="text-stone-400 hover:text-stone-700 p-1 -ml-1">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+    );
+
+    const PageWrap = ({ children, gradient = false }) => (
+      <div className={`min-h-screen flex flex-col items-center justify-center p-5 ${gradient ? 'bg-gradient-to-b from-amber-50 to-stone-50' : 'bg-stone-50'}`}>
+        <div className="w-full max-w-sm">{children}</div>
+        <CPTBrand />
+      </div>
+    );
+
+    const CPTBrand = () => (
+      <div className="mt-8 mb-4">
+        <a href="https://communityplaytools.com" target="_blank" rel="noopener noreferrer"
+          className="text-xs text-stone-400 hover:text-stone-600 transition">
+          Powered by Community Play Tools
+        </a>
+      </div>
+    );
+
+    // ── Toast System ─────────────────────────────────────────
+    function ToastContainer({ toasts, onDismiss }) {
+      // Show max 3, batch the rest
+      const visible = toasts.slice(0, 3);
+      const overflow = toasts.length - 3;
+      return (
+        <div className="fixed top-4 left-4 right-4 z-50 flex flex-col items-center gap-2 pointer-events-none">
+          {visible.map(t => (
+            <div key={t.id} className="bg-stone-900 text-white px-4 py-2.5 rounded-xl text-sm shadow-lg fade-in pointer-events-auto flex items-center gap-3 max-w-sm w-full">
+              <span className="flex-1">{t.message}</span>
+              {t.action && (
+                <button onClick={() => { t.action.fn(); onDismiss(t.id); }}
+                  className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium px-3 py-1 rounded-lg flex-shrink-0">
+                  {t.action.label}
+                </button>
+              )}
+              <button onClick={() => onDismiss(t.id)} className="text-stone-400 hover:text-white flex-shrink-0">✕</button>
+            </div>
+          ))}
+          {overflow > 0 && (
+            <div className="bg-stone-800 text-stone-300 px-3 py-1.5 rounded-lg text-xs">
+              and {overflow} more notification{overflow > 1 ? 's' : ''}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function useToasts() {
+      const [toasts, setToasts] = useState([]);
+      const nextId = useRef(0);
+      const add = (message, action = null, duration = 4000) => {
+        const id = nextId.current++;
+        setToasts(prev => [...prev, { id, message, action }]);
+        if (!action) setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), duration);
+      };
+      const dismiss = (id) => setToasts(prev => prev.filter(t => t.id !== id));
+      return { toasts, add, dismiss };
+    }
+
+    // ── Floating Hearts ──────────────────────────────────────
+    function FloatingHearts({ hearts }) {
+      return (
+        <div className="fixed bottom-20 right-4 w-12 z-40 pointer-events-none">
+          {hearts.map(h => (
+            <span key={h.id} className="float-heart text-2xl"
+              style={{ left: `${Math.random()*20-10}px`, animationDelay: `${Math.random()*0.2}s` }}>
+              ❤️
+            </span>
+          ))}
+        </div>
+      );
+    }
+
+    // ── Phone Step ───────────────────────────────────────────────
+
+    function PhoneStep({ event, onSubmit, onSessionRecovered }) {
+      const [phone, setPhone] = useState('');
+      const [loading, setLoading] = useState(false);
+      const [err, setErr] = useState(null);
+      const [pinPrompt, setPinPrompt] = useState(null); // { member_name }
+      const [pin, setPin] = useState('');
+      const [pinErr, setPinErr] = useState(null);
+
+      const go = async () => {
+        const n = norm(phone);
+        if (n.length < 10) { setErr('Please enter a valid phone number.'); return; }
+        setLoading(true); setErr(null);
+        try {
+          // Check for existing session first
+          const { data: check } = await sb.rpc('check_existing_session', {
+            p_phone: n, p_event_id: event.id,
+          });
+
+          if (check?.exists) {
+            if (check.has_pin) {
+              // Need PIN verification
+              setPinPrompt({ member_name: check.member_name });
+              setLoading(false);
+              return;
+            }
+            // No PIN, recover session directly
+            onSessionRecovered({
+              member_id: check.member_id,
+              member_name: check.member_name,
+              attendance_id: check.attendance_id,
+              session_token: check.session_token,
+            });
+            return;
+          }
+
+          // New member — upsert and continue to profile
+          const { data: member, error: e } = await sb.from('ga_members')
+            .upsert({ phone: n }, { onConflict: 'phone' })
+            .select().single();
+          if (e) throw e;
+          onSubmit(member);
+        } catch (e) { setErr(e.message || 'Something went wrong.'); setLoading(false); }
+      };
+
+      const verifyPin = async () => {
+        const n = norm(phone);
+        setLoading(true); setPinErr(null);
+        const { data } = await sb.rpc('verify_member_pin', {
+          p_phone: n, p_event_id: event.id, p_pin: pin,
+        });
+        setLoading(false);
+        if (data?.error) { setPinErr(data.error); return; }
+        if (data?.success) {
+          onSessionRecovered({
+            member_id: data.member_id,
+            member_name: data.member_name,
+            attendance_id: data.attendance_id,
+            session_token: data.session_token,
+          });
+        }
+      };
+
+      const handleKey = (e) => { if (e.key === 'Enter') { pinPrompt ? verifyPin() : go(); } };
+
+      return (
+        <PageWrap gradient>
+          <div className="space-y-6 fade-in">
+            <div className="text-center">
+              <div className="text-5xl mb-3">🌀</div>
+              <h1 className="text-2xl font-bold text-stone-900">{event.title}</h1>
+              {event.location && <p className="text-stone-500 text-sm mt-1">📍 {event.location}</p>}
+              {event.description && <p className="text-stone-500 text-sm mt-2 leading-relaxed">{event.description}</p>}
+            </div>
+
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+              {!pinPrompt ? (
+                <>
+                  <p className="text-sm font-medium text-stone-700 text-center">Enter your phone number to check in</p>
+                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} onKeyDown={handleKey}
+                    placeholder="(555) 555-5555" autoFocus
+                    className="w-full px-4 py-3.5 text-xl border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-center tracking-wider" />
+                  {err && <p className="text-red-500 text-sm text-center">{err}</p>}
+                  <BigBtn onClick={go} disabled={loading || norm(phone).length < 10}>
+                    {loading ? 'One sec…' : 'Continue →'}
+                  </BigBtn>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-medium text-stone-700 text-center">
+                    Welcome back{pinPrompt.member_name ? `, ${pinPrompt.member_name.split(' ')[0]}` : ''}! Enter your PIN.
+                  </p>
+                  <input type="tel" value={pin} onChange={e => setPin(e.target.value.replace(/\D/g,'').slice(0,4))}
+                    onKeyDown={handleKey} placeholder="••••" autoFocus maxLength={4}
+                    className="w-full px-4 py-3.5 text-2xl border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-center tracking-[0.5em]" />
+                  {pinErr && <p className="text-red-500 text-sm text-center">{pinErr}</p>}
+                  <BigBtn onClick={verifyPin} disabled={loading || pin.length !== 4}>
+                    {loading ? 'Verifying…' : 'Unlock →'}
+                  </BigBtn>
+                  <button onClick={() => { setPinPrompt(null); setPin(''); setPinErr(null); }}
+                    className="text-sm text-stone-400 hover:text-stone-600 w-full text-center">← Different number</button>
+                </>
+              )}
+            </div>
+
+            <p className="text-xs text-stone-400 text-center">
+              Your number is only used to recognize you at this host's future events.
+            </p>
+          </div>
+        </PageWrap>
+      );
+    }
+
+    // ── Profile Step ─────────────────────────────────────────────
+
+    function ProfileStep({ event, member, onSubmit, onFull }) {
+      const [name, setName]     = useState(member.name || '');
+      const [answers, setAns]   = useState({});
+      const [optIn, setOptIn]   = useState(true);
+      const [loading, setLoad]  = useState(false);
+      const [err, setErr]       = useState(null);
+      const questions = event.custom_questions || [];
+
+      const go = async () => {
+        setLoad(true); setErr(null);
+        try {
+          if (name.trim()) await sb.from('ga_members').update({ name: name.trim() }).eq('id', member.id);
+          const filledAnswers = {};
+          Object.entries(answers).forEach(([k, v]) => { if (v?.trim()) filledAnswers[k] = v.trim(); });
+
+          const { data: att, error: ae } = await sb.from('ga_attendances')
+            .upsert({ event_id: event.id, member_id: member.id, answers: filledAnswers,
+              opt_in_preview: optIn && event.room_preview_enabled,
+            }, { onConflict: 'event_id,member_id' }).select().single();
+          if (ae) throw ae;
+
+          // v2: resolve check-in (upsert host_member, find package, check capacity)
+          const { data: resolved } = await sb.rpc('resolve_check_in', {
+            p_member_id: member.id, p_event_id: event.id, p_host_id: event.host_id,
+          });
+
+          if (resolved?.error === 'session_full') {
+            onFull();
+            return;
+          }
+
+          const { data: count } = await sb.rpc('get_return_count', {
+            p_member_id: member.id, p_host_id: event.host_id, p_current_event_id: event.id,
+          });
+          onSubmit(att, name.trim() || member.name || null, count || 0, resolved);
+        } catch (e) { setErr(e.message || 'Something went wrong.'); setLoad(false); }
+      };
+
+      return (
+        <PageWrap gradient>
+          <div className="space-y-5 fade-in">
+            <div className="text-center">
+              <h1 className="text-xl font-bold text-stone-900">{event.title}</h1>
+              <p className="text-stone-500 text-sm mt-1">Almost there! Everything below is optional.</p>
+            </div>
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Your name <span className="text-stone-400 font-normal">(optional)</span></label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="How should we call you?"
+                  className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+              </div>
+              {questions.map(q => (
+                <div key={q.id}>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">{q.question} <span className="text-stone-400 font-normal">(optional)</span></label>
+                  <input type="text" value={answers[q.id] || ''} onChange={e => setAns({...answers, [q.id]: e.target.value})}
+                    placeholder="Your answer…"
+                    className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                </div>
+              ))}
+              {event.room_preview_enabled && (
+                <label className="flex items-start gap-3 cursor-pointer pt-1">
+                  <input type="checkbox" checked={optIn} onChange={e => setOptIn(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-stone-300 text-amber-500 accent-amber-500" />
+                  <span className="text-sm text-stone-600 leading-snug">Show my name in the room preview</span>
+                </label>
+              )}
+              {err && <p className="text-red-500 text-sm">{err}</p>}
+              <BigBtn onClick={go} disabled={loading}>{loading ? 'Checking in…' : "I'm in! ✓"}</BigBtn>
+            </div>
+          </div>
+        </PageWrap>
+      );
+    }
+
+    // ── Session Card (v2 — cycle usage) ─────────────────────────
+
+    const BadgeSm = ({ children, color = 'stone' }) => {
+      const c = { stone:'bg-stone-100 text-stone-600', green:'bg-green-100 text-green-700', red:'bg-red-100 text-red-700', yellow:'bg-yellow-100 text-yellow-700' };
+      return <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${c[color]||c.stone}`}>{children}</span>;
+    };
+
+    function SessionCard({ cycleData, totalAttendance }) {
+      if (!cycleData?.has_package) {
+        return totalAttendance > 1 ? (
+          <div className="bg-white border border-stone-200 rounded-2xl p-4 text-center">
+            <div className="text-sm text-stone-500">Drop-in visit · <strong className="text-stone-700">{totalAttendance}</strong> total visits</div>
+          </div>
+        ) : null;
+      }
+      const { package_name, session_limit, sessions_used, sessions_remaining, cycle_end } = cycleData;
+      const color = session_limit == null ? 'green' : sessions_remaining <= 0 ? 'red' : sessions_remaining <= 2 ? 'yellow' : 'green';
+      const barColor = color === 'red' ? 'bg-red-500' : color === 'yellow' ? 'bg-yellow-500' : 'bg-green-500';
+      return (
+        <div className={`bg-white border rounded-2xl p-4 space-y-2 ${color === 'red' ? 'border-red-200' : color === 'yellow' ? 'border-yellow-200' : 'border-stone-200'}`}>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-stone-700">{package_name}</span>
+            <BadgeSm color={color}>{sessions_used}/{session_limit || '∞'} used</BadgeSm>
+          </div>
+          {session_limit && (
+            <div className="w-full bg-stone-100 rounded-full h-2">
+              <div className={`h-2 rounded-full transition-all ${barColor}`}
+                style={{ width: `${Math.min((sessions_used / session_limit) * 100, 100)}%` }} />
+            </div>
+          )}
+          {cycle_end && <p className="text-xs text-stone-400">Resets {fmtDateShort(cycle_end)}</p>}
+        </div>
+      );
+    }
+
+    // ── My History (v2) ─────────────────────────────────────────
+
+    function MyHistory({ event, memberId, onBack }) {
+      const [history, setHistory] = useState(null);
+      useEffect(() => {
+        sb.rpc('get_member_history', { p_member_id: memberId, p_host_id: event.host_id })
+          .then(({ data }) => setHistory(data));
+      }, [memberId, event.host_id]);
+      return (
+        <div className="min-h-screen bg-stone-50">
+          <header className="bg-white border-b border-stone-200 px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+            <BackBtn onClick={onBack} />
+            <div><h1 className="font-semibold text-stone-900">My History</h1><p className="text-xs text-stone-500">{event.title}</p></div>
+          </header>
+          <div className="max-w-sm mx-auto px-4 py-6 space-y-5 fade-in">
+            {!history ? <div className="text-center py-12 text-stone-400">Loading…</div> : (
+              <>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white border border-stone-200 rounded-2xl p-4 text-center">
+                    <div className="text-2xl font-bold text-stone-900">{history.total_attendance}</div>
+                    <div className="text-xs text-stone-500">Total sessions</div>
+                  </div>
+                  <div className="bg-white border border-stone-200 rounded-2xl p-4 text-center">
+                    <div className="text-2xl font-bold text-stone-900">{fmtDateShort(history.first_attended_at)}</div>
+                    <div className="text-xs text-stone-500">Member since</div>
+                  </div>
+                </div>
+                {history.cycle?.has_package && <SessionCard cycleData={history.cycle} totalAttendance={history.total_attendance} />}
+                <div className="bg-white border border-stone-200 rounded-2xl p-4">
+                  <h3 className="font-semibold text-stone-900 mb-3">Past Sessions</h3>
+                  {(history.history || []).length === 0 ? (
+                    <p className="text-sm text-stone-500">No sessions recorded yet.</p>
+                  ) : (
+                    <div className="space-y-2 max-h-80 overflow-y-auto">
+                      {(history.history || []).map((h, i) => (
+                        <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-stone-50 last:border-0">
+                          <div className="flex-1 min-w-0">
+                            <span className="text-stone-700">{h.event_title}</span>
+                            {h.series_title && <span className="text-stone-400 text-xs ml-1">({h.series_title})</span>}
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            {h.is_drop_in && <BadgeSm color="stone">Drop-in</BadgeSm>}
+                            <span className="text-xs text-stone-500">{fmtDateShort(h.event_date || h.checked_in_at)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+          <div className="flex justify-center"><CPTBrand /></div>
+        </div>
+      );
+    }
+
+    // ── Confirmation ─────────────────────────────────────────────
+
+    function Confirmation({ event, name, returnCount, cycleData, totalAttendance, onPreview, onLobby, onEditProfile, onHistory }) {
+      const isReturning = returnCount > 0;
+      const visitNum = returnCount + 1;
+
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-green-50 to-stone-50 flex flex-col items-center justify-center p-5">
+          <div className="w-full max-w-sm space-y-5 text-center fade-in">
+            <div className="pop inline-block text-6xl mt-2">{isReturning ? '🎉' : '✅'}</div>
+            <div>
+              <h1 className="text-2xl font-bold text-stone-900 mb-2">
+                {name ? `You're in, ${name.split(' ')[0]}!` : "You're in!"}
+              </h1>
+              {isReturning ? (
+                <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium">
+                  ⭐ Welcome back — your {ordinal(visitNum)} time with us!
+                </div>
+              ) : (
+                <p className="text-stone-500 text-sm">Welcome! You're all set for {event.title}.</p>
+              )}
+            </div>
+            <SessionCard cycleData={cycleData} totalAttendance={totalAttendance} />
+            <div className="space-y-3 text-left">
+              {event.room_preview_enabled && (
+                <button onClick={onPreview} className="w-full bg-white border border-stone-200 rounded-2xl p-4 hover:border-amber-300 transition-colors text-left shadow-sm">
+                  <div className="font-semibold text-stone-900 mb-0.5">👥 See who's coming</div>
+                  <div className="text-sm text-stone-500">Browse the room preview</div>
+                </button>
+              )}
+              {(event.status === 'lobby' || (event.status === 'closed' && isMeritOpen(event))) && (
+                <button onClick={onLobby} className="w-full bg-white border border-purple-200 rounded-2xl p-4 hover:border-purple-400 transition-colors text-left shadow-sm">
+                  <div className="font-semibold text-stone-900 mb-0.5">⭐ Post-event lobby is open</div>
+                  <div className="text-sm text-stone-500">Give merit to people who made this great</div>
+                </button>
+              )}
+              <button onClick={onHistory} className="w-full bg-white border border-stone-200 rounded-2xl p-4 hover:border-amber-300 transition-colors text-left shadow-sm">
+                <div className="font-semibold text-stone-900 mb-0.5">📋 My attendance history</div>
+                <div className="text-sm text-stone-500">See your past sessions with this host</div>
+              </button>
+              <button onClick={onEditProfile} className="w-full bg-white border border-stone-200 rounded-2xl p-4 hover:border-stone-300 transition-colors text-left shadow-sm">
+                <div className="font-semibold text-stone-900 mb-0.5">✏️ Edit your profile</div>
+                <div className="text-sm text-stone-500">Update name, answers, or set a PIN</div>
+              </button>
+            </div>
+            {event.lobby_duration_hours > 0 && event.status === 'active' && (
+              <p className="text-xs text-stone-400 px-2">A lobby will open after the event where you can recognize others.</p>
+            )}
+          </div>
+          <CPTBrand />
+        </div>
+      );
+    }
+
+    // ── Edit Profile ─────────────────────────────────────────────
+
+    function EditProfile({ event, session, member, onBack, onUpdate }) {
+      const [name, setName]       = useState('');
+      const [answers, setAns]     = useState({});
+      const [optIn, setOptIn]     = useState(true);
+      const [hasPin, setHasPin]   = useState(false);
+      const [saving, setSaving]   = useState(false);
+      const [saved, setSaved]     = useState(false);
+      const [pinVal, setPinVal]   = useState('');
+      const [pinConfirm, setPinConfirm] = useState('');
+      const [pinSaving, setPinSaving]   = useState(false);
+      const [pinMsg, setPinMsg]   = useState(null);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        (async () => {
+          const { data: m } = await sb.from('ga_members').select('name').eq('id', member.id).single();
+          const { data: att } = await sb.from('ga_attendances').select('answers, opt_in_preview')
+            .eq('id', session.attendance_id).single();
+          if (m) { setName(m.name || ''); }
+          if (att) { setAns(att.answers || {}); setOptIn(att.opt_in_preview); }
+          // Check PIN existence without exposing hash
+          const { data: pinCheck } = await sb.rpc('check_has_pin', { p_member_id: member.id });
+          if (pinCheck?.has_pin) setHasPin(true);
+          setLoading(false);
+        })();
+      }, []);
+
+      const saveProfile = async () => {
+        setSaving(true);
+        const filledAnswers = {};
+        Object.entries(answers).forEach(([k, v]) => { if (v?.trim()) filledAnswers[k] = v.trim(); });
+        await sb.from('ga_members').update({ name: name.trim() || null }).eq('id', member.id);
+        await sb.from('ga_attendances').update({ answers: filledAnswers, opt_in_preview: optIn })
+          .eq('id', session.attendance_id);
+        setSaving(false); setSaved(true);
+        onUpdate(name.trim());
+        setTimeout(() => setSaved(false), 2000);
+      };
+
+      const savePin = async () => {
+        if (pinVal.length !== 4) { setPinMsg('PIN must be 4 digits'); return; }
+        if (pinVal !== pinConfirm) { setPinMsg('PINs do not match'); return; }
+        setPinSaving(true); setPinMsg(null);
+        const { data } = await sb.rpc('set_member_pin', { p_member_id: member.id, p_pin: pinVal, p_session_token: session.session_token });
+        setPinSaving(false);
+        if (data?.error) { setPinMsg(data.error); return; }
+        setHasPin(true); setPinMsg('PIN saved ✓'); setPinVal(''); setPinConfirm('');
+      };
+
+      const questions = event.custom_questions || [];
+
+      if (loading) return <div className="min-h-screen bg-stone-50 flex items-center justify-center"><div className="text-stone-400 text-sm">Loading…</div></div>;
+
+      return (
+        <div className="min-h-screen bg-stone-50">
+          <header className="bg-white border-b border-stone-200 px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+            <BackBtn onClick={onBack} />
+            <h1 className="font-semibold text-stone-900">Edit Profile</h1>
+          </header>
+          <div className="max-w-sm mx-auto px-4 py-6 space-y-4 fade-in">
+            <div className="bg-white rounded-2xl border border-stone-200 p-5 space-y-4 shadow-sm">
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Your name</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+              </div>
+              {questions.map(q => (
+                <div key={q.id}>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">{q.question}</label>
+                  <input type="text" value={answers[q.id] || ''} onChange={e => setAns({...answers, [q.id]: e.target.value})}
+                    className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                </div>
+              ))}
+              {event.room_preview_enabled && (
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" checked={optIn} onChange={e => setOptIn(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-stone-300 accent-amber-500" />
+                  <span className="text-sm text-stone-600">Show me in room preview</span>
+                </label>
+              )}
+              <BigBtn onClick={saveProfile} disabled={saving}>
+                {saved ? '✓ Saved' : saving ? 'Saving…' : 'Save Changes'}
+              </BigBtn>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-stone-200 p-5 space-y-4 shadow-sm">
+              <div>
+                <h3 className="font-semibold text-stone-900">{hasPin ? 'Change PIN' : 'Set a PIN'}</h3>
+                <p className="text-xs text-stone-500 mt-0.5">Optional. Protects your phone number from casual impersonation.</p>
+              </div>
+              <input type="tel" value={pinVal} onChange={e => setPinVal(e.target.value.replace(/\D/g,'').slice(0,4))}
+                placeholder="4-digit PIN" maxLength={4}
+                className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm text-center tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-amber-400" />
+              <input type="tel" value={pinConfirm} onChange={e => setPinConfirm(e.target.value.replace(/\D/g,'').slice(0,4))}
+                placeholder="Confirm PIN" maxLength={4}
+                className="w-full px-4 py-2.5 border border-stone-300 rounded-xl text-sm text-center tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-amber-400" />
+              {pinMsg && <p className={`text-sm text-center ${pinMsg.includes('✓') ? 'text-green-600' : 'text-red-500'}`}>{pinMsg}</p>}
+              <BigBtn secondary onClick={savePin} disabled={pinSaving || pinVal.length!==4}>
+                {pinSaving ? 'Saving…' : hasPin ? 'Update PIN' : 'Set PIN'}
+              </BigBtn>
+            </div>
+          </div>
+          <div className="flex justify-center"><CPTBrand /></div>
+        </div>
+      );
+    }
+
+    // ── Room Preview ─────────────────────────────────────────────
+
+    function RoomPreview({ event, myMemberId, onBack }) {
+      const [list, setList] = useState([]);
+      const [loading, setLoad] = useState(true);
+
+      useEffect(() => {
+        sb.from('ga_attendances')
+          .select('id, answers, opt_in_preview, merit_received, members:ga_members(id, name)')
+          .eq('event_id', event.id).eq('opt_in_preview', true).order('created_at')
+          .then(({ data }) => { setList(data || []); setLoad(false); });
+      }, [event.id]);
+
+      const questions = event.custom_questions || [];
+
+      return (
+        <div className="min-h-screen bg-stone-50">
+          <header className="bg-white border-b border-stone-200 px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+            <BackBtn onClick={onBack} />
+            <div><h1 className="font-semibold text-stone-900">Who's Coming</h1><p className="text-xs text-stone-500">{event.title}</p></div>
+          </header>
+          <div className="max-w-lg mx-auto px-4 py-4 space-y-3 fade-in">
+            {loading ? <div className="text-center py-16 text-stone-400">Loading…</div>
+            : list.length === 0 ? (
+              <div className="text-center py-16"><div className="text-4xl mb-3">🌱</div><p className="text-stone-500 text-sm">No one has opted in yet.</p></div>
+            ) : (
+              <>
+                <p className="text-sm text-stone-500">{list.length} attendee{list.length!==1?'s':''} opted in</p>
+                {list.map(a => {
+                  const isMe = a.members?.id === myMemberId;
+                  return (
+                    <div key={a.id} className={`rounded-2xl border p-4 ${isMe ? 'bg-amber-50 border-amber-200' : 'bg-white border-stone-200'}`}>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-stone-900">
+                            {a.members?.name || 'Anonymous'}
+                            {isMe && <span className="text-amber-600 text-xs font-normal ml-1.5">(you)</span>}
+                          </div>
+                          {questions.map(q => a.answers?.[q.id] ? (
+                            <div key={q.id} className="text-sm text-stone-600 mt-1"><span className="text-stone-400">{q.question}:</span> {a.answers[q.id]}</div>
+                          ) : null)}
+                        </div>
+                        {a.merit_received > 0 && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full flex-shrink-0">⭐ {a.merit_received}</span>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+          <div className="flex justify-center"><CPTBrand /></div>
+        </div>
+      );
+    }
+
+    // ── Post-Game Lobby ──────────────────────────────────────────
+
+    function Lobby({ event, session, myMemberId, onBack }) {
+      const [list, setList]         = useState([]);
+      const [loading, setLoad]      = useState(true);
+      const [given, setGiven]       = useState({});
+      const [meritsUsed, setUsed]   = useState(0);
+      const [working, setWorking]   = useState(null);
+      const [openFor, setOpenFor]   = useState(null);
+      const [reason, setReason]     = useState('');
+      const [err, setErr]           = useState(null);
+      const [flash, setFlash]       = useState(null);
+      const [waved, setWaved]       = useState({});
+      const [heartCount, setHeartCount] = useState(event.lobby_hearts || 0);
+      const [floatingHearts, setFloating] = useState([]);
+      const heartBuf = useRef(0);
+      const heartTimer = useRef(null);
+      const nextHeartId = useRef(0);
+      const listRef = useRef([]);
+      const wavedRef = useRef({});
+      const { toasts, add: addToast, dismiss: dismissToast } = useToasts();
+
+      const remaining = MERIT_BUDGET - meritsUsed;
+      const meritOpen = isMeritOpen(event);
+      const timeLeft = meritTimeLeft(event);
+
+      // Load data
+      useEffect(() => {
+        if (!session) return;
+        sb.from('ga_attendances')
+          .select('id, merit_received, members:ga_members(id, name)')
+          .eq('event_id', event.id).order('merit_received', { ascending: false })
+          .then(({ data }) => { const d = data || []; setList(d); listRef.current = d; setLoad(false); });
+
+        sb.from('ga_merit_transactions')
+          .select('to_attendance_id, reason')
+          .eq('event_id', event.id).eq('from_attendance_id', session.attendance_id)
+          .then(({ data }) => {
+            if (data) { setUsed(data.length); const g = {}; data.forEach(t => { g[t.to_attendance_id] = t.reason || true; }); setGiven(g); }
+          });
+
+        sb.from('ga_waves')
+          .select('to_attendance_id')
+          .eq('event_id', event.id).eq('from_attendance_id', session.attendance_id)
+          .then(({ data }) => {
+            if (data) { const w = {}; data.forEach(d => { w[d.to_attendance_id] = true; }); setWaved(w); wavedRef.current = w; }
+          });
+      }, [session, event.id]);
+
+      // Realtime: merit received toast
+      useEffect(() => {
+        if (!session) return;
+        const ch = sb.channel(`my-merit-${session.attendance_id}`)
+          .on('postgres_changes',
+            { event: 'UPDATE', schema: 'public', table: 'ga_attendances', filter: `id=eq.${session.attendance_id}` },
+            (payload) => {
+              if (payload.new.merit_received > (payload.old?.merit_received || 0)) {
+                addToast('Someone just recognized you! ⭐');
+              }
+            }
+          ).subscribe();
+        return () => sb.removeChannel(ch);
+      }, [session]);
+
+      // Realtime: wave notifications (uses refs to avoid re-subscribing on every list/waved change)
+      useEffect(() => {
+        if (!session) return;
+        const ch = sb.channel(`my-waves-${session.attendance_id}`)
+          .on('postgres_changes',
+            { event: 'INSERT', schema: 'public', table: 'ga_waves', filter: `to_attendance_id=eq.${session.attendance_id}` },
+            (payload) => {
+              const fromId = payload.new.from_attendance_id;
+              const sender = listRef.current.find(a => a.id === fromId);
+              const senderName = sender?.members?.name || 'Someone';
+              const alreadyWavedBack = wavedRef.current[fromId];
+              addToast(
+                `👋 ${senderName} waved at you!`,
+                alreadyWavedBack ? null : { label: 'Wave back 👋', fn: () => sendWave(fromId) }
+              );
+            }
+          ).subscribe();
+        return () => sb.removeChannel(ch);
+      }, [session]);
+
+      // Realtime: heart count
+      useEffect(() => {
+        const ch = sb.channel(`hearts-${event.id}`)
+          .on('postgres_changes',
+            { event: 'UPDATE', schema: 'public', table: 'ga_events', filter: `id=eq.${event.id}` },
+            (payload) => { if (payload.new.lobby_hearts !== undefined) setHeartCount(payload.new.lobby_hearts); }
+          ).subscribe();
+        return () => sb.removeChannel(ch);
+      }, [event.id]);
+
+      const tapHeart = () => {
+        heartBuf.current++;
+        // Floating animation
+        setFloating(prev => [...prev, { id: nextHeartId.current++ }]);
+        setTimeout(() => setFloating(prev => prev.slice(1)), 2000);
+
+        if (heartTimer.current) clearTimeout(heartTimer.current);
+        heartTimer.current = setTimeout(async () => {
+          const count = heartBuf.current;
+          heartBuf.current = 0;
+          await sb.rpc('add_lobby_hearts', { p_event_id: event.id, p_count: Math.min(count, 50) });
+        }, 500);
+      };
+
+      const sendWave = async (toId) => {
+        if (waved[toId]) return;
+        const { data } = await sb.rpc('send_wave', {
+          p_event_id: event.id, p_from_id: session.attendance_id,
+          p_to_id: toId, p_session_token: session.session_token,
+        });
+        if (data?.success) { setWaved(prev => { const next = { ...prev, [toId]: true }; wavedRef.current = next; return next; }); }
+      };
+
+      const giveMerit = async (toId) => {
+        if (remaining <= 0 || given[toId] || working) return;
+        setWorking(toId); setErr(null);
+        const { data, error: e } = await sb.rpc('give_merit', {
+          p_event_id: event.id, p_from_id: session.attendance_id,
+          p_to_id: toId, p_reason: reason.trim() || null, p_session_token: session.session_token,
+        });
+        setWorking(null);
+        if (e || data?.error) { setErr(data?.error || e?.message || 'Error'); return; }
+        setGiven(prev => ({ ...prev, [toId]: reason.trim() || true }));
+        setUsed(u => u + 1); setOpenFor(null); setReason('');
+        setList(prev => prev.map(a => a.id === toId ? { ...a, merit_received: (a.merit_received||0)+1 } : a));
+        setFlash(toId); setTimeout(() => setFlash(null), 1500);
+      };
+
+      if (!session) return (
+        <div className="min-h-screen bg-stone-50 flex flex-col items-center justify-center p-5 text-center">
+          <div className="text-4xl mb-3">🔒</div>
+          <h2 className="font-semibold text-stone-900 mb-1">Check in first</h2>
+          <p className="text-stone-500 text-sm mb-4">Use the event link to check in.</p>
+          <button onClick={onBack} className="text-amber-600 text-sm hover:underline">← Go back</button>
+        </div>
+      );
+
+      const others = list.filter(a => a.members?.id !== myMemberId);
+      const me = list.find(a => a.members?.id === myMemberId);
+
+      return (
+        <div className="min-h-screen bg-stone-50">
+          <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+          <FloatingHearts hearts={floatingHearts} />
+
+          <header className="bg-white border-b border-stone-200 sticky top-0 z-10">
+            <div className="px-4 py-3 flex items-center gap-3">
+              <BackBtn onClick={onBack} />
+              <div className="flex-1">
+                <h1 className="font-semibold text-stone-900">Post-event Lobby</h1>
+                <p className="text-xs text-stone-500">
+                  {timeLeft === 'closed' ? 'Merit window closed' :
+                   timeLeft ? `Merit closes in ${timeLeft}` : 'Recognize people who made this great'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-stone-500">{heartCount} ❤️</span>
+                <button onClick={tapHeart}
+                  className="bg-red-50 hover:bg-red-100 text-red-500 w-10 h-10 rounded-full flex items-center justify-center text-lg transition active:scale-125 cursor-pointer">
+                  ❤️
+                </button>
+              </div>
+            </div>
+
+            {meritOpen && (
+              <div className="px-4 pb-3 flex items-center justify-between">
+                <span className="text-sm text-stone-500">Merit budget</span>
+                <div className="flex items-center gap-1.5">
+                  {Array.from({ length: MERIT_BUDGET }).map((_, i) => (
+                    <div key={i} className={`w-5 h-5 rounded-full transition-colors ${i < remaining ? 'bg-amber-400' : 'bg-stone-200'}`} />
+                  ))}
+                  <span className="text-sm text-stone-500 ml-1">{remaining}/{MERIT_BUDGET}</span>
+                </div>
+              </div>
+            )}
+          </header>
+
+          <div className="max-w-lg mx-auto px-4 py-4 space-y-3 fade-in">
+            {err && <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-700 text-sm">{err}</div>}
+
+            {/* My profile card */}
+            {me && (
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium text-stone-900">{me.members?.name || 'You'} <span className="text-amber-600 text-xs">(you)</span></div>
+                    {me.merit_received > 0 && <div className="text-xs text-purple-600 mt-0.5">⭐ {me.merit_received} merit received</div>}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {loading ? <div className="text-center py-16 text-stone-400">Loading…</div>
+            : others.length === 0 ? (
+              <div className="text-center py-16"><div className="text-4xl mb-3">🙈</div><p className="text-stone-500 text-sm">No other attendees yet.</p></div>
+            ) : (
+              <>
+                {meritOpen && <p className="text-sm text-stone-500 px-1">
+                  {remaining > 0 ? `You have ${remaining} merit${remaining!==1?'s':''} to give.` : 'All merit used.'}
+                </p>}
+                {others.map(a => {
+                  const alreadyGiven = !!given[a.id];
+                  const isOpen = openFor === a.id;
+                  const isBusy = working === a.id;
+                  const isFlashing = flash === a.id;
+                  const alreadyWaved = !!waved[a.id];
+
+                  return (
+                    <div key={a.id} className={`rounded-2xl border p-4 transition-all ${
+                      isFlashing ? 'bg-green-50 border-green-300' :
+                      alreadyGiven ? 'bg-stone-50 border-stone-200' :
+                      isOpen ? 'bg-white border-amber-300 shadow-sm' : 'bg-white border-stone-200'
+                    }`}>
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-stone-900">{a.members?.name || 'Anonymous'}</div>
+                          {a.merit_received > 0 && <div className="text-xs text-purple-600 mt-0.5">⭐ {a.merit_received} merit</div>}
+                          {alreadyGiven && typeof given[a.id] === 'string' && (
+                            <div className="text-xs text-stone-400 mt-0.5 italic">You: "{given[a.id]}"</div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {/* Wave button */}
+                          <button onClick={() => sendWave(a.id)} disabled={alreadyWaved}
+                            className={`w-9 h-9 rounded-full flex items-center justify-center text-sm transition ${
+                              alreadyWaved ? 'bg-stone-100 text-stone-400' : 'bg-blue-50 hover:bg-blue-100 text-blue-600'
+                            }`}
+                            title={alreadyWaved ? 'Waved' : 'Wave'}>
+                            👋
+                          </button>
+                          {/* Merit button */}
+                          {meritOpen && (alreadyGiven ? (
+                            <span className="text-green-600 text-sm font-medium">✓</span>
+                          ) : remaining > 0 ? (
+                            <button onClick={() => { setOpenFor(isOpen ? null : a.id); setReason(''); }}
+                              className="bg-amber-100 hover:bg-amber-200 text-amber-800 text-sm font-medium px-3 py-1.5 rounded-xl transition">
+                              Give ⭐
+                            </button>
+                          ) : null)}
+                        </div>
+                      </div>
+                      {isOpen && (
+                        <div className="mt-3 space-y-2 fade-in">
+                          <input value={reason} onChange={e => setReason(e.target.value)} autoFocus
+                            placeholder="Why? (optional)" className="w-full px-3 py-2 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                          <div className="flex items-center justify-between">
+                            <button onClick={() => { setOpenFor(null); setReason(''); }} className="text-sm text-stone-400 hover:text-stone-600">Cancel</button>
+                            <button onClick={() => giveMerit(a.id)} disabled={isBusy}
+                              className="bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-sm font-medium px-5 py-1.5 rounded-xl transition">
+                              {isBusy ? '…' : 'Send ⭐'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+          <div className="flex justify-center pb-4"><CPTBrand /></div>
+        </div>
+      );
+    }
+
+    // ── Error / Closed screens ───────────────────────────────────
+
+    const ErrorScreen = ({ emoji, title, message }) => (
+      <div className="min-h-screen bg-stone-50 flex flex-col items-center justify-center p-6 text-center">
+        <div className="text-5xl mb-4">{emoji}</div>
+        <h1 className="text-xl font-bold text-stone-900 mb-2">{title}</h1>
+        {message && <p className="text-stone-500 text-sm max-w-xs">{message}</p>}
+        <CPTBrand />
+      </div>
+    );
+
+    // ── Main Attend App ──────────────────────────────────────────
+
+    function AttendApp() {
+      const [view, setView]       = useState('loading');
+      const [event, setEvent]     = useState(null);
+      const [member, setMember]   = useState(null);
+      const [session, setSession] = useState(null);
+      const [name, setName]       = useState(null);
+      const [returnCount, setRC]  = useState(0);
+      const [loadErr, setLoadErr] = useState(null);
+      const [cycleData, setCycleData] = useState(null);
+
+      const slug = new URLSearchParams(window.location.search).get('e');
+
+      useEffect(() => {
+        if (!slug) { setLoadErr('No event specified in URL.'); setView('error'); return; }
+        sb.from('ga_events').select('*').eq('slug', slug).single()
+          .then(({ data: ev, error: e }) => {
+            if (e || !ev) { setLoadErr('Event not found.'); setView('error'); return; }
+            setEvent(ev);
+            const existing = getSession(slug);
+            if (existing) {
+              setSession(existing); setMember({ id: existing.member_id });
+              // Load cycle data for returning session (includes total_attendance)
+              sb.rpc('get_member_cycle_usage', { p_member_id: existing.member_id, p_host_id: ev.host_id })
+                .then(({ data }) => { if (data) setCycleData(data); })
+                .catch(() => {}); // graceful fallback if RPC doesn't exist yet (Bug 6)
+              if (ev.status === 'lobby' || (ev.status === 'closed' && isMeritOpen(ev))) { setView('lobby'); return; }
+              if (ev.status === 'closed') { setView('closed'); return; }
+              setView('confirmed');
+            } else {
+              if (ev.status === 'closed' && !isMeritOpen(ev)) { setView('closed'); return; }
+              setView('phone');
+            }
+          });
+      }, [slug]);
+
+      // Realtime event status
+      useEffect(() => {
+        if (!event?.id) return;
+        const channel = sb.channel(`evt-status-${event.id}`)
+          .on('postgres_changes',
+            { event: 'UPDATE', schema: 'public', table: 'ga_events', filter: `id=eq.${event.id}` },
+            (payload) => {
+              const updated = payload.new;
+              setEvent(prev => {
+                const merged = { ...prev, ...updated };
+                setView(v => {
+                  if (merged.status === 'lobby' && v === 'confirmed') return 'lobby';
+                  if (merged.status === 'closed' && !isMeritOpen(merged) && (v === 'confirmed' || v === 'lobby')) return 'closed';
+                  return v;
+                });
+                return merged;
+              });
+            }
+          ).subscribe();
+        return () => sb.removeChannel(channel);
+      }, [event?.id]);
+
+      const handlePhoneDone = (m) => { setMember(m); setView('profile'); };
+
+      const handleSessionRecovered = (data) => {
+        const sess = { attendance_id: data.attendance_id, session_token: data.session_token,
+          member_id: data.member_id, event_slug: slug };
+        setSession(sess); saveSession(slug, sess);
+        setMember({ id: data.member_id }); setName(data.member_name);
+        // Load cycle data (includes total_attendance — fixes Bug 3)
+        if (event) {
+          sb.rpc('get_member_cycle_usage', { p_member_id: data.member_id, p_host_id: event.host_id })
+            .then(({ data: cd }) => { if (cd) setCycleData(cd); })
+            .catch(() => {});
+        }
+        if (event.status === 'lobby' || (event.status === 'closed' && isMeritOpen(event))) { setView('lobby'); }
+        else { setView('confirmed'); }
+      };
+
+      const handleProfileDone = (att, displayName, count, resolved) => {
+        const sess = { attendance_id: att.id, session_token: att.session_token,
+          member_id: member.id, event_slug: slug };
+        setSession(sess); saveSession(slug, sess);
+        setName(displayName); setRC(count);
+        // v2: fetch full cycle data (includes total_attendance — single source of truth)
+        sb.rpc('get_member_cycle_usage', { p_member_id: member.id, p_host_id: event.host_id })
+          .then(({ data }) => { if (data) setCycleData(data); })
+          .catch(() => {}); // graceful fallback if RPC doesn't exist yet (Bug 6)
+        setView('confirmed');
+      };
+
+      // Derive totalAttendance from cycleData (fixes Bugs 3+4)
+      const totalAttendance = cycleData?.total_attendance || 0;
+
+      if (view === 'loading') return <div className="min-h-screen bg-stone-50 flex items-center justify-center"><div className="text-stone-400 text-sm">Loading event…</div></div>;
+      if (view === 'error') return <ErrorScreen emoji="🤔" title="Hmm, that's odd." message={loadErr} />;
+      if (view === 'closed') return <ErrorScreen emoji="🔒" title={event?.title || 'Event Closed'} message="This event has ended." />;
+      if (view === 'full') return <ErrorScreen emoji="😮" title="Session Full" message="This session has reached capacity. Check back next time!" />;
+      if (view === 'phone') return <PhoneStep event={event} onSubmit={handlePhoneDone} onSessionRecovered={handleSessionRecovered} />;
+      if (view === 'profile') return <ProfileStep event={event} member={member} onSubmit={handleProfileDone} onFull={() => setView('full')} />;
+      if (view === 'confirmed') return (
+        <Confirmation event={event} name={name} returnCount={returnCount}
+          cycleData={cycleData} totalAttendance={totalAttendance}
+          onPreview={() => setView('preview')} onLobby={() => setView('lobby')}
+          onEditProfile={() => setView('editProfile')} onHistory={() => setView('history')} />
+      );
+      if (view === 'history' && member?.id) return <MyHistory event={event} memberId={member.id} onBack={() => setView('confirmed')} />;
+      if (view === 'editProfile') return (
+        <EditProfile event={event} session={session} member={member}
+          onBack={() => setView('confirmed')} onUpdate={(n) => { if (n) setName(n); }} />
+      );
+      if (view === 'preview') return <RoomPreview event={event} myMemberId={member?.id} onBack={() => setView('confirmed')} />;
+      if (view === 'lobby') return <Lobby event={event} session={session} myMemberId={member?.id} onBack={() => setView('confirmed')} />;
+      return null;
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<AttendApp />);
+  </script>
+</body>
+</html>

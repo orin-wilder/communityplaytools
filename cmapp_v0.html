@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f5f0e8" />
+  <title>Community Merit</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏘️</text></svg>">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html, #root {
+      font-family: 'DM Sans', sans-serif;
+      background: #f5f0e8;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+    .serif { font-family: 'DM Serif Display', serif; }
+    .app { max-width: 520px; margin: 0 auto; padding: 16px; min-height: 100vh; }
+    .card { background: #ffffff; border: 1px solid #e0dbd0; border-radius: 12px; padding: 20px; margin-bottom: 12px; }
+    .card-flat { background: #f5f0e8; border: 1px solid #e0dbd0; border-radius: 10px; padding: 16px; margin-bottom: 8px; }
+    h1.serif { font-size: 28px; line-height: 1.2; margin-bottom: 4px; }
+    h2.serif { font-size: 22px; line-height: 1.2; margin-bottom: 4px; }
+    h3.serif { font-size: 18px; line-height: 1.2; margin-bottom: 4px; }
+    .subtitle { color: #8a8578; font-size: 14px; margin-bottom: 16px; }
+    .label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #8a8578; margin-bottom: 6px; }
+    input, textarea, select {
+      width: 100%; padding: 10px 12px; border: 1px solid #e0dbd0; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; background: #ffffff; color: #1a1a2e; outline: none; transition: border 0.2s;
+    }
+    input:focus, textarea:focus, select:focus { border-color: #e8632b; }
+    textarea { resize: vertical; min-height: 60px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 20px; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: #e8632b; color: white; }
+    .btn-primary:hover { background: #d05520; }
+    .btn-secondary { background: #1a1a2e; color: white; }
+    .btn-secondary:hover { background: #2a2a4e; }
+    .btn-ghost { background: transparent; color: #e8632b; border: 1px solid #e0dbd0; }
+    .btn-ghost:hover { background: #fff0e8; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-block { width: 100%; }
+    .badge-pill {
+      display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
+      border-radius: 99px; font-size: 13px; font-weight: 600; background: #fff0e8; color: #e8632b;
+    }
+    .tier-badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+      border-radius: 99px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .tier-1 { background: #fdf0e0; color: #8b6914; }
+    .tier-2 { background: #f0f0f0; color: #606060; }
+    .tier-3 { background: #fff8e0; color: #9a7b00; }
+    .progress-bar { width: 100%; height: 8px; background: #e0dbd0; border-radius: 99px; overflow: hidden; margin: 6px 0; }
+    .progress-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+    .nav { display: flex; gap: 2px; margin-bottom: 16px; background: #ffffff; border: 1px solid #e0dbd0; border-radius: 10px; padding: 3px; }
+    .nav-item {
+      flex: 1; padding: 8px 4px; text-align: center; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; color: #8a8578; border: none; background: transparent;
+    }
+    .nav-item.active { background: #1a1a2e; color: white; }
+    .checkin-success { text-align: center; padding: 32px 16px; animation: fadeUp 0.4s ease; }
+    .checkin-success .emoji { font-size: 64px; margin-bottom: 12px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+    .stat-box { text-align: center; padding: 12px 8px; background: #ffffff; border: 1px solid #e0dbd0; border-radius: 10px; }
+    .stat-num { font-size: 24px; font-weight: 700; color: #e8632b; }
+    .stat-label { font-size: 11px; color: #8a8578; margin-top: 2px; }
+    .checkin-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #e0dbd0; font-size: 14px; }
+    .checkin-row:last-child { border-bottom: none; }
+    .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+    .emoji-btn {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; border: 2px solid transparent; border-radius: 8px; cursor: pointer; background: #f5f0e8; transition: all 0.1s;
+    }
+    .emoji-btn:hover { background: #fff0e8; }
+    .emoji-btn.selected { border-color: #e8632b; background: #fff0e8; }
+    .field { margin-bottom: 14px; }
+    .merit-slider { width: 100%; accent-color: #e8632b; margin: 4px 0; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e0dbd0; }
+    .link { color: #e8632b; cursor: pointer; font-weight: 600; font-size: 14px; }
+    .link:hover { text-decoration: underline; }
+    .qr-container { text-align: center; padding: 16px; background: white; border-radius: 12px; }
+    .empty-state { text-align: center; padding: 40px 16px; color: #8a8578; }
+    .live-count { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; font-size: 13px; font-weight: 600; background: #e8f5e9; color: #2d8a4e; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #2d8a4e; animation: pulse 2s infinite; }
+    .event-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .fade-in { animation: fadeUp 0.3s ease; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useRef } = React;
+
+    // ============================================
+    // CONFIG
+    // ============================================
+    const SUPABASE_URL = "https://cphnmkuwrwkpfpelzvbn.supabase.co";
+    // Use the LEGACY anon key (starts with eyJ...) from:
+    // Supabase > Settings > API Keys > "Legacy anon, service_role API keys" tab
+    // The new publishable keys don't work with the REST API directly.
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwaG5ta3V3cndrcGZwZWx6dmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2ODA2MDAsImV4cCI6MjA4MDI1NjYwMH0.w2R55BcMbaL1PLyBWsy1GPnHeDx0RI8m3fRtc0t1nQ0";
+
+    // Demo mode credentials
+    const DEMO_STEWARD_EMAIL = "demo-steward@communitymerit.app";
+    const DEMO_USER_EMAIL = "demo-user@communitymerit.app";
+
+    // ============================================
+    // SUPABASE CLIENT
+    // ============================================
+    const supabase = {
+      from: (table) => {
+        let url = `${SUPABASE_URL}/rest/v1/${table}`;
+        let headers = {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        };
+        let params = [];
+        let method = "GET";
+        let body = null;
+
+        const builder = {
+          select: (cols = "*") => { params.push(`select=${encodeURIComponent(cols)}`); return builder; },
+          eq: (col, val) => { params.push(`${col}=eq.${val}`); return builder; },
+          order: (col, opts = {}) => { params.push(`order=${col}.${opts.ascending ? 'asc' : 'desc'}`); return builder; },
+          limit: (n) => { params.push(`limit=${n}`); return builder; },
+          single: () => { headers["Accept"] = "application/vnd.pgrst.object+json"; return builder; },
+          insert: (data) => { method = "POST"; body = JSON.stringify(data); return builder; },
+          update: (data) => { method = "PATCH"; body = JSON.stringify(data); return builder; },
+          upsert: (data) => {
+            method = "POST"; body = JSON.stringify(data);
+            headers["Prefer"] = "resolution=merge-duplicates,return=representation";
+            return builder;
+          },
+          then: async (resolve) => {
+            const sep = url.includes("?") ? "&" : "?";
+            const fullUrl = params.length ? `${url}${sep}${params.join("&")}` : url;
+            try {
+              const res = await fetch(fullUrl, { method, headers, body });
+              const text = await res.text();
+              const data = text ? JSON.parse(text) : null;
+              if (!res.ok) resolve({ data: null, error: data });
+              else resolve({ data, error: null });
+            } catch (e) { resolve({ data: null, error: e }); }
+          },
+        };
+        return builder;
+      },
+    };
+
+    // ============================================
+    // CONSTANTS
+    // ============================================
+    const BADGE_EMOJIS = [
+      "🌿", "🌊", "🚲", "🎨", "🌻", "🏃", "📚", "🎵",
+      "🐕", "🧹", "🌳", "☀️", "🤝", "🏠", "🍳", "⭐",
+      "🔥", "💧", "🌈", "🎭", "🏆", "💚", "🗳️", "🛠️",
+    ];
+
+    function generateQR(text, size = 200) {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=f5f0e8&color=1a1a2e&margin=8`;
+    }
+
+    // ============================================
+    // ROUTING
+    // ============================================
+    function getRoute() {
+      const hash = window.location.hash.slice(1) || "/";
+      const parts = hash.split("/").filter(Boolean);
+      return { path: hash, parts };
+    }
+    function navigate(path) { window.location.hash = path; }
+
+    // ============================================
+    // SHARED COMPONENTS
+    // ============================================
+    function TopBar({ title, back, right }) {
+      return (
+        <div className="top-bar">
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {back && <span className="link" onClick={() => navigate(back)}>←</span>}
+            <span style={{ fontWeight: 600, fontSize: 16 }}>{title}</span>
+          </div>
+          {right}
+        </div>
+      );
+    }
+
+    function ProgressBar({ current, max, color }) {
+      const pct = Math.min((current / max) * 100, 100);
+      return (
+        <div className="progress-bar">
+          <div className="progress-fill" style={{ width: `${pct}%`, background: color || "#e8632b" }} />
+        </div>
+      );
+    }
+
+    function TierBadge({ tier, name }) {
+      const cls = tier === 3 ? "tier-3" : tier === 2 ? "tier-2" : "tier-1";
+      return <span className={`tier-badge ${cls}`}>{name || `Tier ${tier}`}</span>;
+    }
+
+    function LiveCount({ count }) {
+      return (
+        <div className="live-count">
+          <div className="live-dot" />
+          {count} checked in
+        </div>
+      );
+    }
+
+    // ============================================
+    // HOME
+    // ============================================
+    function HomePage() {
+      const [loadingDemo, setLoadingDemo] = useState("");
+
+      const enterDemoSteward = async () => {
+        setLoadingDemo("steward");
+        const { data } = await supabase.from("stewards").select("*").eq("email", DEMO_STEWARD_EMAIL).single();
+        if (data) { localStorage.setItem("steward", JSON.stringify(data)); navigate("/steward/dashboard"); }
+        else { alert("Demo data not found. Run the seed SQL first."); }
+        setLoadingDemo("");
+      };
+
+      const enterDemoUser = async () => {
+        setLoadingDemo("user");
+        const { data } = await supabase.from("users").select("*").eq("email", DEMO_USER_EMAIL).single();
+        if (data) { localStorage.setItem("user", JSON.stringify(data)); navigate("/profile"); }
+        else { alert("Demo data not found. Run the seed SQL first."); }
+        setLoadingDemo("");
+      };
+
+      return (
+        <div className="fade-in" style={{ paddingTop: 40, textAlign: "center" }}>
+          <div style={{ fontSize: 48, marginBottom: 8 }}>🏘️</div>
+          <h1 className="serif" style={{ fontSize: 32, marginBottom: 8 }}>Community Merit</h1>
+          <p className="subtitle" style={{ maxWidth: 300, margin: "0 auto 32px" }}>
+            Earn recognition for what you do for your community.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 280, margin: "0 auto" }}>
+            <button className="btn btn-primary btn-block" onClick={() => navigate("/steward/login")}>I'm a Steward</button>
+            <button className="btn btn-ghost btn-block" onClick={() => navigate("/profile/login")}>Check My Progress</button>
+          </div>
+
+          <div style={{ marginTop: 40, paddingTop: 24, borderTop: "1px solid #e0dbd0" }}>
+            <p style={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "#8a8578", marginBottom: 10 }}>Demo Mode</p>
+            <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+              <button className="btn btn-secondary btn-sm" onClick={enterDemoSteward} disabled={!!loadingDemo}>
+                {loadingDemo === "steward" ? "Loading..." : "👑 Demo Steward"}
+              </button>
+              <button className="btn btn-secondary btn-sm" onClick={enterDemoUser} disabled={!!loadingDemo}>
+                {loadingDemo === "user" ? "Loading..." : "🏅 Demo User"}
+              </button>
+            </div>
+            <p style={{ fontSize: 11, color: "#8a8578", marginTop: 8 }}>
+              Pre-loaded with sample events, badges, and check-ins.
+            </p>
+          </div>
+
+          <p style={{ marginTop: 32, fontSize: 13, color: "#8a8578" }}>
+            Have a check-in link? Scan the QR code at your event.
+          </p>
+        </div>
+      );
+    }
+
+    // ============================================
+    // STEWARD LOGIN
+    // ============================================
+    function StewardLogin() {
+      const [email, setEmail] = useState("");
+      const [name, setName] = useState("");
+      const [org, setOrg] = useState("");
+      const [mode, setMode] = useState("login");
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState("");
+
+      const handleLogin = async () => {
+        setLoading(true); setError("");
+        const { data, error: err } = await supabase.from("stewards").select("*").eq("email", email).single();
+        if (err || !data) { setError("No steward found. Register below."); setMode("register"); }
+        else { localStorage.setItem("steward", JSON.stringify(data)); navigate("/steward/dashboard"); }
+        setLoading(false);
+      };
+
+      const handleRegister = async () => {
+        setLoading(true); setError("");
+        const { data, error: err } = await supabase.from("stewards").insert({ email, name, organization: org || null });
+        if (err) { setError("Error creating account. Email may already exist."); }
+        else if (data && data[0]) { localStorage.setItem("steward", JSON.stringify(data[0])); navigate("/steward/dashboard"); }
+        setLoading(false);
+      };
+
+      return (
+        <div className="fade-in">
+          <TopBar title="Steward Access" back="/" />
+          <div className="card">
+            <h2 className="serif">Welcome, Steward</h2>
+            <p className="subtitle">Manage your events and community badges.</p>
+            <div className="field">
+              <div className="label">Email</div>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@org.com" />
+            </div>
+            {mode === "register" && (
+              <>
+                <div className="field">
+                  <div className="label">Your Name</div>
+                  <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Smith" />
+                </div>
+                <div className="field">
+                  <div className="label">Organization (optional)</div>
+                  <input value={org} onChange={(e) => setOrg(e.target.value)} placeholder="Beautiful PB" />
+                </div>
+              </>
+            )}
+            {error && <p style={{ color: "#e8632b", fontSize: 13, marginBottom: 12 }}>{error}</p>}
+            {mode === "login" ? (
+              <button className="btn btn-primary btn-block" onClick={handleLogin} disabled={!email || loading}>
+                {loading ? "..." : "Sign In"}
+              </button>
+            ) : (
+              <button className="btn btn-primary btn-block" onClick={handleRegister} disabled={!email || !name || loading}>
+                {loading ? "..." : "Create Steward Account"}
+              </button>
+            )}
+            {mode === "login" && (
+              <p style={{ textAlign: "center", marginTop: 12, fontSize: 13 }}>
+                <span className="link" onClick={() => setMode("register")}>New steward? Register here</span>
+              </p>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // STEWARD DASHBOARD
+    // ============================================
+    function StewardDashboard() {
+      const [steward, setSteward] = useState(null);
+      const [tab, setTab] = useState("events");
+      const [events, setEvents] = useState([]);
+      const [badges, setBadges] = useState([]);
+      const [stats, setStats] = useState(null);
+      const [checkinData, setCheckinData] = useState([]);
+
+      useEffect(() => {
+        const s = JSON.parse(localStorage.getItem("steward") || "null");
+        if (!s) { navigate("/steward/login"); return; }
+        setSteward(s);
+        loadData(s.id);
+      }, []);
+
+      const loadData = async (sid) => {
+        const [evRes, bdRes, stRes, ciRes] = await Promise.all([
+          supabase.from("events").select("*").eq("steward_id", sid).order("starts_at", { ascending: false }),
+          supabase.from("badges").select("*").eq("steward_id", sid).order("created_at", { ascending: false }),
+          supabase.from("steward_stats").select("*").eq("steward_id", sid).single(),
+          supabase.from("event_checkin_details").select("*").eq("steward_id", sid).order("checked_in_at", { ascending: false }),
+        ]);
+        setEvents(evRes.data || []);
+        setBadges(bdRes.data || []);
+        setStats(stRes.data || { total_events: 0, total_checkins: 0, unique_participants: 0, total_badges: 0 });
+        setCheckinData(ciRes.data || []);
+      };
+
+      if (!steward) return null;
+
+      return (
+        <div className="fade-in">
+          <TopBar
+            title={steward.organization || steward.name}
+            right={<span className="link" onClick={() => { localStorage.removeItem("steward"); navigate("/"); }}>Sign Out</span>}
+          />
+          {stats && (
+            <div className="stat-grid">
+              <div className="stat-box"><div className="stat-num">{stats.total_events}</div><div className="stat-label">Events</div></div>
+              <div className="stat-box"><div className="stat-num">{stats.total_checkins}</div><div className="stat-label">Check-ins</div></div>
+              <div className="stat-box"><div className="stat-num">{stats.unique_participants}</div><div className="stat-label">People</div></div>
+            </div>
+          )}
+          <div className="nav">
+            <button className={`nav-item ${tab === "events" ? "active" : ""}`} onClick={() => setTab("events")}>Events</button>
+            <button className={`nav-item ${tab === "badges" ? "active" : ""}`} onClick={() => setTab("badges")}>Badges</button>
+            <button className={`nav-item ${tab === "checkins" ? "active" : ""}`} onClick={() => setTab("checkins")}>People</button>
+          </div>
+
+          {tab === "events" && (
+            <div>
+              <button className="btn btn-primary btn-block" style={{ marginBottom: 16 }} onClick={() => navigate("/steward/event/new")}>+ Create Event</button>
+              {events.length === 0 && <div className="empty-state"><p>No events yet. Create your first one!</p></div>}
+              {events.map((ev) => {
+                const count = checkinData.filter((c) => c.event_id === ev.id && c.checkin_id).length;
+                const badge = badges.find((b) => b.id === ev.badge_id);
+                return (
+                  <div key={ev.id} className="card" style={{ cursor: "pointer" }} onClick={() => navigate(`/steward/event/${ev.id}`)}>
+                    <div className="event-card-header">
+                      <div>
+                        <h3 className="serif">{ev.title}</h3>
+                        <p style={{ fontSize: 13, color: "#8a8578" }}>
+                          {new Date(ev.starts_at).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+                          {ev.location && ` · ${ev.location}`}
+                        </p>
+                      </div>
+                      {badge && <span className="badge-pill">{badge.emoji} {badge.name}</span>}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>+{ev.merit_value} merit</span>
+                      <LiveCount count={count} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {tab === "badges" && (
+            <div>
+              <button className="btn btn-primary btn-block" style={{ marginBottom: 16 }} onClick={() => navigate("/steward/badge/new")}>+ Create Badge</button>
+              {badges.length === 0 && <div className="empty-state"><p>No badges yet. Create one to assign to events.</p></div>}
+              {badges.map((b) => (
+                <div key={b.id} className="card">
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                    <span style={{ fontSize: 28 }}>{b.emoji}</span>
+                    <div>
+                      <h3 className="serif">{b.name}</h3>
+                      {b.description && <p style={{ fontSize: 13, color: "#8a8578" }}>{b.description}</p>}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    <TierBadge tier={1} name={`${b.tier1_name} (${b.tier1_min}+)`} />
+                    <TierBadge tier={2} name={`${b.tier2_name} (${b.tier2_min}+)`} />
+                    <TierBadge tier={3} name={`${b.tier3_name} (${b.tier3_min}+)`} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {tab === "checkins" && (
+            <div>
+              {events.map((ev) => {
+                const evCheckins = checkinData.filter((c) => c.event_id === ev.id && c.checkin_id);
+                if (evCheckins.length === 0) return null;
+                return (
+                  <div key={ev.id} className="card">
+                    <h3 className="serif" style={{ marginBottom: 4 }}>{ev.title}</h3>
+                    <p style={{ fontSize: 12, color: "#8a8578", marginBottom: 10 }}>
+                      {new Date(ev.starts_at).toLocaleDateString()} · {evCheckins.length} check-in{evCheckins.length !== 1 ? "s" : ""}
+                    </p>
+                    {evCheckins.map((c) => (
+                      <div key={c.checkin_id} className="checkin-row">
+                        <div>
+                          <span style={{ fontWeight: 600 }}>{c.user_name}</span>
+                          <span style={{ fontSize: 12, color: "#8a8578", marginLeft: 8 }}>{c.user_email}</span>
+                        </div>
+                        <span style={{ fontSize: 12, color: "#8a8578" }}>
+                          {new Date(c.checked_in_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+              {checkinData.filter((c) => c.checkin_id).length === 0 && <div className="empty-state"><p>No check-ins yet.</p></div>}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ============================================
+    // CREATE BADGE
+    // ============================================
+    function CreateBadge() {
+      const [name, setName] = useState("");
+      const [emoji, setEmoji] = useState("🌿");
+      const [desc, setDesc] = useState("");
+      const [loading, setLoading] = useState(false);
+      const steward = JSON.parse(localStorage.getItem("steward") || "null");
+
+      const handleCreate = async () => {
+        if (!steward) return;
+        setLoading(true);
+        await supabase.from("badges").insert({ steward_id: steward.id, name, emoji, description: desc || null });
+        setLoading(false);
+        navigate("/steward/dashboard");
+      };
+
+      return (
+        <div className="fade-in">
+          <TopBar title="New Badge" back="/steward/dashboard" />
+          <div className="card">
+            <div className="field">
+              <div className="label">Badge Name</div>
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Green Guardian" />
+            </div>
+            <div className="field">
+              <div className="label">Icon</div>
+              <div className="emoji-grid">
+                {BADGE_EMOJIS.map((e) => (
+                  <button key={e} className={`emoji-btn ${emoji === e ? "selected" : ""}`} onClick={() => setEmoji(e)}>
+                    {e}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="field">
+              <div className="label">Description (optional)</div>
+              <textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="What does this badge represent?" />
+            </div>
+            <div className="card-flat" style={{ fontSize: 13 }}>
+              <div className="label">Default Tiers</div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <TierBadge tier={1} name="Bronze (1+)" />
+                <TierBadge tier={2} name="Silver (11+)" />
+                <TierBadge tier={3} name="Gold (31+)" />
+              </div>
+            </div>
+            <button className="btn btn-primary btn-block" style={{ marginTop: 14 }} onClick={handleCreate} disabled={!name || loading}>
+              {loading ? "Creating..." : "Create Badge"}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // CREATE EVENT
+    // ============================================
+    function CreateEvent() {
+      const [title, setTitle] = useState("");
+      const [desc, setDesc] = useState("");
+      const [location, setLocation] = useState("");
+      const [merit, setMerit] = useState(3);
+      const [badgeId, setBadgeId] = useState("");
+      const [startsAt, setStartsAt] = useState("");
+      const [badges, setBadges] = useState([]);
+      const [loading, setLoading] = useState(false);
+      const steward = JSON.parse(localStorage.getItem("steward") || "null");
+
+      useEffect(() => {
+        if (!steward) return;
+        supabase.from("badges").select("*").eq("steward_id", steward.id).then(({ data }) => {
+          setBadges(data || []);
+          if (data && data.length > 0) setBadgeId(data[0].id);
+        });
+      }, []);
+
+      const handleCreate = async () => {
+        if (!steward) return;
+        setLoading(true);
+        const { data } = await supabase.from("events").insert({
+          steward_id: steward.id, badge_id: badgeId || null, title,
+          description: desc || null, location: location || null,
+          merit_value: merit, starts_at: new Date(startsAt).toISOString(),
+        });
+        setLoading(false);
+        if (data && data[0]) navigate(`/steward/event/${data[0].id}`);
+        else navigate("/steward/dashboard");
+      };
+
+      return (
+        <div className="fade-in">
+          <TopBar title="New Event" back="/steward/dashboard" />
+          <div className="card">
+            <div className="field">
+              <div className="label">Event Title</div>
+              <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Saturday Beach Cleanup" />
+            </div>
+            <div className="field">
+              <div className="label">Description (optional)</div>
+              <textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="What's happening?" />
+            </div>
+            <div className="field">
+              <div className="label">Location</div>
+              <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="North Shore Park" />
+            </div>
+            <div className="field">
+              <div className="label">Date & Time</div>
+              <input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} />
+            </div>
+            <div className="field">
+              <div className="label">Badge</div>
+              {badges.length === 0 ? (
+                <div style={{ fontSize: 13, color: "#8a8578" }}>
+                  No badges yet. <span className="link" onClick={() => navigate("/steward/badge/new")}>Create one first</span>
+                </div>
+              ) : (
+                <select value={badgeId} onChange={(e) => setBadgeId(e.target.value)}>
+                  {badges.map((b) => <option key={b.id} value={b.id}>{b.emoji} {b.name}</option>)}
+                </select>
+              )}
+            </div>
+            <div className="field">
+              <div className="label">Merit Value: {merit}</div>
+              <input type="range" className="merit-slider" min={1} max={10} value={merit} onChange={(e) => setMerit(Number(e.target.value))} />
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#8a8578" }}>
+                <span>1 (Light)</span><span>5 (Moderate)</span><span>10 (Major)</span>
+              </div>
+            </div>
+            <button className="btn btn-primary btn-block" style={{ marginTop: 8 }} onClick={handleCreate} disabled={!title || !startsAt || !badgeId || loading}>
+              {loading ? "Creating..." : "Create Event"}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // STEWARD EVENT DETAIL
+    // ============================================
+    function StewardEventDetail({ eventId }) {
+      const [event, setEvent] = useState(null);
+      const [badge, setBadge] = useState(null);
+      const [checkins, setCheckins] = useState([]);
+      const [copied, setCopied] = useState(false);
+
+      const loadEvent = async () => {
+        const { data: ev } = await supabase.from("events").select("*").eq("id", eventId).single();
+        if (ev) {
+          setEvent(ev);
+          if (ev.badge_id) {
+            const { data: b } = await supabase.from("badges").select("*").eq("id", ev.badge_id).single();
+            setBadge(b);
+          }
+        }
+        const { data: ci } = await supabase.from("event_checkin_details").select("*").eq("event_id", eventId).order("checked_in_at", { ascending: false });
+        setCheckins((ci || []).filter((c) => c.checkin_id));
+      };
+
+      useEffect(() => {
+        loadEvent();
+        const interval = setInterval(loadEvent, 5000);
+        return () => clearInterval(interval);
+      }, [eventId]);
+
+      if (!event) return <div className="app"><p>Loading...</p></div>;
+      const checkinUrl = `${window.location.origin}${window.location.pathname}#/event/${eventId}`;
+
+      return (
+        <div className="fade-in">
+          <TopBar title="Event Details" back="/steward/dashboard" />
+          <div className="card">
+            <div className="event-card-header">
+              <div>
+                <h2 className="serif">{event.title}</h2>
+                <p style={{ fontSize: 13, color: "#8a8578" }}>
+                  {new Date(event.starts_at).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+                  {event.location && ` · ${event.location}`}
+                </p>
+              </div>
+              {badge && <span className="badge-pill">{badge.emoji} {badge.name}</span>}
+            </div>
+            {event.description && <p style={{ fontSize: 14, marginTop: 8 }}>{event.description}</p>}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
+              <span style={{ fontSize: 14, fontWeight: 600 }}>+{event.merit_value} merit per check-in</span>
+              <LiveCount count={checkins.length} />
+            </div>
+          </div>
+
+          <div className="card">
+            <h3 className="serif" style={{ textAlign: "center", marginBottom: 12 }}>Check-in QR Code</h3>
+            <div className="qr-container">
+              <img src={generateQR(checkinUrl, 220)} alt="QR Code" style={{ width: 220, height: 220 }} />
+            </div>
+            <p style={{ textAlign: "center", fontSize: 12, color: "#8a8578", marginTop: 8, wordBreak: "break-all" }}>{checkinUrl}</p>
+            <button className="btn btn-ghost btn-block btn-sm" style={{ marginTop: 8 }}
+              onClick={() => { navigator.clipboard.writeText(checkinUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); }}>
+              {copied ? "✓ Copied!" : "Copy Link"}
+            </button>
+          </div>
+
+          <div className="card">
+            <h3 className="serif" style={{ marginBottom: 12 }}>Check-ins ({checkins.length})</h3>
+            {checkins.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#8a8578" }}>No check-ins yet. Share the QR code!</p>
+            ) : (
+              checkins.map((c) => (
+                <div key={c.checkin_id} className="checkin-row">
+                  <div>
+                    <span style={{ fontWeight: 600 }}>{c.user_name}</span>
+                    <span style={{ fontSize: 12, color: "#8a8578", marginLeft: 8 }}>{c.user_email}</span>
+                  </div>
+                  <span style={{ fontSize: 12, color: "#8a8578" }}>
+                    {new Date(c.checked_in_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // PUBLIC EVENT CHECK-IN
+    // ============================================
+    function EventCheckin({ eventId }) {
+      const [event, setEvent] = useState(null);
+      const [badge, setBadge] = useState(null);
+      const [count, setCount] = useState(0);
+      const [name, setName] = useState("");
+      const [email, setEmail] = useState("");
+      const [loading, setLoading] = useState(false);
+      const [done, setDone] = useState(false);
+      const [error, setError] = useState("");
+      const [earnedData, setEarnedData] = useState(null);
+
+      useEffect(() => {
+        (async () => {
+          const { data: ev } = await supabase.from("events").select("*").eq("id", eventId).single();
+          if (ev) {
+            setEvent(ev);
+            if (ev.badge_id) {
+              const { data: b } = await supabase.from("badges").select("*").eq("id", ev.badge_id).single();
+              setBadge(b);
+            }
+          }
+          const { data: ci } = await supabase.from("checkins").select("id").eq("event_id", eventId);
+          setCount(ci ? ci.length : 0);
+        })();
+      }, [eventId]);
+
+      const handleCheckin = async () => {
+        setLoading(true); setError("");
+        const { data: userData, error: userErr } = await supabase.from("users").upsert({ email, name });
+        if (userErr || !userData || !userData[0]) { setError("Error creating user."); setLoading(false); return; }
+        const user = userData[0];
+
+        const { error: ciErr } = await supabase.from("checkins").insert({
+          event_id: eventId, user_id: user.id, merit_earned: event.merit_value,
+        });
+        if (ciErr) {
+          if (ciErr.code === "23505" || (ciErr.message && ciErr.message.includes("duplicate"))) {
+            setError("You've already checked in to this event!");
+          } else { setError("Check-in failed. Please try again."); }
+          setLoading(false); return;
+        }
+
+        if (badge) {
+          const { data: progress } = await supabase.from("user_badge_progress").select("*").eq("user_id", user.id).eq("badge_id", badge.id).single();
+          setEarnedData(progress);
+        }
+        setCount((c) => c + 1);
+        setDone(true);
+        setLoading(false);
+      };
+
+      if (!event) return <div className="app" style={{ padding: "40px 16px", textAlign: "center" }}><p>Loading event...</p></div>;
+
+      if (done) {
+        const tierNames = badge ? [badge.tier1_name, badge.tier2_name, badge.tier3_name] : ["Bronze", "Silver", "Gold"];
+        const tierMins = badge ? [badge.tier1_min, badge.tier2_min, badge.tier3_min] : [1, 11, 31];
+        const totalMerit = earnedData ? earnedData.total_merit : event.merit_value;
+        const currentTier = earnedData ? earnedData.current_tier : (totalMerit >= tierMins[2] ? 3 : totalMerit >= tierMins[1] ? 2 : totalMerit >= tierMins[0] ? 1 : 0);
+        const nextTier = currentTier < 3 ? currentTier : 2;
+        const nextMin = tierMins[nextTier];
+        const progressMax = currentTier >= 3 ? tierMins[2] : nextMin;
+
+        return (
+          <div className="fade-in">
+            <div className="checkin-success">
+              <div className="emoji">{badge ? badge.emoji : "⭐"}</div>
+              <h1 className="serif" style={{ marginBottom: 4 }}>You're in!</h1>
+              <p className="subtitle">+{event.merit_value} merit earned</p>
+              <LiveCount count={count} />
+            </div>
+            <div className="card" style={{ marginTop: 16 }}>
+              <h3 className="serif" style={{ marginBottom: 8 }}>
+                {badge ? badge.emoji : ""} {badge ? badge.name : "Merit"} Progress
+              </h3>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 2 }}>
+                <span style={{ fontWeight: 600 }}>{totalMerit} merit</span>
+                {currentTier > 0 && <TierBadge tier={currentTier} name={tierNames[currentTier - 1]} />}
+              </div>
+              <ProgressBar current={totalMerit} max={progressMax} color={currentTier >= 3 ? "#ffd700" : currentTier >= 2 ? "#a8a8a8" : "#cd7f32"} />
+              {currentTier < 3 && (
+                <p style={{ fontSize: 12, color: "#8a8578", marginTop: 4 }}>{nextMin - totalMerit} more to reach {tierNames[nextTier]}</p>
+              )}
+              {currentTier >= 3 && (
+                <p style={{ fontSize: 12, color: "#8a8578", marginTop: 4 }}>Max tier reached! 🎉</p>
+              )}
+            </div>
+            <div className="card" style={{ textAlign: "center" }}>
+              <p style={{ fontSize: 13, color: "#8a8578", marginBottom: 8 }}>
+                View your full profile and badge collection:
+              </p>
+              <button className="btn btn-ghost btn-sm" onClick={() => navigate("/profile/login")}>View My Profile</button>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="fade-in">
+          <div className="card" style={{ marginTop: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              {badge && <span style={{ fontSize: 32 }}>{badge.emoji}</span>}
+              <div>
+                <h2 className="serif">{event.title}</h2>
+                <p style={{ fontSize: 13, color: "#8a8578" }}>
+                  {new Date(event.starts_at).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+                  {event.location && ` · ${event.location}`}
+                </p>
+              </div>
+            </div>
+            {event.description && <p style={{ fontSize: 14, marginBottom: 12 }}>{event.description}</p>}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              {badge && <span className="badge-pill">{badge.emoji} +{event.merit_value} {badge.name} merit</span>}
+              <LiveCount count={count} />
+            </div>
+          </div>
+
+          <div className="card">
+            <h3 className="serif" style={{ marginBottom: 12 }}>Check In</h3>
+            <div className="field">
+              <div className="label">Your Name</div>
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+            </div>
+            <div className="field">
+              <div className="label">Email</div>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" />
+            </div>
+            {error && <p style={{ color: "#e8632b", fontSize: 13, marginBottom: 12 }}>{error}</p>}
+            <button className="btn btn-primary btn-block" onClick={handleCheckin} disabled={!name || !email || loading}>
+              {loading ? "Checking in..." : "Check In →"}
+            </button>
+            <p style={{ fontSize: 11, color: "#8a8578", textAlign: "center", marginTop: 8 }}>
+              Your email is used for your merit profile only. Never shared publicly.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // PROFILE LOGIN
+    // ============================================
+    function ProfileLogin() {
+      const [email, setEmail] = useState("");
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState("");
+
+      const handleLogin = async () => {
+        setLoading(true); setError("");
+        const { data, error: err } = await supabase.from("users").select("*").eq("email", email).single();
+        if (err || !data) { setError("No profile found. Check in at an event first!"); }
+        else { localStorage.setItem("user", JSON.stringify(data)); navigate("/profile"); }
+        setLoading(false);
+      };
+
+      return (
+        <div className="fade-in">
+          <TopBar title="My Profile" back="/" />
+          <div className="card">
+            <h2 className="serif">View Your Progress</h2>
+            <p className="subtitle">Enter the email you used to check in.</p>
+            <div className="field">
+              <div className="label">Email</div>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" />
+            </div>
+            {error && <p style={{ color: "#e8632b", fontSize: 13, marginBottom: 12 }}>{error}</p>}
+            <button className="btn btn-primary btn-block" onClick={handleLogin} disabled={!email || loading}>
+              {loading ? "..." : "View Profile"}
+            </button>
+            <p style={{ fontSize: 11, color: "#8a8578", textAlign: "center", marginTop: 10 }}>
+              In the full app, we'll send a magic link. For this prototype, email lookup is instant.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // USER PROFILE
+    // ============================================
+    function UserProfile() {
+      const [user, setUser] = useState(null);
+      const [badges, setBadges] = useState([]);
+      const [checkins, setCheckins] = useState([]);
+      const [editing, setEditing] = useState(false);
+      const [displayName, setDisplayName] = useState("");
+      const [bio, setBio] = useState("");
+
+      useEffect(() => {
+        const u = JSON.parse(localStorage.getItem("user") || "null");
+        if (!u) { navigate("/profile/login"); return; }
+        setUser(u);
+        setDisplayName(u.display_name || "");
+        setBio(u.bio || "");
+        loadData(u.id);
+      }, []);
+
+      const loadData = async (uid) => {
+        const [bRes, cRes] = await Promise.all([
+          supabase.from("user_badge_progress").select("*").eq("user_id", uid),
+          supabase.from("checkins").select("*").eq("user_id", uid).order("checked_in_at", { ascending: false }),
+        ]);
+        setBadges(bRes.data || []);
+
+        // Load event details for each checkin
+        const checkinList = cRes.data || [];
+        const enriched = [];
+        for (const c of checkinList) {
+          const { data: ev } = await supabase.from("events").select("*").eq("id", c.event_id).single();
+          enriched.push({ ...c, event: ev });
+        }
+        setCheckins(enriched);
+      };
+
+      const saveProfile = async () => {
+        if (!user) return;
+        await supabase.from("users").update({ display_name: displayName || null, bio: bio || null }).eq("id", user.id);
+        const updated = { ...user, display_name: displayName, bio };
+        localStorage.setItem("user", JSON.stringify(updated));
+        setUser(updated);
+        setEditing(false);
+      };
+
+      if (!user) return null;
+      const totalMerit = badges.reduce((sum, b) => sum + b.total_merit, 0);
+
+      return (
+        <div className="fade-in">
+          <TopBar title="My Profile" back="/"
+            right={<span className="link" onClick={() => { localStorage.removeItem("user"); navigate("/"); }}>Sign Out</span>}
+          />
+          <div className="card" style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 40, marginBottom: 4 }}>🏅</div>
+            <h2 className="serif">{user.display_name || user.name}</h2>
+            <p style={{ fontSize: 13, color: "#8a8578" }}>{user.email}</p>
+            {user.bio && <p style={{ fontSize: 14, marginTop: 8 }}>{user.bio}</p>}
+            <div style={{ marginTop: 12 }}>
+              <span style={{ fontSize: 24, fontWeight: 700, color: "#e8632b" }}>{totalMerit}</span>
+              <span style={{ fontSize: 13, color: "#8a8578", marginLeft: 4 }}>total merit</span>
+            </div>
+            {!editing ? (
+              <button className="btn btn-ghost btn-sm" style={{ marginTop: 12 }} onClick={() => setEditing(true)}>Edit Profile</button>
+            ) : (
+              <div style={{ marginTop: 12, textAlign: "left" }}>
+                <div className="field">
+                  <div className="label">Display Name</div>
+                  <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={user.name} />
+                </div>
+                <div className="field">
+                  <div className="label">Bio</div>
+                  <textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="A bit about you..." />
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button className="btn btn-primary btn-sm" onClick={saveProfile}>Save</button>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setEditing(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {badges.length > 0 && (
+            <div className="card">
+              <h3 className="serif" style={{ marginBottom: 12 }}>My Badges</h3>
+              {badges.map((b) => {
+                const tierNames = [b.tier1_name, b.tier2_name, b.tier3_name];
+                const tierMins = [b.tier1_min, b.tier2_min, b.tier3_min];
+                const nextTier = b.current_tier < 3 ? b.current_tier : 2;
+                const progressMax = b.current_tier >= 3 ? tierMins[2] : tierMins[nextTier];
+                return (
+                  <div key={b.badge_id} className="card-flat">
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                      <span style={{ fontSize: 22 }}>{b.badge_emoji}</span>
+                      <span style={{ fontWeight: 600 }}>{b.badge_name}</span>
+                      {b.current_tier > 0 && <TierBadge tier={b.current_tier} name={tierNames[b.current_tier - 1]} />}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#8a8578" }}>
+                      <span>{b.total_merit} merit · {b.total_checkins} check-in{b.total_checkins !== 1 ? "s" : ""}</span>
+                      {b.current_tier < 3 && <span>{tierMins[nextTier] - b.total_merit} to {tierNames[nextTier]}</span>}
+                    </div>
+                    <ProgressBar current={b.total_merit} max={progressMax}
+                      color={b.current_tier >= 3 ? "#ffd700" : b.current_tier >= 2 ? "#a8a8a8" : "#cd7f32"} />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="card">
+            <h3 className="serif" style={{ marginBottom: 12 }}>Check-in History</h3>
+            {checkins.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#8a8578" }}>No check-ins yet.</p>
+            ) : (
+              checkins.map((c) => (
+                <div key={c.id} className="checkin-row">
+                  <div>
+                    <span style={{ fontWeight: 600 }}>{c.event?.title || "Event"}</span>
+                    <p style={{ fontSize: 12, color: "#8a8578" }}>
+                      {new Date(c.checked_in_at).toLocaleDateString()}
+                      {c.event?.location && ` · ${c.event.location}`}
+                    </p>
+                  </div>
+                  <span className="badge-pill" style={{ fontSize: 12 }}>+{c.merit_earned}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // APP ROUTER
+    // ============================================
+    function App() {
+      const [route, setRoute] = useState(getRoute());
+      useEffect(() => {
+        const handler = () => setRoute(getRoute());
+        window.addEventListener("hashchange", handler);
+        return () => window.removeEventListener("hashchange", handler);
+      }, []);
+
+      const { parts } = route;
+      let page;
+      if (parts.length === 0 || (parts.length === 1 && parts[0] === "")) page = <HomePage />;
+      else if (parts[0] === "steward" && parts[1] === "login") page = <StewardLogin />;
+      else if (parts[0] === "steward" && parts[1] === "dashboard") page = <StewardDashboard />;
+      else if (parts[0] === "steward" && parts[1] === "event" && parts[2] === "new") page = <CreateEvent />;
+      else if (parts[0] === "steward" && parts[1] === "event" && parts[2]) page = <StewardEventDetail eventId={parts[2]} />;
+      else if (parts[0] === "steward" && parts[1] === "badge" && parts[2] === "new") page = <CreateBadge />;
+      else if (parts[0] === "event" && parts[1]) page = <EventCheckin eventId={parts[1]} />;
+      else if (parts[0] === "profile" && parts[1] === "login") page = <ProfileLogin />;
+      else if (parts[0] === "profile") page = <UserProfile />;
+      else page = <HomePage />;
+
+      return <div className="app">{page}</div>;
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

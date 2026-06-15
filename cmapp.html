@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#f5f0e8"/>
+  <title>Community Merit</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏘️</text></svg>">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+*{box-sizing:border-box;margin:0;padding:0}body,html,#root{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#1a1a2e;min-height:100vh}
+.serif{font-family:'DM Serif Display',serif}.app{max-width:520px;margin:0 auto;padding:16px;min-height:100vh}
+.card{background:#fff;border:1px solid #e0dbd0;border-radius:12px;padding:20px;margin-bottom:12px}
+.card-flat{background:#f5f0e8;border:1px solid #e0dbd0;border-radius:10px;padding:16px;margin-bottom:8px}
+.card-click{cursor:pointer;transition:box-shadow .15s}.card-click:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
+h1.serif{font-size:28px;line-height:1.2;margin-bottom:4px}h2.serif{font-size:22px;line-height:1.2;margin-bottom:4px}h3.serif{font-size:18px;line-height:1.2;margin-bottom:4px}
+.subtitle{color:#8a8578;font-size:14px;margin-bottom:16px}
+.label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#8a8578;margin-bottom:6px}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid #e0dbd0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:#fff;color:#1a1a2e;outline:none;transition:border .2s}
+input:focus,textarea:focus,select:focus{border-color:#e8632b}textarea{resize:vertical;min-height:60px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn:active{transform:scale(.97)}.btn-primary{background:#e8632b;color:#fff}.btn-primary:hover{background:#d05520}
+.btn-secondary{background:#1a1a2e;color:#fff}.btn-secondary:hover{background:#2a2a4e}
+.btn-ghost{background:transparent;color:#e8632b;border:1px solid #e0dbd0}.btn-ghost:hover{background:#fff0e8}
+.btn-sm{padding:6px 12px;font-size:13px}.btn:disabled{opacity:.5;cursor:not-allowed}.btn-block{width:100%}
+.badge-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:13px;font-weight:600;background:#fff0e8;color:#e8632b}
+.tier-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.tier-1{background:#fdf0e0;color:#8b6914}.tier-2{background:#f0f0f0;color:#606060}.tier-3{background:#fff8e0;color:#9a7b00}.tier-4{background:#e8f0ff;color:#3a6fba}.tier-5{background:#f0e8ff;color:#7b3fba}
+.progress-bar{width:100%;height:8px;background:#e0dbd0;border-radius:99px;overflow:hidden;margin:6px 0}.progress-fill{height:100%;border-radius:99px;transition:width .5s ease}
+.nav{display:flex;gap:2px;margin-bottom:16px;background:#fff;border:1px solid #e0dbd0;border-radius:10px;padding:3px}
+.nav-item{flex:1;padding:8px 4px;text-align:center;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:#8a8578;border:none;background:transparent}.nav-item.active{background:#1a1a2e;color:#fff}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat-box{text-align:center;padding:12px 8px;background:#fff;border:1px solid #e0dbd0;border-radius:10px}
+.stat-num{font-size:24px;font-weight:700;color:#e8632b}.stat-label{font-size:11px;color:#8a8578;margin-top:2px}
+.checkin-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e0dbd0;font-size:14px}.checkin-row:last-child{border-bottom:none}
+.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.emoji-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid transparent;border-radius:8px;cursor:pointer;background:#f5f0e8;transition:all .1s}.emoji-btn:hover{background:#fff0e8}.emoji-btn.selected{border-color:#e8632b;background:#fff0e8}
+.field{margin-bottom:14px}.merit-slider{width:100%;accent-color:#e8632b;margin:4px 0}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #e0dbd0}
+.link{color:#e8632b;cursor:pointer;font-weight:600;font-size:14px}.link:hover{text-decoration:underline}
+.qr-container{text-align:center;padding:16px;background:#fff;border-radius:12px}
+.empty-state{text-align:center;padding:40px 16px;color:#8a8578}
+.live-count{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;font-size:13px;font-weight:600;background:#e8f5e9;color:#2d8a4e}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#2d8a4e;animation:pulse 2s infinite}
+.event-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.step-item{display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:10px;margin-bottom:6px;border:1px solid #e0dbd0;transition:all .2s}
+.step-item.completed{background:#e8f5e9;border-color:#c8e6c9}.step-item.available{background:#fff;cursor:pointer}.step-item.available:hover{border-color:#e8632b}.step-item.locked{background:#f5f3ef;opacity:.6}
+.step-circle{width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.step-circle.done{background:#2d8a4e;color:#fff}.step-circle.open{background:#fff;border:2px solid #e8632b;color:#e8632b}.step-circle.num{background:#e0dbd0;color:#8a8578}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.status-live{background:#e8f5e9;color:#2d8a4e}.status-soon{background:#fff8e0;color:#9a7b00}.status-ended{background:#f0f0f0;color:#8a8578}.status-evergreen{background:#e8f0ff;color:#3a6fba}
+.countdown{font-size:12px;color:#8a8578;font-weight:500}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.toggle{width:44px;height:24px;border-radius:12px;background:#e0dbd0;position:relative;cursor:pointer;transition:background .2s}.toggle.on{background:#e8632b}
+.toggle-knob{width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}.toggle.on .toggle-knob{left:22px}
+.bonus-banner{background:linear-gradient(135deg,#fff8e0,#fff0e8);border:1px solid #ffd700;border-radius:10px;padding:12px 16px;text-align:center;margin-bottom:12px}
+.avatar{border-radius:50%;object-fit:cover;background:#e0dbd0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0}
+.avatar-sm{width:36px;height:36px;font-size:14px}.avatar-md{width:48px;height:48px;font-size:18px}.avatar-lg{width:80px;height:80px;font-size:28px}
+.quick-code{font-family:'DM Serif Display',serif;font-size:28px;letter-spacing:8px;color:#e8632b;text-align:center;padding:12px;background:#fff0e8;border-radius:10px}
+.section-label{font-size:13px;font-weight:600;color:#8a8578;margin-bottom:10px;margin-top:16px}
+.tier-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #e0dbd0}.tier-row:last-child{border-bottom:none}
+.checkin-success{text-align:center;padding:32px 16px;animation:fadeUp .4s ease}.checkin-success .emoji{font-size:64px;margin-bottom:12px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.fade-in{animation:fadeUp .3s ease}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+const SB_URL = "https://cphnmkuwrwkpfpelzvbn.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwaG5ta3V3cndrcGZwZWx6dmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2ODA2MDAsImV4cCI6MjA4MDI1NjYwMH0.w2R55BcMbaL1PLyBWsy1GPnHeDx0RI8m3fRtc0t1nQ0";
+const DEMO_S = "demo-steward@communitymerit.app";
+const DEMO_U = "demo-user@communitymerit.app";
+const sb={from:(t)=>{let u=`${SB_URL}/rest/v1/${t}`,h={apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,"Content-Type":"application/json",Prefer:"return=representation"},p=[],m="GET",bd=null;
+const b={select:(c="*")=>{p.push(`select=${encodeURIComponent(c)}`);return b},eq:(c,v)=>{p.push(`${c}=eq.${v}`);return b},neq:(c,v)=>{p.push(`${c}=neq.${v}`);return b},
+gte:(c,v)=>{p.push(`${c}=gte.${encodeURIComponent(v)}`);return b},lte:(c,v)=>{p.push(`${c}=lte.${encodeURIComponent(v)}`);return b},
+is:(c,v)=>{p.push(`${c}=is.${v}`);return b},or:(x)=>{p.push(`or=(${x})`);return b},
+order:(c,o={})=>{p.push(`order=${c}.${o.ascending?'asc':'desc'}`);return b},limit:(n)=>{p.push(`limit=${n}`);return b},
+single:()=>{h["Accept"]="application/vnd.pgrst.object+json";return b},insert:(d)=>{m="POST";bd=JSON.stringify(d);return b},update:(d)=>{m="PATCH";bd=JSON.stringify(d);return b},
+upsert:(d)=>{m="POST";bd=JSON.stringify(d);h["Prefer"]="resolution=merge-duplicates,return=representation";return b},delete:()=>{m="DELETE";return b},
+then:async(resolve)=>{const sep=u.includes("?")?"&":"?";const full=p.length?`${u}${sep}${p.join("&")}`:u;
+try{const r=await fetch(full,{method:m,headers:h,body:bd});const txt=await r.text();const d=txt?JSON.parse(txt):null;resolve(r.ok?{data:d,error:null}:{data:null,error:d});}catch(e){resolve({data:null,error:e});}},};return b;}};
+const EMOJIS=["🌿","🌊","🚲","🎨","🌻","🏃","📚","🎵","🐕","🧹","🌳","☀️","🤝","🏠","🍳","⭐","🔥","💧","🌈","🎭","🏆","💚","🗳️","🛠️"];
+const TIER_COLORS=["","#cd7f32","#a8a8a8","#ffd700","#3a6fba","#7b3fba"];
+const qrUrl=(t,s=200)=>`https://api.qrserver.com/v1/create-qr-code/?size=${s}x${s}&data=${encodeURIComponent(t)}&bgcolor=f5f0e8&color=1a1a2e&margin=8`;
+const getRoute=()=>{const h=window.location.hash.slice(1)||"/";return{path:h,parts:h.split("/").filter(Boolean)}};
+const nav=(p)=>{window.location.hash=p};
+function evStatus(ev){const n=new Date(),s=ev.starts_at?new Date(ev.starts_at):null,e=ev.ends_at?new Date(ev.ends_at):null;if(e&&n>e)return"ended";if(s&&n>=s&&(!e||n<=e))return"live";if(s&&n<s)return"upcoming";return"evergreen";}
+function timeUntil(d){const df=new Date(d)-new Date();if(df<=0)return"now";const dy=Math.floor(df/864e5),hr=Math.floor(df%864e5/36e5),mn=Math.floor(df%36e5/6e4);return dy>0?`${dy}d ${hr}h`:hr>0?`${hr}h ${mn}m`:`${mn}m`;}
+function timeLeft(d){const df=new Date(d)-new Date();if(df<=0)return"ended";const dy=Math.floor(df/864e5),hr=Math.floor(df%864e5/36e5);return dy>0?`${dy} day${dy!==1?'s':''} left`:`${hr} hour${hr!==1?'s':''} left`;}
+const fd=(d)=>new Date(d).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
+const fl=(d)=>new Date(d).toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+const ft=(d)=>new Date(d).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+function getTierInfo(badge,merit){
+  const tc=badge.tier_count||3;const tiers=[];
+  for(let i=1;i<=tc;i++)tiers.push({name:badge[`tier${i}_name`],min:badge[`tier${i}_min`]});
+  let ct=0;for(let i=tiers.length-1;i>=0;i--)if(merit>=tiers[i].min){ct=i+1;break;}
+  const nt=ct<tc?ct:tc-1;const pm=ct>=tc?tiers[tc-1].min:tiers[nt].min;
+  return{tiers,currentTier:ct,tierCount:tc,nextMin:pm,currentName:ct>0?tiers[ct-1].name:"",nextName:ct<tc?tiers[nt].name:""};
+}
+const initColor=(name)=>{let h=0;for(let i=0;i<(name||"").length;i++)h=name.charCodeAt(i)+((h<<5)-h);return `hsl(${Math.abs(h)%360},45%,55%)`;}
+function Avatar({url,name,size}){const cls=size==="lg"?"avatar-lg":size==="md"?"avatar-md":"avatar-sm";const init=(name||"?").split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
+  return url?<img src={url} className={`avatar ${cls}`} alt={name}/>:<div className={`avatar ${cls}`} style={{background:initColor(name)}}>{init}</div>;}
+function TopBar({title,back,right}){return(<div className="top-bar"><div style={{display:"flex",alignItems:"center",gap:8}}>{back&&<span className="link" onClick={()=>nav(back)}>←</span>}<span style={{fontWeight:600,fontSize:16}}>{title}</span></div>{right}</div>)}
+function PBar({cur,max,color}){return(<div className="progress-bar"><div className="progress-fill" style={{width:`${Math.min(cur/max*100,100)}%`,background:color||"#e8632b"}}/></div>)}
+function TBadge({tier,name}){return <span className={`tier-badge tier-${Math.min(tier,5)}`}>{name||`Tier ${tier}`}</span>}
+function LCount({count}){return(<div className="live-count"><div className="live-dot"/>{count} checked in</div>)}
+function SPill({status,ev}){if(status==="live")return <span className="status-pill status-live">● Live</span>;if(status==="upcoming")return <span className="status-pill status-soon">⏳ {timeUntil(ev.starts_at)}</span>;if(status==="ended")return <span className="status-pill status-ended">Ended</span>;return <span className="status-pill status-evergreen">Ongoing</span>;}
+function Toggle({on,onToggle,label}){return(<div className="toggle-row"><span style={{fontSize:14,fontWeight:500}}>{label}</span><div className={`toggle ${on?"on":""}`} onClick={onToggle}><div className="toggle-knob"/></div></div>)}
+// find or create user (replaces upsert)
+async function findOrCreateUser(email,name){const{data:ex}=await sb.from("users").select("*").eq("email",email).single();if(ex)return ex;if(!name)return null;const{data:nu}=await sb.from("users").insert({email,name});return nu&&nu[0]?nu[0]:null;}
+function HomePage(){
+  const[ld,sLd]=useState("");const u=JSON.parse(localStorage.getItem("user")||"null");
+  const go=async(t)=>{sLd(t);const e=t==="steward"?DEMO_S:DEMO_U,tb=t==="steward"?"stewards":"users",k=t==="steward"?"steward":"user";
+    const{data:d}=await sb.from(tb).select("*").eq("email",e).single();if(d){localStorage.setItem(k,JSON.stringify(d));nav(t==="steward"?"/steward/dashboard":"/profile");}else alert("Demo data not found.");sLd("");};
+  return(<div className="fade-in" style={{paddingTop:40,textAlign:"center"}}><div style={{fontSize:48,marginBottom:8}}>🏘️</div><h1 className="serif" style={{fontSize:32,marginBottom:8}}>Community Merit</h1><p className="subtitle" style={{maxWidth:300,margin:"0 auto 32px"}}>Earn recognition for what you do for your community.</p>
+    <div style={{display:"flex",flexDirection:"column",gap:10,maxWidth:280,margin:"0 auto"}}>
+      <button className="btn btn-primary btn-block" onClick={()=>nav("/explore")}>Explore Events</button>
+      <button className="btn btn-ghost btn-block" onClick={()=>nav("/steward/login")}>I'm a Steward</button>
+      <button className="btn btn-ghost btn-block" onClick={()=>nav(u?"/profile":"/profile/login")}>{u?`My Profile (${u.name||u.email})`:"Check My Progress"}</button>
+    </div>
+    <div style={{marginTop:40,paddingTop:24,borderTop:"1px solid #e0dbd0"}}><p style={{fontSize:12,fontWeight:600,textTransform:"uppercase",letterSpacing:".05em",color:"#8a8578",marginBottom:10}}>Demo Mode</p>
+    <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}><button className="btn btn-secondary btn-sm" onClick={()=>go("steward")} disabled={!!ld}>{ld==="steward"?"...":"👑 Demo Steward"}</button><button className="btn btn-secondary btn-sm" onClick={()=>go("user")} disabled={!!ld}>{ld==="user"?"...":"🏅 Demo User"}</button></div>
+    <p style={{fontSize:11,color:"#8a8578",marginTop:8}}>Includes multi-step scavenger hunt & custom tier badges.</p></div></div>);}
+
+function StewardLogin(){
+  const[email,sE]=useState(""),[mode,sM]=useState("login"),[ld,sLd]=useState(false),[err,sErr]=useState("");
+  const login=async()=>{sLd(true);sErr("");const{data:d}=await sb.from("stewards").select("*").eq("email",email).single();if(!d){sErr("No steward account found.");sM("apply");}else{localStorage.setItem("steward",JSON.stringify(d));nav("/steward/dashboard");}sLd(false);};
+  return(<div className="fade-in"><TopBar title="Steward Access" back="/"/><div className="card"><h2 className="serif">Welcome, Steward</h2><p className="subtitle">Manage events and badges.</p>
+    <div className="field"><div className="label">Email</div><input type="email" value={email} onChange={e=>sE(e.target.value)} placeholder="you@org.com"/></div>
+    {err&&<p style={{color:"#e8632b",fontSize:13,marginBottom:12}}>{err}</p>}
+    {mode==="login"&&<button className="btn btn-primary btn-block" onClick={login} disabled={!email||ld}>{ld?"...":"Sign In"}</button>}
+    {mode==="apply"&&<div style={{marginTop:8}}><p style={{fontSize:13,marginBottom:12}}>Steward accounts require approval.</p><a href="https://forms.gle/QKYvxjcnVUjT7AM97" target="_blank" rel="noopener noreferrer"><button className="btn btn-primary btn-block" type="button">Apply to Be a Steward →</button></a></div>}
+    {mode==="login"&&<p style={{textAlign:"center",marginTop:12,fontSize:13}}><span className="link" onClick={()=>sM("apply")}>Want to become a steward?</span></p>}
+  </div></div>);}
+
+function ExplorePage(){
+  const[evs,sEvs]=useState([]),[ld,sLd]=useState(true);
+  useEffect(()=>{sb.from("explore_events").select("*").then(({data:d})=>{sEvs(d||[]);sLd(false);});},[]);
+  const live=evs.filter(e=>evStatus(e)==="live").sort((a,b)=>(b.checkin_count||0)-(a.checkin_count||0));
+  const soon=evs.filter(e=>evStatus(e)==="upcoming").sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
+  const ever=evs.filter(e=>evStatus(e)==="evergreen");
+  const ended=evs.filter(e=>evStatus(e)==="ended").sort((a,b)=>new Date(b.starts_at)-new Date(a.starts_at)).slice(0,5);
+  const EvCard=({ev})=>{const s=evStatus(ev);return(
+    <div className="card card-click" onClick={()=>nav(`/event/${ev.id}`)}>
+      <div style={{display:"flex",gap:10,marginBottom:8}}><Avatar url={ev.steward_avatar} name={ev.steward_name} size="sm"/>
+        <div style={{flex:1}}><div className="event-card-header"><div><div style={{display:"flex",alignItems:"center",gap:6}}><h3 className="serif" style={{fontSize:16}}>{ev.title}</h3>{ev.is_multi_step&&<span style={{fontSize:10,fontWeight:600,padding:"1px 5px",borderRadius:4,background:"#e8f0ff",color:"#3a6fba"}}>Multi</span>}</div>
+          <p style={{fontSize:12,color:"#8a8578"}}>{ev.steward_name}{ev.steward_org&&` · ${ev.steward_org}`}</p></div><SPill status={s} ev={ev}/></div></div></div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div style={{display:"flex",alignItems:"center",gap:6}}>{ev.badge_emoji&&<span className="badge-pill" style={{fontSize:12}}>{ev.badge_emoji} {ev.badge_name}</span>}<span style={{fontSize:12,fontWeight:600}}>+{ev.merit_value}</span></div>
+        {s!=="upcoming"&&<LCount count={ev.checkin_count||0}/>}</div>
+      {ev.location&&<p style={{fontSize:12,color:"#8a8578",marginTop:6}}>📍 {ev.location}</p>}
+      {s==="live"&&ev.ends_at&&<p className="countdown" style={{marginTop:4}}>{timeLeft(ev.ends_at)}</p>}
+      {s==="upcoming"&&<p className="countdown" style={{marginTop:4}}>Opens in {timeUntil(ev.starts_at)}</p>}
+    </div>);};
+  return(<div className="fade-in"><TopBar title="Explore Events" back="/"/>
+    {ld?<div className="empty-state"><p>Loading...</p></div>:<>
+    {live.length>0&&<><div className="section-label">🟢 Live Now</div>{live.map(e=><EvCard key={e.id} ev={e}/>)}</>}
+    {soon.length>0&&<><div className="section-label">⏳ Coming Soon</div>{soon.map(e=><EvCard key={e.id} ev={e}/>)}</>}
+    {ever.length>0&&<><div className="section-label">🔄 Ongoing</div>{ever.map(e=><EvCard key={e.id} ev={e}/>)}</>}
+    {ended.length>0&&<><div className="section-label" style={{opacity:.6}}>Recently Ended</div>{ended.map(e=><EvCard key={e.id} ev={e}/>)}</>}
+    {evs.length===0&&<div className="empty-state"><p>No events yet. Check back soon!</p></div>}</>}
+  </div>);}
+function StewardDashboard(){
+  const[st,sSt]=useState(null),[tab,sTab]=useState("events"),[evs,sEvs]=useState([]),[bds,sBds]=useState([]),[stats,sSts]=useState(null),[cis,sCis]=useState([]);
+  const[editP,sEP]=useState(false),[bio,sBio]=useState(""),[web,sWeb]=useState(""),[cp,sCp]=useState(false);
+  useEffect(()=>{const s=JSON.parse(localStorage.getItem("steward")||"null");if(!s){nav("/steward/login");return;}sSt(s);sBio(s.bio||"");sWeb(s.website||"");ld(s.id);},[]);
+  const ld=async(sid)=>{const[ev,bd,st2,ci]=await Promise.all([sb.from("events").select("*").eq("steward_id",sid).order("starts_at",{ascending:false}),sb.from("badges").select("*").eq("steward_id",sid).order("created_at",{ascending:false}),sb.from("steward_stats").select("*").eq("steward_id",sid).single(),sb.from("event_checkin_details").select("*").eq("steward_id",sid).order("checked_in_at",{ascending:false})]);sEvs(ev.data||[]);sBds(bd.data||[]);sSts(st2.data||{total_events:0,total_checkins:0,unique_participants:0});sCis(ci.data||[]);};
+  const saveProfile=async()=>{if(!st)return;await sb.from("stewards").update({bio:bio||null,website:web||null}).eq("id",st.id);const u={...st,bio,website:web};localStorage.setItem("steward",JSON.stringify(u));sSt(u);sEP(false);};
+  const profUrl=`${window.location.origin}${window.location.pathname}#/steward/${st?.id}`;
+  if(!st)return null;
+  return(<div className="fade-in">
+    <TopBar title={st.organization||st.name} right={<span className="link" onClick={()=>{localStorage.removeItem("steward");nav("/");}}>Sign Out</span>}/>
+    <div className="card" style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+      <Avatar url={st.avatar_url} name={st.name} size="md"/>
+      <div style={{flex:1}}><h3 className="serif">{st.name}</h3>{st.organization&&<p style={{fontSize:13,color:"#8a8578"}}>{st.organization}</p>}
+        {st.bio&&!editP&&<p style={{fontSize:13,marginTop:4}}>{st.bio}</p>}
+        <div style={{display:"flex",gap:8,marginTop:8,flexWrap:"wrap"}}>
+          <button className="btn btn-ghost btn-sm" onClick={()=>sEP(!editP)}>{editP?"Cancel":"Edit Profile"}</button>
+          <button className="btn btn-ghost btn-sm" onClick={()=>nav(`/steward/${st.id}`)}>View Public Page</button>
+          <button className="btn btn-ghost btn-sm" onClick={()=>{navigator.clipboard.writeText(profUrl);sCp(true);setTimeout(()=>sCp(false),2000);}}>{cp?"✓ Copied":"Copy Link"}</button>
+        </div></div></div>
+    {editP&&<div className="card" style={{marginBottom:16}}>
+      <div className="field"><div className="label">Bio</div><textarea value={bio} onChange={e=>sBio(e.target.value)} placeholder="Tell people about your work..."/></div>
+      <div className="field"><div className="label">Website</div><input value={web} onChange={e=>sWeb(e.target.value)} placeholder="https://yoursite.org"/></div>
+      <p style={{fontSize:12,color:"#8a8578",marginBottom:12}}>To update your avatar, contact ryan@communityplaytools.com</p>
+      <button className="btn btn-primary btn-sm" onClick={saveProfile}>Save Profile</button></div>}
+    {stats&&<div className="stat-grid"><div className="stat-box"><div className="stat-num">{stats.total_events}</div><div className="stat-label">Events</div></div><div className="stat-box"><div className="stat-num">{stats.total_checkins}</div><div className="stat-label">Check-ins</div></div><div className="stat-box"><div className="stat-num">{stats.unique_participants}</div><div className="stat-label">People</div></div></div>}
+    <div className="nav"><button className={`nav-item ${tab==="events"?"active":""}`} onClick={()=>sTab("events")}>Events</button><button className={`nav-item ${tab==="badges"?"active":""}`} onClick={()=>sTab("badges")}>Badges</button><button className={`nav-item ${tab==="checkins"?"active":""}`} onClick={()=>sTab("checkins")}>People</button></div>
+    {tab==="events"&&<div><button className="btn btn-primary btn-block" style={{marginBottom:16}} onClick={()=>nav("/steward/event/new")}>+ Create Event</button>
+      {evs.map(ev=>{const cnt=cis.filter(c=>c.event_id===ev.id&&c.checkin_id).length;const bd=bds.find(b=>b.id===ev.badge_id);const s=evStatus(ev);
+        return(<div key={ev.id} className="card card-click" onClick={()=>nav(`/steward/event/${ev.id}`)}>
+          <div className="event-card-header"><div><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}><h3 className="serif">{ev.title}</h3>{ev.is_multi_step&&<span style={{fontSize:11,fontWeight:600,padding:"2px 6px",borderRadius:4,background:"#e8f0ff",color:"#3a6fba"}}>Multi-step</span>}</div><p style={{fontSize:13,color:"#8a8578"}}>{fd(ev.starts_at)}{ev.location&&` · ${ev.location}`}</p></div><SPill status={s} ev={ev}/></div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:8}}><div style={{display:"flex",alignItems:"center",gap:8}}>{bd&&<span className="badge-pill">{bd.emoji} {bd.name}</span>}<span style={{fontSize:13,fontWeight:600}}>+{ev.merit_value}</span></div><LCount count={cnt}/></div>
+        </div>);})}
+      {evs.length===0&&<div className="empty-state"><p>No events yet.</p></div>}</div>}
+    {tab==="badges"&&<div><button className="btn btn-primary btn-block" style={{marginBottom:16}} onClick={()=>nav("/steward/badge/new")}>+ Create Badge</button>
+      {bds.map(b=>{const tc=b.tier_count||3;return(<div key={b.id} className="card"><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}><span style={{fontSize:28}}>{b.emoji}</span><div><h3 className="serif">{b.name}</h3>{b.description&&<p style={{fontSize:13,color:"#8a8578"}}>{b.description}</p>}</div></div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{Array.from({length:tc}).map((_,i)=><TBadge key={i} tier={i+1} name={`${b[`tier${i+1}_name`]} (${b[`tier${i+1}_min`]}+)`}/>)}</div></div>);})}
+      {bds.length===0&&<div className="empty-state"><p>No badges yet.</p></div>}</div>}
+    {tab==="checkins"&&<div>{evs.map(ev=>{const ecs=cis.filter(c=>c.event_id===ev.id&&c.checkin_id);if(!ecs.length)return null;return(<div key={ev.id} className="card"><h3 className="serif" style={{marginBottom:4}}>{ev.title}</h3><p style={{fontSize:12,color:"#8a8578",marginBottom:10}}>{fd(ev.starts_at)} · {ecs.length} check-in{ecs.length!==1?"s":""}</p>{ecs.map(c=>(<div key={c.checkin_id} className="checkin-row"><div><span style={{fontWeight:600}}>{c.user_name}</span><span style={{fontSize:12,color:"#8a8578",marginLeft:8}}>{c.user_email}</span></div><span style={{fontSize:12,color:"#8a8578"}}>{ft(c.checked_in_at)}</span></div>))}</div>);})}{cis.filter(c=>c.checkin_id).length===0&&<div className="empty-state"><p>No check-ins yet.</p></div>}</div>}
+  </div>);}
+
+function StewardPublicProfile({stewardId}){
+  const[st,sSt]=useState(null),[bds,sBds]=useState([]),[evs,sEvs]=useState([]),[stats,sSts]=useState(null);
+  useEffect(()=>{(async()=>{
+    const{data:s}=await sb.from("stewards").select("*").eq("id",stewardId).single();sSt(s);
+    if(s){const[bd,ev,st2]=await Promise.all([sb.from("badges").select("*").eq("steward_id",stewardId),sb.from("explore_events").select("*").eq("steward_id",stewardId).order("starts_at",{ascending:false}),sb.from("steward_stats").select("*").eq("steward_id",stewardId).single()]);sBds(bd.data||[]);sEvs(ev.data||[]);sSts(st2.data);}
+  })();},[stewardId]);
+  if(!st)return<div className="app fade-in"><p>Loading...</p></div>;
+  const live=evs.filter(e=>evStatus(e)==="live"||evStatus(e)==="evergreen");
+  const soon=evs.filter(e=>evStatus(e)==="upcoming");
+  const past=evs.filter(e=>evStatus(e)==="ended").slice(0,5);
+  return(<div className="fade-in"><TopBar title="Steward Profile" back="/explore"/>
+    <div className="card" style={{textAlign:"center"}}><Avatar url={st.avatar_url} name={st.name} size="lg"/><h2 className="serif" style={{marginTop:8}}>{st.name}</h2>
+      {st.organization&&<p style={{fontSize:14,color:"#8a8578"}}>{st.organization}</p>}
+      {st.bio&&<p style={{fontSize:14,marginTop:8}}>{st.bio}</p>}
+      {st.website&&<a href={st.website} target="_blank" rel="noopener noreferrer" className="link" style={{fontSize:13,marginTop:6,display:"inline-block"}}>{st.website.replace(/^https?:\/\//,'')}</a>}
+    </div>
+    {stats&&<div className="stat-grid"><div className="stat-box"><div className="stat-num">{stats.total_events}</div><div className="stat-label">Events</div></div><div className="stat-box"><div className="stat-num">{stats.total_checkins}</div><div className="stat-label">Check-ins</div></div><div className="stat-box"><div className="stat-num">{stats.unique_participants}</div><div className="stat-label">People</div></div></div>}
+    {bds.length>0&&<div className="card"><h3 className="serif" style={{marginBottom:10}}>Badges</h3>
+      {bds.map(b=>{const tc=b.tier_count||3;return(<div key={b.id} className="card-flat"><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}><span style={{fontSize:22}}>{b.emoji}</span><span style={{fontWeight:600}}>{b.name}</span></div>{b.description&&<p style={{fontSize:13,color:"#8a8578",marginBottom:6}}>{b.description}</p>}<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{Array.from({length:tc}).map((_,i)=><TBadge key={i} tier={i+1} name={b[`tier${i+1}_name`]}/>)}</div></div>);})}</div>}
+    {(live.length>0||soon.length>0)&&<div className="card"><h3 className="serif" style={{marginBottom:10}}>Events</h3>
+      {live.map(e=>(<div key={e.id} className="card-flat card-click" onClick={()=>nav(`/event/${e.id}`)}><div style={{display:"flex",justifyContent:"space-between"}}><div><span style={{fontWeight:600}}>{e.title}</span><p style={{fontSize:12,color:"#8a8578"}}>{fd(e.starts_at)}{e.location&&` · ${e.location}`}</p></div><SPill status={evStatus(e)} ev={e}/></div></div>))}
+      {soon.map(e=>(<div key={e.id} className="card-flat card-click" onClick={()=>nav(`/event/${e.id}`)}><div style={{display:"flex",justifyContent:"space-between"}}><div><span style={{fontWeight:600}}>{e.title}</span><p style={{fontSize:12,color:"#8a8578"}}>{fd(e.starts_at)}{e.location&&` · ${e.location}`}</p></div><SPill status="upcoming" ev={e}/></div></div>))}</div>}
+    {past.length>0&&<div className="card"><h3 className="serif" style={{marginBottom:10}}>Past Events</h3>
+      {past.map(e=>(<div key={e.id} className="card-flat" style={{opacity:.7}}><span style={{fontWeight:600}}>{e.title}</span><p style={{fontSize:12,color:"#8a8578"}}>{fd(e.starts_at)} · {e.checkin_count||0} check-ins</p></div>))}</div>}
+  </div>);}
+function CreateBadge(){
+  const[name,sN]=useState(""),[emoji,sE]=useState("🌿"),[desc,sD]=useState(""),[custom,sC]=useState(false);
+  const[tiers,sTiers]=useState([{name:"Bronze",min:1},{name:"Silver",min:11},{name:"Gold",min:31}]);
+  const[ld,sLd]=useState(false);const stw=JSON.parse(localStorage.getItem("steward")||"null");
+  const addT=()=>{if(tiers.length<5)sTiers([...tiers,{name:"",min:tiers[tiers.length-1].min+10}]);};
+  const rmT=(i)=>{if(tiers.length>2)sTiers(tiers.filter((_,j)=>j!==i));};
+  const upT=(i,f,v)=>{const t=[...tiers];t[i]={...t[i],[f]:f==="min"?Math.max(1,Number(v)):v};sTiers(t);};
+  const go=async()=>{if(!stw)return;sLd(true);const t=custom?tiers:[{name:"Bronze",min:1},{name:"Silver",min:11},{name:"Gold",min:31}];
+    const row={steward_id:stw.id,name,emoji,description:desc||null,tier_count:t.length};
+    for(let i=0;i<5;i++){row[`tier${i+1}_name`]=t[i]?t[i].name:`Tier ${i+1}`;row[`tier${i+1}_min`]=t[i]?t[i].min:(i+1)*20;}
+    await sb.from("badges").insert(row);sLd(false);nav("/steward/dashboard");};
+  return(<div className="fade-in"><TopBar title="New Badge" back="/steward/dashboard"/><div className="card">
+    <div className="field"><div className="label">Badge Name</div><input value={name} onChange={e=>sN(e.target.value)} placeholder="e.g. Green Guardian"/></div>
+    <div className="field"><div className="label">Icon</div><div className="emoji-grid">{EMOJIS.map(e=><button key={e} className={`emoji-btn ${emoji===e?"selected":""}`} onClick={()=>sE(e)}>{e}</button>)}</div></div>
+    <div className="field"><div className="label">Description (optional)</div><textarea value={desc} onChange={e=>sD(e.target.value)} placeholder="What does this badge represent?"/></div>
+    <div style={{borderTop:"1px solid #e0dbd0",paddingTop:14,marginTop:8}}>
+      <div className="label" style={{marginBottom:8}}>Tier Setup</div>
+      <Toggle on={custom} onToggle={()=>sC(!custom)} label="Custom tiers"/>
+      {!custom&&<div className="card-flat" style={{marginTop:8}}><div style={{display:"flex",gap:6,flexWrap:"wrap"}}><TBadge tier={1} name="Bronze (1+)"/><TBadge tier={2} name="Silver (11+)"/><TBadge tier={3} name="Gold (31+)"/></div></div>}
+      {custom&&<div style={{marginTop:8}}>
+        {tiers.map((t,i)=>(<div key={i} className="tier-row">
+          <TBadge tier={i+1} name={t.name||`Tier ${i+1}`}/>
+          <input style={{width:120,fontSize:13}} value={t.name} onChange={e=>upT(i,"name",e.target.value)} placeholder="Tier name"/>
+          <div style={{display:"flex",alignItems:"center",gap:4}}><span style={{fontSize:12,color:"#8a8578"}}>Min:</span><input type="number" style={{width:60,fontSize:13}} value={t.min} onChange={e=>upT(i,"min",e.target.value)} min={1} max={100}/></div>
+          {tiers.length>2&&<span className="link" style={{fontSize:12}} onClick={()=>rmT(i)}>×</span>}
+        </div>))}
+        {tiers.length<5&&<button className="btn btn-ghost btn-sm" style={{marginTop:8}} onClick={addT}>+ Add Tier</button>}
+        <p style={{fontSize:11,color:"#8a8578",marginTop:8}}>Each tier minimum must be higher than the previous. Max 5 tiers.</p>
+      </div>}
+    </div>
+    <button className="btn btn-primary btn-block" style={{marginTop:14}} onClick={go} disabled={!name||ld}>{ld?"Creating...":"Create Badge"}</button>
+  </div></div>);}
+function CreateEvent(){
+  const[title,sT]=useState(""),[desc,sD]=useState(""),[loc,sL]=useState(""),[merit,sM]=useState(3),[badgeId,sBI]=useState(""),[startsAt,sSA]=useState(""),[endsAt,sEA]=useState(""),[visFrom,sVF]=useState("");
+  const[isMulti,sIM]=useState(false),[cm,sCM]=useState("self"),[bonus,sB]=useState(50),[steps,sSt]=useState([{title:"",description:"",location:"",merit_value:2}]);
+  const[badges,sBs]=useState([]),[ld,sLd]=useState(false);const stw=JSON.parse(localStorage.getItem("steward")||"null");
+  useEffect(()=>{if(!stw)return;sb.from("badges").select("*").eq("steward_id",stw.id).then(({data:d})=>{sBs(d||[]);if(d&&d.length)sBI(d[0].id);});},[]);
+  const addS=()=>sSt([...steps,{title:"",description:"",location:"",merit_value:2}]);
+  const upS=(i,f,v)=>{const s=[...steps];s[i]={...s[i],[f]:v};sSt(s);};const rmS=(i)=>sSt(steps.filter((_,j)=>j!==i));
+  const go=async()=>{if(!stw)return;sLd(true);
+    const d={steward_id:stw.id,badge_id:badgeId||null,title,description:desc||null,location:loc||null,merit_value:isMulti?steps[0]?.merit_value||2:merit,starts_at:new Date(startsAt).toISOString(),ends_at:endsAt?new Date(endsAt).toISOString():null,visible_from:visFrom?new Date(visFrom).toISOString():null,is_multi_step:isMulti,checkin_mode:isMulti?cm:"qr",completion_bonus_pct:isMulti?bonus:0};
+    const{data}=await sb.from("events").insert(d);
+    if(data&&data[0]&&isMulti){const rows=steps.filter(s=>s.title).map((s,i)=>({event_id:data[0].id,step_number:i+1,title:s.title,description:s.description||null,location:s.location||null,merit_value:s.merit_value}));if(rows.length)await sb.from("event_steps").insert(rows);}
+    sLd(false);if(data&&data[0])nav(`/steward/event/${data[0].id}`);else nav("/steward/dashboard");};
+  return(<div className="fade-in"><TopBar title="New Event" back="/steward/dashboard"/><div className="card">
+    <div className="field"><div className="label">Event Title</div><input value={title} onChange={e=>sT(e.target.value)} placeholder="Saturday Beach Cleanup"/></div>
+    <div className="field"><div className="label">Description</div><textarea value={desc} onChange={e=>sD(e.target.value)} placeholder="What's happening?"/></div>
+    <div className="field"><div className="label">Location</div><input value={loc} onChange={e=>sL(e.target.value)} placeholder="North Shore Park"/></div>
+    <div className="field"><div className="label">Badge</div>{badges.length===0?<div style={{fontSize:13,color:"#8a8578"}}>No badges. <span className="link" onClick={()=>nav("/steward/badge/new")}>Create one</span></div>:<select value={badgeId} onChange={e=>sBI(e.target.value)}>{badges.map(b=><option key={b.id} value={b.id}>{b.emoji} {b.name}</option>)}</select>}</div>
+    <div style={{borderTop:"1px solid #e0dbd0",paddingTop:14,marginTop:8}}><div className="label" style={{marginBottom:10}}>Scheduling</div>
+      <div className="field"><div className="label">Preview visible from (optional)</div><input type="datetime-local" value={visFrom} onChange={e=>sVF(e.target.value)}/><p style={{fontSize:11,color:"#8a8578",marginTop:4}}>Users can see and save before check-in opens.</p></div>
+      <div className="field"><div className="label">Check-in opens</div><input type="datetime-local" value={startsAt} onChange={e=>sSA(e.target.value)}/></div>
+      <div className="field"><div className="label">Check-in closes (optional)</div><input type="datetime-local" value={endsAt} onChange={e=>sEA(e.target.value)}/><p style={{fontSize:11,color:"#8a8578",marginTop:4}}>Leave empty for evergreen events.</p></div></div>
+    <div style={{borderTop:"1px solid #e0dbd0",paddingTop:14,marginTop:8}}><Toggle on={isMulti} onToggle={()=>sIM(!isMulti)} label="Multi-step event"/><p style={{fontSize:12,color:"#8a8578",marginBottom:12}}>Scavenger hunts, art walks, multi-stop tours</p></div>
+    {!isMulti&&<div className="field"><div className="label">Merit Value: {merit}</div><input type="range" className="merit-slider" min={1} max={10} value={merit} onChange={e=>sM(Number(e.target.value))}/></div>}
+    {isMulti&&<div>
+      <div className="field"><div className="label">Check-in mode</div><select value={cm} onChange={e=>sCM(e.target.value)}><option value="self">Self-check (single page checklist)</option><option value="qr">QR per stop</option></select></div>
+      <div className="field"><div className="label">Completion bonus: {bonus}%</div><input type="range" className="merit-slider" min={0} max={100} step={10} value={bonus} onChange={e=>sB(Number(e.target.value))}/></div>
+      <div className="label" style={{marginTop:12}}>Steps ({steps.length})</div>
+      {steps.map((s,i)=>(<div key={i} className="card-flat" style={{marginBottom:8}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}><span style={{fontWeight:600,fontSize:13}}>Step {i+1}</span>{steps.length>1&&<span className="link" style={{fontSize:12}} onClick={()=>rmS(i)}>Remove</span>}</div>
+        <div className="field"><input value={s.title} onChange={e=>upS(i,"title",e.target.value)} placeholder="Step title"/></div>
+        <div className="field"><input value={s.location} onChange={e=>upS(i,"location",e.target.value)} placeholder="Location"/></div>
+        <div className="field"><input value={s.description} onChange={e=>upS(i,"description",e.target.value)} placeholder="Description"/></div>
+        <div className="field"><div className="label">Merit: {s.merit_value}</div><input type="range" className="merit-slider" min={1} max={10} value={s.merit_value} onChange={e=>upS(i,"merit_value",Number(e.target.value))}/></div>
+      </div>))}
+      <button className="btn btn-ghost btn-block btn-sm" onClick={addS}>+ Add Step</button></div>}
+    <button className="btn btn-primary btn-block" style={{marginTop:16}} onClick={go} disabled={!title||!startsAt||!badgeId||ld}>{ld?"Creating...":"Create Event"}</button>
+  </div></div>);}
+
+function StewardEventDetail({eventId}){
+  const[ev,sEv]=useState(null),[badge,sBd]=useState(null),[cis,sCis]=useState([]),[steps,sSt]=useState([]),[cp,sCp]=useState(false),[svCnt,sSvC]=useState(0),[stw,sStw]=useState(null);
+  const ld=async()=>{const{data:e}=await sb.from("events").select("*").eq("id",eventId).single();if(e){sEv(e);if(e.badge_id){const{data:b}=await sb.from("badges").select("*").eq("id",e.badge_id).single();sBd(b);}if(e.is_multi_step){const{data:s}=await sb.from("event_steps").select("*").eq("event_id",eventId).order("step_number",{ascending:true});sSt(s||[]);}const{data:sw}=await sb.from("stewards").select("*").eq("id",e.steward_id).single();sStw(sw);}
+    const{data:ci}=await sb.from("event_checkin_details").select("*").eq("event_id",eventId).order("checked_in_at",{ascending:false});sCis((ci||[]).filter(c=>c.checkin_id));
+    const{data:sv}=await sb.from("saved_events").select("id").eq("event_id",eventId);sSvC(sv?sv.length:0);};
+  useEffect(()=>{ld();const i=setInterval(ld,5000);return()=>clearInterval(i);},[eventId]);
+  if(!ev)return<div className="app"><p>Loading...</p></div>;
+  const s=evStatus(ev),url=`${window.location.origin}${window.location.pathname}#/event/${eventId}`;
+  return(<div className="fade-in"><TopBar title="Event Details" back="/steward/dashboard"/>
+    <div className="card"><div className="event-card-header"><div><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}><h2 className="serif">{ev.title}</h2>{ev.is_multi_step&&<span style={{fontSize:11,fontWeight:600,padding:"2px 6px",borderRadius:4,background:"#e8f0ff",color:"#3a6fba"}}>Multi-step</span>}</div><p style={{fontSize:13,color:"#8a8578"}}>{fl(ev.starts_at)}{ev.location&&` · ${ev.location}`}</p></div><SPill status={s} ev={ev}/></div>
+      {ev.description&&<p style={{fontSize:14,marginTop:8}}>{ev.description}</p>}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:12}}><div style={{display:"flex",alignItems:"center",gap:8}}>{badge&&<span className="badge-pill">{badge.emoji} {badge.name}</span>}<span style={{fontSize:13,fontWeight:600}}>+{ev.merit_value}{ev.is_multi_step?"/step":""}</span></div><LCount count={cis.length}/></div>
+      {svCnt>0&&<p style={{fontSize:12,color:"#8a8578",marginTop:6}}>💾 {svCnt} saved</p>}
+      {s==="live"&&ev.ends_at&&<p className="countdown" style={{marginTop:6}}>{timeLeft(ev.ends_at)}</p>}</div>
+    {steps.length>0&&<div className="card"><h3 className="serif" style={{marginBottom:10}}>Steps ({steps.length})</h3>
+      {steps.map((st,i)=>(<div key={st.id} className="card-flat" style={{marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between"}}><span style={{fontWeight:600,fontSize:13}}>{i+1}. {st.title}</span><span style={{fontSize:12,color:"#8a8578"}}>+{st.merit_value}</span></div>{st.location&&<p style={{fontSize:12,color:"#8a8578"}}>{st.location}</p>}</div>))}
+      {ev.completion_bonus_pct>0&&<p style={{fontSize:12,color:"#9a7b00",fontWeight:600,marginTop:8}}>🎯 {ev.completion_bonus_pct}% completion bonus</p>}</div>}
+    <div className="card"><h3 className="serif" style={{textAlign:"center",marginBottom:12}}>Check-in QR Code</h3><div className="qr-container"><img src={qrUrl(url,220)} alt="QR" style={{width:220,height:220}}/></div><p style={{textAlign:"center",fontSize:12,color:"#8a8578",marginTop:8,wordBreak:"break-all"}}>{url}</p>
+      <button className="btn btn-ghost btn-block btn-sm" style={{marginTop:8}} onClick={()=>{navigator.clipboard.writeText(url);sCp(true);setTimeout(()=>sCp(false),2000);}}>{cp?"✓ Copied!":"Copy Link"}</button></div>
+    <div className="card"><h3 className="serif" style={{marginBottom:12}}>Check-ins ({cis.length})</h3>{cis.length===0?<p style={{fontSize:13,color:"#8a8578"}}>No check-ins yet.</p>:cis.map(c=>(<div key={c.checkin_id} className="checkin-row"><div><span style={{fontWeight:600}}>{c.user_name}</span><span style={{fontSize:12,color:"#8a8578",marginLeft:8}}>{c.user_email}</span></div><span style={{fontSize:12,color:"#8a8578"}}>{ft(c.checked_in_at)}</span></div>))}</div>
+  </div>);}
+function EventCheckin({eventId,stepId}){
+  const[ev,sEv]=useState(null),[badge,sBd]=useState(null),[steps,sSt]=useState([]),[cnt,sCnt]=useState(0),[stw,sStw]=useState(null);
+  const[email,sE]=useState(""),[name,sN]=useState(""),[ld,sLd]=useState(false),[err,sErr]=useState("");
+  const[done,sDone]=useState(false),[earned,sEarned]=useState(null),[user,sUser]=useState(null),[uSteps,sUS]=useState([]),[chkStep,sChs]=useState(null),[saved,sSaved]=useState(false),[totSM,sTSM]=useState(0);
+  // Session persistence: check localStorage
+  const storedUser=JSON.parse(localStorage.getItem("user")||"null");
+  useEffect(()=>{ldAll();},[eventId]);
+  const ldAll=async()=>{const{data:e}=await sb.from("events").select("*").eq("id",eventId).single();if(!e)return;sEv(e);
+    if(e.badge_id){const{data:b}=await sb.from("badges").select("*").eq("id",e.badge_id).single();sBd(b);}
+    if(e.is_multi_step){const{data:s}=await sb.from("event_steps").select("*").eq("event_id",eventId).order("step_number",{ascending:true});sSt(s||[]);}
+    const{data:sw}=await sb.from("stewards").select("*").eq("id",e.steward_id).single();sStw(sw);
+    const{data:ci}=await sb.from("checkins").select("id").eq("event_id",eventId);sCnt(ci?ci.length:0);};
+  const ldUS=async(uid)=>{const{data:d}=await sb.from("step_checkins").select("step_id").eq("event_id",eventId).eq("user_id",uid);sUS((d||[]).map(x=>x.step_id));const{data:sc}=await sb.from("step_checkins").select("merit_earned").eq("event_id",eventId).eq("user_id",uid);sTSM((sc||[]).reduce((s,c)=>s+c.merit_earned,0));};
+  const st=ev?evStatus(ev):null;
+  // Auto-identify from session
+  const autoIdent=async(u)=>{sUser(u);if(ev?.is_multi_step){await ldUS(u.id);}else{
+    const{error:ce}=await sb.from("checkins").insert({event_id:eventId,user_id:u.id,merit_earned:ev.merit_value});
+    if(ce){sErr(ce.code==="23505"||ce.message?.includes("duplicate")?"Already checked in!":"Check-in failed.");return false;}
+    if(badge){const{data:p}=await sb.from("user_badge_progress").select("*").eq("user_id",u.id).eq("badge_id",badge.id).single();sEarned(p);}
+    sCnt(c=>c+1);sDone(true);}return true;};
+  const ident=async()=>{sLd(true);sErr("");const u=await findOrCreateUser(email,name);if(!u){sErr("Error. Try again.");sLd(false);return;}
+    localStorage.setItem("user",JSON.stringify(u));
+    if(ev.is_multi_step){sUser(u);await ldUS(u.id);}else{await autoIdent(u);}sLd(false);};
+  const chkS=async(step)=>{if(!user)return;sChs(step.id);const{error:e}=await sb.from("step_checkins").insert({event_id:eventId,step_id:step.id,user_id:user.id,merit_earned:step.merit_value});
+    if(!e){const nIds=[...uSteps,step.id];sUS(nIds);sTSM(m=>m+step.merit_value);if(nIds.length===steps.length&&ev.completion_bonus_pct>0){const tb=steps.reduce((s,st)=>s+st.merit_value,0);const bm=Math.round(tb*ev.completion_bonus_pct/100);await sb.from("checkins").insert({event_id:eventId,user_id:user.id,merit_earned:bm});}}sChs(null);};
+  const doSave=async()=>{if(!email){sErr("Enter email to save.");return;}sLd(true);const u=await findOrCreateUser(email,name||"Interested");if(u){localStorage.setItem("user",JSON.stringify(u));await sb.from("saved_events").insert({event_id:eventId,user_id:u.id});}sSaved(true);sLd(false);};
+  if(!ev)return<div className="app" style={{padding:"40px 16px",textAlign:"center"}}><p>Loading...</p></div>;
+
+  // Single-step done
+  if(done&&!ev.is_multi_step){const ti=badge?getTierInfo(badge,earned?earned.total_merit:ev.merit_value):null;const tot=earned?earned.total_merit:ev.merit_value;
+    return(<div className="fade-in"><div className="checkin-success"><div className="emoji">{badge?badge.emoji:"⭐"}</div><h1 className="serif" style={{marginBottom:4}}>You're in!</h1><p className="subtitle">+{ev.merit_value} merit earned</p><LCount count={cnt}/></div>
+      {ti&&<div className="card" style={{marginTop:16}}><h3 className="serif" style={{marginBottom:8}}>{badge.emoji} {badge.name} Progress</h3><div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:2}}><span style={{fontWeight:600}}>{tot} merit</span>{ti.currentTier>0&&<TBadge tier={ti.currentTier} name={ti.currentName}/>}</div><PBar cur={tot} max={ti.nextMin} color={TIER_COLORS[ti.currentTier]||"#e8632b"}/>{ti.currentTier<ti.tierCount&&<p style={{fontSize:12,color:"#8a8578",marginTop:4}}>{ti.nextMin-tot} more to {ti.nextName}</p>}</div>}
+      <div className="card" style={{textAlign:"center"}}><button className="btn btn-ghost btn-sm" onClick={()=>nav("/profile")}>View My Profile</button></div></div>);}
+
+  // Multi-step tracker
+  if(ev.is_multi_step&&user){const allDone=uSteps.length===steps.length;const tb=steps.reduce((s,st)=>s+st.merit_value,0);const bm=allDone?Math.round(tb*ev.completion_bonus_pct/100):0;
+    return(<div className="fade-in"><TopBar title={ev.title} back="/explore"/>
+      {allDone&&<div className="bonus-banner"><span style={{fontSize:24}}>🎉</span><h3 className="serif" style={{marginTop:4}}>All steps complete!</h3>{bm>0&&<p style={{fontSize:13,fontWeight:600,color:"#9a7b00",marginTop:4}}>+{bm} bonus merit!</p>}<p style={{fontSize:13,color:"#8a8578",marginTop:4}}>Total: {totSM+bm} merit</p></div>}
+      <div style={{marginBottom:12}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><span style={{fontSize:14,fontWeight:600}}>{uSteps.length} of {steps.length} steps</span>{badge&&<span className="badge-pill">{badge.emoji} {badge.name}</span>}</div><PBar cur={uSteps.length} max={steps.length} color="#2d8a4e"/><p style={{fontSize:12,color:"#8a8578",marginTop:4}}>{totSM} merit earned{ev.completion_bonus_pct>0&&!allDone?` · ${ev.completion_bonus_pct}% bonus for all`:""}</p></div>
+      {steps.map((s,i)=>{const isDone=uSteps.includes(s.id);const isSelf=ev.checkin_mode==="self";const isEnd=st==="ended";
+        return(<div key={s.id} className={`step-item ${isDone?"completed":isEnd?"locked":"available"}`} onClick={()=>{if(!isDone&&!isEnd&&isSelf)chkS(s);}}>
+          <div className={`step-circle ${isDone?"done":"open"}`}>{isDone?"✓":i+1}</div>
+          <div style={{flex:1}}><div style={{fontWeight:600,fontSize:14}}>{s.title}</div>{s.location&&<p style={{fontSize:12,color:"#8a8578"}}>{s.location}</p>}{s.description&&<p style={{fontSize:12,color:"#8a8578",marginTop:2}}>{s.description}</p>}
+            <div style={{fontSize:12,marginTop:4}}>{isDone?<span style={{color:"#2d8a4e",fontWeight:600}}>✓ +{s.merit_value} earned</span>:chkStep===s.id?<span style={{color:"#8a8578"}}>...</span>:isEnd?<span style={{color:"#8a8578"}}>Ended</span>:isSelf?<span style={{color:"#e8632b",fontWeight:600}}>Tap to check in · +{s.merit_value}</span>:<span style={{color:"#8a8578"}}>Scan QR · +{s.merit_value}</span>}</div></div></div>);})}
+      <div className="card" style={{textAlign:"center",marginTop:12}}><button className="btn btn-ghost btn-sm" onClick={()=>nav("/profile")}>View My Profile</button></div></div>);}
+
+  // Pre-checkin: session check
+  const hasSession=storedUser&&!user;
+  return(<div className="fade-in">
+    <div className="card" style={{marginTop:16}}>
+      {stw&&<div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10,cursor:"pointer"}} onClick={()=>nav(`/steward/${stw.id}`)}><Avatar url={stw.avatar_url} name={stw.name} size="sm"/><div><span style={{fontSize:13,fontWeight:600}}>{stw.name}</span>{stw.organization&&<span style={{fontSize:12,color:"#8a8578"}}> · {stw.organization}</span>}</div></div>}
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>{badge&&<span style={{fontSize:32}}>{badge.emoji}</span>}<div><div style={{display:"flex",alignItems:"center",gap:8}}><h2 className="serif">{ev.title}</h2><SPill status={st} ev={ev}/></div><p style={{fontSize:13,color:"#8a8578"}}>{fl(ev.starts_at)}{ev.location&&` · ${ev.location}`}</p></div></div>
+      {ev.description&&<p style={{fontSize:14,marginBottom:12}}>{ev.description}</p>}
+      {ev.is_multi_step&&<div style={{marginBottom:12}}><p style={{fontSize:13,fontWeight:600}}>{steps.length} stops · {ev.checkin_mode==="self"?"Self-check":"QR per stop"}</p>{ev.completion_bonus_pct>0&&<p style={{fontSize:12,color:"#9a7b00"}}>🎯 {ev.completion_bonus_pct}% bonus for all stops</p>}</div>}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>{badge&&<span className="badge-pill">{badge.emoji} +{ev.merit_value}</span>}{st!=="upcoming"&&<LCount count={cnt}/>}</div>
+      {st==="live"&&ev.ends_at&&<p className="countdown" style={{marginTop:8}}>{timeLeft(ev.ends_at)}</p>}
+      {st==="upcoming"&&<p className="countdown" style={{marginTop:8}}>Opens in {timeUntil(ev.starts_at)}</p>}</div>
+    {ev.is_multi_step&&steps.length>0&&<div className="card"><h3 className="serif" style={{marginBottom:10}}>Stops</h3>{steps.map((s,i)=>(<div key={s.id} className="card-flat" style={{marginBottom:4}}><div style={{display:"flex",alignItems:"center",gap:8}}><div className="step-circle num">{i+1}</div><div><span style={{fontWeight:600,fontSize:13}}>{s.title}</span>{s.location&&<p style={{fontSize:12,color:"#8a8578"}}>{s.location}</p>}</div></div></div>))}</div>}
+    <div className="card">
+      {st==="upcoming"?<><h3 className="serif" style={{marginBottom:4}}>Coming Soon</h3><p style={{fontSize:13,color:"#8a8578",marginBottom:12}}>Save this event to get notified.</p>
+        <div className="field"><div className="label">Your Name</div><input value={name} onChange={e=>sN(e.target.value)} placeholder="Your name"/></div>
+        <div className="field"><div className="label">Email</div><input type="email" value={email} onChange={e=>sE(e.target.value)} placeholder="you@email.com"/></div>
+        {saved?<div style={{textAlign:"center",padding:12}}><span style={{color:"#2d8a4e",fontWeight:600}}>💾 Saved!</span></div>:<button className="btn btn-primary btn-block" onClick={doSave} disabled={!email||ld}>{ld?"...":"💾 Save & Notify Me"}</button>}</>
+      :st==="ended"?<><h3 className="serif" style={{marginBottom:4}}>Event Ended</h3><p style={{fontSize:13,color:"#8a8578"}}>No longer accepting check-ins.</p></>
+      :hasSession?<><h3 className="serif" style={{marginBottom:8}}>Welcome back, {storedUser.name||storedUser.email}</h3>
+        <button className="btn btn-primary btn-block" onClick={async()=>{sLd(true);sUser(storedUser);if(ev.is_multi_step){await ldUS(storedUser.id);}else{await autoIdent(storedUser);}sLd(false);}} disabled={ld}>{ld?"...":(ev.is_multi_step?"Continue Hunt →":"Check In →")}</button>
+        <p style={{textAlign:"center",marginTop:8,fontSize:12}}><span className="link" onClick={()=>{localStorage.removeItem("user");window.location.reload();}}>Not you?</span></p></>
+      :<><h3 className="serif" style={{marginBottom:12}}>{ev.is_multi_step?"Get Started":"Check In"}</h3>
+        <div className="field"><div className="label">Your Name</div><input value={name} onChange={e=>sN(e.target.value)} placeholder="Your name"/></div>
+        <div className="field"><div className="label">Email</div><input type="email" value={email} onChange={e=>sE(e.target.value)} placeholder="you@email.com"/></div>
+        {err&&<p style={{color:"#e8632b",fontSize:13,marginBottom:12}}>{err}</p>}
+        <button className="btn btn-primary btn-block" onClick={ident} disabled={!email||!name||ld}>{ld?"...":(ev.is_multi_step?"Start Hunt →":"Check In →")}</button>
+        <p style={{fontSize:11,color:"#8a8578",textAlign:"center",marginTop:8}}>Email for your merit profile only.</p></>}
+    </div></div>);}
+function ProfileLogin(){
+  const u=JSON.parse(localStorage.getItem("user")||"null");
+  if(u){nav("/profile");return null;}
+  const[email,sE]=useState(""),[code,sC]=useState(""),[mode,sM]=useState("email"),[ld,sLd]=useState(false),[err,sErr]=useState("");
+  const goEmail=async()=>{sLd(true);sErr("");const{data:d}=await sb.from("users").select("*").eq("email",email).single();if(!d)sErr("No profile found. Check in at an event first!");else{localStorage.setItem("user",JSON.stringify(d));nav("/profile");}sLd(false);};
+  const goCode=async()=>{sLd(true);sErr("");const{data:d}=await sb.from("users").select("*").eq("quick_code",code.padStart(3,"0")).single();if(!d)sErr("Code not found.");else{localStorage.setItem("user",JSON.stringify(d));nav("/profile");}sLd(false);};
+  return(<div className="fade-in"><TopBar title="My Profile" back="/"/><div className="card"><h2 className="serif">View Your Progress</h2>
+    <div className="nav" style={{marginTop:12}}><button className={`nav-item ${mode==="email"?"active":""}`} onClick={()=>sM("email")}>Email</button><button className={`nav-item ${mode==="code"?"active":""}`} onClick={()=>sM("code")}>Quick Code</button></div>
+    {mode==="email"?<><div className="field"><div className="label">Email</div><input type="email" value={email} onChange={e=>sE(e.target.value)} placeholder="you@email.com"/></div>
+      <button className="btn btn-primary btn-block" onClick={goEmail} disabled={!email||ld}>{ld?"...":"View Profile"}</button></>
+    :<><div className="field"><div className="label">Your 3-digit code</div><input value={code} onChange={e=>sC(e.target.value.replace(/\D/g,"").slice(0,3))} placeholder="042" style={{textAlign:"center",fontSize:24,letterSpacing:8,fontFamily:"'DM Serif Display',serif"}}/></div>
+      <button className="btn btn-primary btn-block" onClick={goCode} disabled={!code||ld}>{ld?"...":"View Profile"}</button></>}
+    {err&&<p style={{color:"#e8632b",fontSize:13,marginTop:12}}>{err}</p>}
+  </div></div>);}
+
+function UserProfile(){
+  const[user,sU]=useState(null),[badges,sBs]=useState([]),[cis,sCis]=useState([]),[mp,sMP]=useState([]),[totCI,sTCI]=useState(0);
+  const[editing,sEd]=useState(false),[dn,sDN]=useState(""),[bio,sBio]=useState("");
+  useEffect(()=>{const u=JSON.parse(localStorage.getItem("user")||"null");if(!u){nav("/profile/login");return;}sU(u);sDN(u.display_name||u.name||"");sBio(u.bio||"");ld(u.id);},[]);
+  const ld=async(uid)=>{const[bR,cR,mR]=await Promise.all([sb.from("user_badge_progress").select("*").eq("user_id",uid),sb.from("checkins").select("*").eq("user_id",uid).order("checked_in_at",{ascending:false}),sb.from("user_step_progress").select("*").eq("user_id",uid)]);
+    sBs(bR.data||[]);sMP(mR.data||[]);
+    // Manual join: enrich checkins with event+badge data
+    const rawCis=cR.data||[];const enriched=[];
+    for(const c of rawCis){const{data:ev}=await sb.from("events").select("*").eq("id",c.event_id).single();let bdEmoji="⭐",bdName="";if(ev?.badge_id){const{data:bd}=await sb.from("badges").select("emoji,name").eq("id",ev.badge_id).single();if(bd){bdEmoji=bd.emoji;bdName=bd.name;}}enriched.push({...c,evTitle:ev?.title||"Event",evLoc:ev?.location,bdEmoji,bdName});}
+    sCis(enriched);
+    // Count unique events
+    const ciEvs=new Set((cR.data||[]).map(c=>c.event_id));
+    const scR=await sb.from("step_checkins").select("event_id").eq("user_id",uid);
+    (scR.data||[]).forEach(s=>ciEvs.add(s.event_id));
+    sTCI(ciEvs.size);
+  };
+  const save=async()=>{if(!user)return;await sb.from("users").update({display_name:dn||null,name:dn||user.name,bio:bio||null}).eq("id",user.id);const u={...user,display_name:dn,name:dn||user.name,bio};localStorage.setItem("user",JSON.stringify(u));sU(u);sEd(false);};
+  if(!user)return null;const totM=badges.reduce((s,b)=>s+b.total_merit,0);
+  return(<div className="fade-in"><TopBar title="My Profile" back="/" right={<span className="link" onClick={()=>{localStorage.removeItem("user");nav("/");}}>Sign Out</span>}/>
+    <div className="card" style={{textAlign:"center"}}><div style={{fontSize:40,marginBottom:4}}>🏅</div><h2 className="serif">{user.display_name||user.name}</h2><p style={{fontSize:13,color:"#8a8578"}}>{user.email}</p>
+      {user.bio&&<p style={{fontSize:14,marginTop:8}}>{user.bio}</p>}
+      <div style={{display:"flex",justifyContent:"center",gap:20,marginTop:12}}>
+        <div><span style={{fontSize:24,fontWeight:700,color:"#e8632b"}}>{totM}</span><span style={{fontSize:12,color:"#8a8578",marginLeft:4}}>merit</span></div>
+        <div><span style={{fontSize:24,fontWeight:700,color:"#1a1a2e"}}>{totCI}</span><span style={{fontSize:12,color:"#8a8578",marginLeft:4}}>check-ins</span></div>
+      </div>
+      {user.quick_code&&<div style={{marginTop:12}}><div className="label">Quick Code</div><div className="quick-code">{user.quick_code}</div></div>}
+      {!editing?<button className="btn btn-ghost btn-sm" style={{marginTop:12}} onClick={()=>sEd(true)}>Edit Profile</button>
+      :<div style={{marginTop:12,textAlign:"left"}}><div className="field"><div className="label">Display Name</div><input value={dn} onChange={e=>sDN(e.target.value)} placeholder={user.name}/></div><div className="field"><div className="label">Bio</div><textarea value={bio} onChange={e=>sBio(e.target.value)} placeholder="A bit about you..."/></div><div style={{display:"flex",gap:8}}><button className="btn btn-primary btn-sm" onClick={save}>Save</button><button className="btn btn-ghost btn-sm" onClick={()=>sEd(false)}>Cancel</button></div></div>}
+    </div>
+
+    {badges.length>0&&<div className="card"><h3 className="serif" style={{marginBottom:12}}>My Badges</h3>
+      {badges.map(b=>{const ti=getTierInfo(b,b.total_merit);
+        return(<div key={b.badge_id} className="card-flat card-click" onClick={()=>nav(`/profile/badge/${b.badge_id}`)}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}><span style={{fontSize:22}}>{b.badge_emoji}</span><span style={{fontWeight:600}}>{b.badge_name}</span>{ti.currentTier>0&&<TBadge tier={ti.currentTier} name={ti.currentName}/>}<span style={{fontSize:12,color:"#8a8578",marginLeft:"auto"}}>→</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#8a8578"}}><span>{b.total_merit} merit · {b.total_checkins} check-in{b.total_checkins!==1?"s":""}</span>{ti.currentTier<ti.tierCount&&<span>{ti.nextMin-b.total_merit} to {ti.nextName}</span>}</div>
+          <PBar cur={b.total_merit} max={ti.nextMin} color={TIER_COLORS[ti.currentTier]||"#e8632b"}/></div>);})}</div>}
+
+    {mp.length>0&&<div className="card"><h3 className="serif" style={{marginBottom:12}}>Multi-Step Progress</h3>
+      {mp.map(m=>(<div key={m.event_id} className="card-flat card-click" onClick={()=>nav(`/event/${m.event_id}`)}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><span style={{fontWeight:600,fontSize:14}}>{m.event_title}</span>{m.steps_completed>=m.total_steps&&<span style={{fontSize:12,color:"#2d8a4e",fontWeight:600}}>✓ Complete</span>}</div>
+        <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#8a8578",marginBottom:4}}><span>{m.steps_completed} of {m.total_steps} steps</span><span>{m.merit_earned} merit</span></div>
+        <PBar cur={m.steps_completed} max={m.total_steps} color={m.steps_completed>=m.total_steps?"#2d8a4e":"#e8632b"}/></div>))}</div>}
+
+    <div className="card"><h3 className="serif" style={{marginBottom:12}}>Check-in History</h3>
+      {cis.length===0?<p style={{fontSize:13,color:"#8a8578"}}>No check-ins yet.</p>:cis.map(c=>{
+        return(<div key={c.id} className="checkin-row"><div><span style={{fontWeight:600}}>{c.evTitle}</span><p style={{fontSize:12,color:"#8a8578"}}>{new Date(c.checked_in_at).toLocaleDateString()}{c.evLoc&&` · ${c.evLoc}`}</p></div>
+        <span className="badge-pill" style={{fontSize:12}}>{c.bdEmoji} +{c.merit_earned}</span></div>);})}</div>
+  </div>);}
+
+function BadgeDetail({badgeId}){
+  const[user,sU]=useState(null),[badge,sBd]=useState(null),[myCis,sMC]=useState([]),[upcoming,sUp]=useState([]);
+  useEffect(()=>{const u=JSON.parse(localStorage.getItem("user")||"null");if(!u){nav("/profile/login");return;}sU(u);ld(u.id);},[badgeId]);
+  const ld=async(uid)=>{
+    const{data:bp}=await sb.from("user_badge_progress").select("*").eq("user_id",uid).eq("badge_id",badgeId).single();
+    if(bp){// get full badge info
+      const{data:b}=await sb.from("badges").select("*").eq("id",badgeId).single();sBd({...bp,...b});}
+    // My check-ins for this badge
+    const{data:ci}=await sb.from("checkins").select("*").eq("user_id",uid);
+    const myBadgeCis=[];for(const c of(ci||[])){const{data:ev}=await sb.from("events").select("title,location,starts_at,badge_id").eq("id",c.event_id).single();if(ev?.badge_id===badgeId)myBadgeCis.push({...c,evTitle:ev.title,evLoc:ev.location,evStart:ev.starts_at});}
+    sMC(myBadgeCis.sort((a,b)=>new Date(b.checked_in_at)-new Date(a.checked_in_at)));
+    // Upcoming events with this badge
+    const{data:ev}=await sb.from("events").select("*").eq("badge_id",badgeId);
+    sUp((ev||[]).filter(e=>{const s=evStatus(e);return s==="live"||s==="upcoming"||s==="evergreen";}).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at)));
+  };
+  if(!badge)return<div className="app fade-in"><p>Loading...</p></div>;
+  const ti=getTierInfo(badge,badge.total_merit);
+  return(<div className="fade-in"><TopBar title={`${badge.badge_emoji} ${badge.badge_name}`} back="/profile"/>
+    <div className="card" style={{textAlign:"center"}}><span style={{fontSize:48}}>{badge.badge_emoji}</span><h2 className="serif" style={{marginTop:8}}>{badge.badge_name}</h2>
+      {badge.badge_description&&<p style={{fontSize:14,color:"#8a8578",marginTop:4}}>{badge.badge_description}</p>}
+      <div style={{marginTop:12}}><span style={{fontSize:28,fontWeight:700,color:"#e8632b"}}>{badge.total_merit}</span><span style={{fontSize:13,color:"#8a8578",marginLeft:4}}>merit</span></div>
+      {ti.currentTier>0&&<div style={{marginTop:8}}><TBadge tier={ti.currentTier} name={ti.currentName}/></div>}
+      <div style={{maxWidth:300,margin:"12px auto 0"}}><PBar cur={badge.total_merit} max={ti.nextMin} color={TIER_COLORS[ti.currentTier]||"#e8632b"}/>{ti.currentTier<ti.tierCount&&<p style={{fontSize:12,color:"#8a8578"}}>{ti.nextMin-badge.total_merit} more to {ti.nextName}</p>}</div>
+      <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap",marginTop:12}}>{ti.tiers.map((t,i)=>(<TBadge key={i} tier={i+1} name={`${t.name} (${t.min}+)`}/>))}</div>
+    </div>
+
+    {myCis.length>0&&<div className="card"><h3 className="serif" style={{marginBottom:10}}>My Events ({myCis.length})</h3>
+      {myCis.map(c=>(<div key={c.id} className="checkin-row"><div><span style={{fontWeight:600}}>{c.evTitle||"Event"}</span><p style={{fontSize:12,color:"#8a8578"}}>{fd(c.checked_in_at)}{c.evLoc&&` · ${c.evLoc}`}</p></div><span className="badge-pill" style={{fontSize:12}}>+{c.merit_earned}</span></div>))}</div>}
+
+    {upcoming.length>0&&<div className="card"><h3 className="serif" style={{marginBottom:10}}>Upcoming Opportunities</h3>
+      {upcoming.map(e=>(<div key={e.id} className="card-flat card-click" onClick={()=>nav(`/event/${e.id}`)}><div style={{display:"flex",justifyContent:"space-between"}}><div><span style={{fontWeight:600}}>{e.title}</span><p style={{fontSize:12,color:"#8a8578"}}>{fd(e.starts_at)}{e.location&&` · ${e.location}`}</p></div><SPill status={evStatus(e)} ev={e}/></div></div>))}</div>}
+
+    {upcoming.length===0&&myCis.length>0&&<div className="card"><p style={{fontSize:13,color:"#8a8578",textAlign:"center"}}>No upcoming events for this badge right now.</p></div>}
+  </div>);}
+
+function App(){const[r,sR]=useState(getRoute());useEffect(()=>{const h=()=>sR(getRoute());window.addEventListener("hashchange",h);return()=>window.removeEventListener("hashchange",h);},[]);const{parts:p}=r;let pg;
+  if(!p.length||(p.length===1&&p[0]===""))pg=<HomePage/>;
+  else if(p[0]==="explore")pg=<ExplorePage/>;
+  else if(p[0]==="steward"&&p[1]==="login")pg=<StewardLogin/>;
+  else if(p[0]==="steward"&&p[1]==="dashboard")pg=<StewardDashboard/>;
+  else if(p[0]==="steward"&&p[1]==="event"&&p[2]==="new")pg=<CreateEvent/>;
+  else if(p[0]==="steward"&&p[1]==="event"&&p[2])pg=<StewardEventDetail eventId={p[2]}/>;
+  else if(p[0]==="steward"&&p[1]==="badge"&&p[2]==="new")pg=<CreateBadge/>;
+  else if(p[0]==="steward"&&p[1]&&p.length===2)pg=<StewardPublicProfile stewardId={p[1]}/>;
+  else if(p[0]==="event"&&p[1]&&p[2]==="step"&&p[3])pg=<EventCheckin eventId={p[1]} stepId={p[3]}/>;
+  else if(p[0]==="event"&&p[1])pg=<EventCheckin eventId={p[1]}/>;
+  else if(p[0]==="profile"&&p[1]==="login")pg=<ProfileLogin/>;
+  else if(p[0]==="profile"&&p[1]==="badge"&&p[2])pg=<BadgeDetail badgeId={p[2]}/>;
+  else if(p[0]==="profile")pg=<UserProfile/>;
+  else pg=<HomePage/>;
+  return <div className="app">{pg}</div>;}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>

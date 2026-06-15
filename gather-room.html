@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Gather Room — Community Play Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body, #root { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+    body { font-family: 'Nunito', 'Segoe UI', sans-serif; background: #0a0a1a; -webkit-user-select: none; user-select: none; }
+    input::placeholder, textarea::placeholder { color: #52525b; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: rgba(251,191,36,0.3); border-radius: 4px; }
+    @keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(10px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+    @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+    @keyframes pulseHighlight { 0%,100% { box-shadow: 0 0 8px rgba(251,191,36,0.4); } 50% { box-shadow: 0 0 20px rgba(251,191,36,0.8); } }
+    @keyframes stickerDrop { from { transform: translate(-50%,-50%) scale(0); } to { transform: translate(-50%,-50%) scale(1); } }
+    @keyframes statusBob { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-2px); } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script type="text/babel">
+const { useState, useRef, useCallback, useEffect } = React;
+
+const ACCOLADES = [
+  { key: "speed", emoji: "⚡", label: "Speed" },
+  { key: "focus", emoji: "🎯", label: "Focus" },
+  { key: "inclusive", emoji: "🤝", label: "Inclusive" },
+  { key: "insight", emoji: "💡", label: "Insight" },
+  { key: "cookies", emoji: "🍪", label: "Cookies" },
+];
+
+const EMOJI_OPTIONS = ["😊","🎮","🌟","🔥","🎯","🧠","🦊","🐙","🌻","🎸","🏄","🍕","👾","🦄","🐢","🎪"];
+const STICKER_EMOJIS = ["⭐","❤️","🔥","🎉","👀","💬","📌","🚀","🌈","☕","🎵","💯","🙌","🤔","✅","❌"];
+
+const STATUS_OPTIONS = [
+  { emoji: "💬", label: "Speaking" },
+  { emoji: "🤔", label: "Thinking" },
+  { emoji: "✋", label: "Question" },
+  { emoji: "👍", label: "Agree" },
+  { emoji: "☕", label: "BRB" },
+  { emoji: "😎", label: "Vibing" },
+  { emoji: "🔇", label: "Listening" },
+  { emoji: "", label: "Clear" },
+];
+
+const BACKGROUNDS = [
+  { key: "lounge", label: "Cozy Lounge", colors: ["#2d1b2e","#4a2c4a","#1a1a2e","#3d2244"], furniture: "lounge" },
+  { key: "conference", label: "Conference Room", colors: ["#1e293b","#334155","#0f172a","#1e3a5f"], furniture: "conference" },
+  { key: "park", label: "Park", colors: ["#1a472a","#2d5a3f","#0f2b1a","#3a7d54"], furniture: "park" },
+  { key: "cafe", label: "Café", colors: ["#3e2723","#5d4037","#2c1a0f","#6d4c41"], furniture: "cafe" },
+];
+
+const FAKE_ATTENDEES = [
+  { id: "f1", name: "Jordan", avatar: "🎮", intro: "Here for the vibes", x: 22, y: 35 },
+  { id: "f2", name: "Priya", avatar: "🌟", intro: "Excited to connect!", x: 55, y: 25 },
+  { id: "f3", name: "Marcus", avatar: "🏄", intro: "What's the plan today?", x: 75, y: 60 },
+  { id: "f4", name: "Ellie", avatar: "🦊", intro: "First time here!", x: 40, y: 70 },
+  { id: "f5", name: "Sam", avatar: "🧠", intro: "Let's make something cool", x: 15, y: 65 },
+  { id: "f6", name: "Ava", avatar: "🌻", intro: "Happy to be here", x: 60, y: 45 },
+  { id: "f7", name: "Dev", avatar: "👾", intro: "Ready to collaborate", x: 85, y: 30 },
+];
+
+function RoomBackground({ bg, width, height }) {
+  const [c1, c2, c3, c4] = bg.colors;
+  const furniture = {
+    lounge: (<>
+      <rect x="5%" y="60%" width="25%" height="18%" rx="12" fill={c2} opacity="0.6" />
+      <ellipse cx="17.5%" cy="58%" rx="14%" ry="4%" fill={c2} opacity="0.4" />
+      <rect x="60%" y="50%" width="20%" height="12%" rx="8" fill={c4} opacity="0.5" />
+      <circle cx="50%" cy="75%" r="8%" fill={c4} opacity="0.3" />
+      <circle cx="80%" cy="72%" r="6%" fill={c2} opacity="0.3" />
+      <rect x="35%" y="15%" width="30%" height="2" fill="#fbbf24" opacity="0.3" />
+      <rect x="10%" y="10%" width="12%" height="16%" rx="2" fill={c4} opacity="0.25" stroke="#fbbf24" strokeWidth="0.5" strokeOpacity="0.2" />
+      <circle cx="90%" cy="20%" r="3%" fill="#fbbf24" opacity="0.15" />
+    </>),
+    conference: (<>
+      <rect x="20%" y="30%" width="60%" height="35%" rx="6" fill={c2} opacity="0.5" />
+      <rect x="22%" y="32%" width="56%" height="31%" rx="4" fill={c4} opacity="0.3" />
+      <rect x="5%" y="10%" width="18%" height="25%" rx="2" fill={c4} opacity="0.2" />
+      <rect x="77%" y="10%" width="18%" height="25%" rx="2" fill={c4} opacity="0.2" />
+      <rect x="45%" y="5%" width="10%" height="3%" rx="1" fill={c2} opacity="0.3" />
+    </>),
+    park: (<>
+      <ellipse cx="15%" cy="80%" rx="12%" ry="5%" fill={c2} opacity="0.4" />
+      <ellipse cx="75%" cy="85%" rx="15%" ry="4%" fill={c2} opacity="0.3" />
+      <line x1="10%" y1="20%" x2="10%" y2="55%" stroke={c4} strokeWidth="3" opacity="0.5" />
+      <ellipse cx="10%" cy="18%" rx="8%" ry="10%" fill={c2} opacity="0.5" />
+      <line x1="85%" y1="15%" x2="85%" y2="50%" stroke={c4} strokeWidth="4" opacity="0.4" />
+      <ellipse cx="85%" cy="12%" rx="10%" ry="12%" fill={c2} opacity="0.45" />
+      <rect x="35%" y="55%" width="30%" height="3%" rx="2" fill={c4} opacity="0.4" />
+      <circle cx="50%" cy="15%" r="6%" fill="#fbbf24" opacity="0.1" />
+    </>),
+    cafe: (<>
+      <rect x="10%" y="35%" width="22%" height="14%" rx="4" fill={c2} opacity="0.5" />
+      <rect x="60%" y="30%" width="28%" height="16%" rx="4" fill={c2} opacity="0.45" />
+      <circle cx="21%" cy="33%" r="3%" fill={c4} opacity="0.4" />
+      <circle cx="74%" cy="28%" r="2.5%" fill={c4} opacity="0.4" />
+      <rect x="2%" y="10%" width="15%" height="50%" rx="3" fill={c4} opacity="0.2" />
+      <rect x="40%" y="75%" width="20%" height="10%" rx="6" fill={c2} opacity="0.35" />
+    </>),
+  };
+  return (
+    <svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid slice" style={{ position:"absolute", top:0, left:0 }}>
+      <defs>
+        <radialGradient id="bgGrad" cx="50%" cy="40%" r="70%"><stop offset="0%" stopColor={c1}/><stop offset="100%" stopColor={c3}/></radialGradient>
+        <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feBlend in="SourceGraphic" mode="multiply"/></filter>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#bgGrad)"/>
+      <rect width="100%" height="100%" fill={c2} opacity="0.08" filter="url(#grain)"/>
+      {furniture[bg.furniture]}
+    </svg>
+  );
+}
+
+function Avatar({ person, size=44, showName=true, highlight=false, style={} }) {
+  const isEmoji = !person.avatarImg;
+  return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:2, ...style }}>
+      {showName && <span style={{ fontSize:11, fontWeight:800, color:"#fbbf24", textShadow:"-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 6px rgba(0,0,0,0.8)", maxWidth:70, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", textAlign:"center", letterSpacing:0.3 }}>{person.name}</span>}
+      <div style={{ width:size, height:size, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background: isEmoji?"rgba(30,30,40,0.7)":"transparent", border: highlight?"3px solid #fbbf24":"2px solid rgba(251,191,36,0.4)", boxShadow: highlight?"0 0 12px rgba(251,191,36,0.6)":"0 2px 8px rgba(0,0,0,0.4)", overflow:"hidden", transition:"all 0.2s ease", backdropFilter:"blur(4px)" }}>
+        {isEmoji ? <span style={{ fontSize:size*0.55 }}>{person.avatar}</span> : <img src={person.avatarImg} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>}
+      </div>
+    </div>
+  );
+}
+
+function PopupMenu({ x, y, children, onClose }) {
+  const menuRef = useRef(null);
+  useEffect(() => {
+    const handler = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) onClose(); };
+    document.addEventListener("mousedown", handler); document.addEventListener("touchstart", handler);
+    return () => { document.removeEventListener("mousedown", handler); document.removeEventListener("touchstart", handler); };
+  }, [onClose]);
+  return (
+    <div ref={menuRef} style={{ position:"fixed", left:Math.min(x, window.innerWidth-200), top:Math.min(y, window.innerHeight-280), zIndex:1000, background:"rgba(20,20,30,0.95)", borderRadius:14, padding:"10px 8px", backdropFilter:"blur(12px)", border:"1px solid rgba(251,191,36,0.3)", boxShadow:"0 8px 32px rgba(0,0,0,0.6)", minWidth:170 }}>
+      {children}
+    </div>
+  );
+}
+
+function MenuBtn({ onClick, children, color="#e4e4e7" }) {
+  return (
+    <button onClick={onClick} style={{ display:"flex", alignItems:"center", gap:10, width:"100%", padding:"8px 10px", border:"none", background:"transparent", color, fontSize:15, cursor:"pointer", borderRadius:8, fontFamily:"inherit", transition:"background 0.15s" }}
+      onMouseEnter={e=>e.currentTarget.style.background="rgba(251,191,36,0.15)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+      {children}
+    </button>
+  );
+}
+
+function AccoladeMenu({ x, y, onGive, onViewProfile, onGoToRoom, inRoomView, onClose }) {
+  return (
+    <PopupMenu x={x} y={y} onClose={onClose}>
+      <div style={{ fontSize:11, color:"#a1a1aa", textTransform:"uppercase", letterSpacing:1.5, padding:"2px 10px 8px", fontWeight:700 }}>Give Accolade</div>
+      {ACCOLADES.map(a => <MenuBtn key={a.key} onClick={() => onGive(a.key)}><span style={{fontSize:20}}>{a.emoji}</span> {a.label}</MenuBtn>)}
+      <div style={{ height:1, background:"rgba(255,255,255,0.1)", margin:"6px 0" }}/>
+      {inRoomView ? <MenuBtn onClick={onViewProfile} color="#fbbf24">View Profile</MenuBtn> : <MenuBtn onClick={onGoToRoom} color="#fbbf24">Show in Room</MenuBtn>}
+    </PopupMenu>
+  );
+}
+
+function StickerMenu({ x, y, sticker, onChangeEmoji, onDelete, onClose }) {
+  const [picking, setPicking] = useState(false);
+  return (
+    <PopupMenu x={x} y={y} onClose={onClose}>
+      {!picking ? (<>
+        <div style={{ fontSize:11, color:"#a1a1aa", textTransform:"uppercase", letterSpacing:1.5, padding:"2px 10px 8px", fontWeight:700 }}>Sticker: {sticker.emoji}</div>
+        <MenuBtn onClick={() => setPicking(true)}><span style={{fontSize:18}}>🔄</span> Change</MenuBtn>
+        <MenuBtn onClick={onDelete} color="#ef4444"><span style={{fontSize:18}}>🗑️</span> Remove</MenuBtn>
+      </>) : (<>
+        <div style={{ fontSize:11, color:"#a1a1aa", textTransform:"uppercase", letterSpacing:1.5, padding:"2px 10px 8px", fontWeight:700 }}>Pick New Emoji</div>
+        <div style={{ display:"flex", flexWrap:"wrap", gap:4, padding:"0 6px 6px" }}>
+          {STICKER_EMOJIS.map(em => <button key={em} onClick={() => { onChangeEmoji(em); onClose(); }} style={{ width:36, height:36, borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"rgba(255,255,255,0.05)", fontSize:20, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>{em}</button>)}
+        </div>
+      </>)}
+    </PopupMenu>
+  );
+}
+
+function ProfilePanel({ person, onClose, onGive, locked }) {
+  const total = Object.values(person.accolades||{}).reduce((s,v)=>s+v,0);
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:900, background:"rgba(0,0,0,0.6)", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(4px)" }} onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} style={{ background:"linear-gradient(135deg,#1a1a2e 0%,#16213e 100%)", borderRadius:20, padding:28, width:"85%", maxWidth:340, border:"1px solid rgba(251,191,36,0.2)", boxShadow:"0 16px 48px rgba(0,0,0,0.5)" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+          <Avatar person={person} size={64} showName={false}/>
+          <button onClick={onClose} style={{ background:"none", border:"none", color:"#71717a", fontSize:22, cursor:"pointer" }}>✕</button>
+        </div>
+        <h3 style={{ color:"#fbbf24", fontSize:22, margin:"12px 0 4px", fontWeight:800 }}>{person.name}</h3>
+        <p style={{ color:"#a1a1aa", fontSize:14, margin:0, fontStyle:"italic" }}>{person.intro||"No intro set"}</p>
+        {person.status && <div style={{ marginTop:8, display:"inline-flex", alignItems:"center", gap:5, background:"rgba(251,191,36,0.1)", borderRadius:12, padding:"4px 10px" }}><span style={{fontSize:14}}>{person.status.emoji}</span><span style={{fontSize:12,color:"#fbbf24",fontWeight:700}}>{person.status.label}</span></div>}
+        <div style={{ margin:"18px 0 12px", display:"flex", gap:6, flexWrap:"wrap" }}>
+          {ACCOLADES.map(a => { const c=(person.accolades||{})[a.key]||0; return <div key={a.key} style={{ display:"flex", alignItems:"center", gap:4, background:c>0?"rgba(251,191,36,0.12)":"rgba(255,255,255,0.05)", borderRadius:20, padding:"5px 10px", fontSize:13 }}><span>{a.emoji}</span><span style={{color:c>0?"#fbbf24":"#52525b",fontWeight:700}}>{c}</span></div>; })}
+        </div>
+        <div style={{ fontSize:13, color:"#71717a", marginBottom:14 }}>Total: {total} accolades</div>
+        {!locked && (<>
+          <div style={{ fontSize:11, color:"#a1a1aa", textTransform:"uppercase", letterSpacing:1.5, marginBottom:8, fontWeight:700 }}>Give Accolade</div>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+            {ACCOLADES.map(a => <button key={a.key} onClick={()=>onGive(person.id,a.key)} style={{ display:"flex", alignItems:"center", gap:5, padding:"7px 12px", borderRadius:20, border:"1px solid rgba(251,191,36,0.2)", background:"rgba(251,191,36,0.08)", color:"#e4e4e7", fontSize:13, cursor:"pointer", fontFamily:"inherit" }}
+              onMouseEnter={e=>{e.currentTarget.style.background="rgba(251,191,36,0.2)";e.currentTarget.style.borderColor="#fbbf24";}} onMouseLeave={e=>{e.currentTarget.style.background="rgba(251,191,36,0.08)";e.currentTarget.style.borderColor="rgba(251,191,36,0.2)";}}>
+              <span style={{fontSize:16}}>{a.emoji}</span> {a.label}
+            </button>)}
+          </div>
+        </>)}
+      </div>
+    </div>
+  );
+}
+
+function Toast({ message, onDone }) {
+  useEffect(() => { const t=setTimeout(onDone,1800); return ()=>clearTimeout(t); }, [onDone]);
+  return <div style={{ position:"fixed", bottom:90, left:"50%", transform:"translateX(-50%)", zIndex:2000, background:"rgba(251,191,36,0.95)", color:"#000", padding:"10px 20px", borderRadius:30, fontWeight:700, fontSize:14, boxShadow:"0 4px 20px rgba(251,191,36,0.4)", animation:"toastIn 0.3s ease" }}>{message}</div>;
+}
+
+function GatherRoom() {
+  const [screen, setScreen] = useState("join");
+  const [view, setView] = useState("room");
+  const [listSort, setListSort] = useState("top");
+  const [userName, setUserName] = useState("");
+  const [userAvatar, setUserAvatar] = useState("😊");
+  const [userAvatarImg, setUserAvatarImg] = useState(null);
+  const [userIntro, setUserIntro] = useState("");
+  const [bgChoice, setBgChoice] = useState(BACKGROUNDS[0]);
+  const [isHost] = useState(true);
+  const [locked, setLocked] = useState(false);
+  const [contextMenu, setContextMenu] = useState(null);
+  const [profileView, setProfileView] = useState(null);
+  const [highlightId, setHighlightId] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [attendees, setAttendees] = useState([]);
+  const [userId] = useState(() => "u_"+Math.random().toString(36).slice(2,8));
+  const roomRef = useRef(null);
+  const longPressTimer = useRef(null);
+  const [roomName, setRoomName] = useState("Wednesday Hangout");
+  const [activeTool, setActiveTool] = useState(null);
+  const [selectedSticker, setSelectedSticker] = useState("⭐");
+  const [stickers, setStickers] = useState([]);
+  const [showStatusPicker, setShowStatusPicker] = useState(false);
+
+  const enterRoom = () => {
+    const now = Date.now();
+    const fakes = FAKE_ATTENDEES.map((f,i) => ({
+      ...f,
+      accolades: { speed:Math.floor(Math.random()*3), focus:Math.floor(Math.random()*2), inclusive:Math.floor(Math.random()*2), insight:Math.floor(Math.random()*3), cookies:Math.floor(Math.random()*4) },
+      joinedAt: now-(FAKE_ATTENDEES.length-i)*60000,
+      status: i===0?{emoji:"💬",label:"Speaking"}:i===3?{emoji:"☕",label:"BRB"}:null
+    }));
+    const me = { id:userId, name:userName, avatar:userAvatar, avatarImg:userAvatarImg, intro:userIntro||"Happy to be here!", x:45+Math.random()*10, y:45+Math.random()*10, accolades:{speed:0,focus:0,inclusive:0,insight:0,cookies:0}, joinedAt:now, isMe:true, status:null };
+    setStickers([{id:"s1",emoji:"📌",x:30,y:20},{id:"s2",emoji:"☕",x:68,y:78},{id:"s3",emoji:"🔥",x:50,y:50}]);
+    setAttendees([...fakes, me]);
+    setScreen("room");
+  };
+
+  const giveAccolade = useCallback((pid, key) => {
+    if (locked) return;
+    setAttendees(prev => prev.map(p => p.id===pid ? {...p, accolades:{...p.accolades,[key]:(p.accolades[key]||0)+1}} : p));
+    const a = ACCOLADES.find(x=>x.key===key);
+    const p = attendees.find(x=>x.id===pid);
+    setToast(`${a.emoji} ${a.label} → ${p?.name}`);
+    setContextMenu(null);
+  }, [locked, attendees]);
+
+  const handleLongPress = (type, id, cx, cy) => { if (locked && type==="person") return; setContextMenu({type,id,x:cx,y:cy}); };
+  const startLongPress = (type, id, e) => { const cx=e.touches?e.touches[0].clientX:e.clientX; const cy=e.touches?e.touches[0].clientY:e.clientY; longPressTimer.current=setTimeout(()=>handleLongPress(type,id,cx,cy),500); };
+  const cancelLongPress = () => { if(longPressTimer.current) clearTimeout(longPressTimer.current); };
+  const handleContextMenu = (type, id, e) => { e.preventDefault(); handleLongPress(type,id,e.clientX,e.clientY); };
+
+  const [dragging, setDragging] = useState(false);
+  const dragOffset = useRef({x:0,y:0});
+
+  const handleDragStart = (e) => {
+    if (locked) return; setDragging(true);
+    const cx=e.touches?e.touches[0].clientX:e.clientX; const cy=e.touches?e.touches[0].clientY:e.clientY;
+    const me=attendees.find(p=>p.id===userId); const rect=roomRef.current.getBoundingClientRect();
+    dragOffset.current={x:cx-(me.x/100)*rect.width-rect.left, y:cy-(me.y/100)*rect.height-rect.top};
+  };
+
+  const handleDragMove = useCallback((e) => {
+    if (!dragging||!roomRef.current) return;
+    const cx=e.touches?e.touches[0].clientX:e.clientX; const cy=e.touches?e.touches[0].clientY:e.clientY;
+    const rect=roomRef.current.getBoundingClientRect();
+    const xP=((cx-dragOffset.current.x-rect.left)/rect.width)*100;
+    const yP=((cy-dragOffset.current.y-rect.top)/rect.height)*100;
+    setAttendees(prev=>prev.map(p=>p.id===userId?{...p,x:Math.max(5,Math.min(95,xP)),y:Math.max(8,Math.min(92,yP))}:p));
+  }, [dragging, userId]);
+
+  const handleDragEnd = useCallback(()=>setDragging(false),[]);
+
+  useEffect(() => {
+    if (dragging) {
+      window.addEventListener("mousemove",handleDragMove); window.addEventListener("mouseup",handleDragEnd);
+      window.addEventListener("touchmove",handleDragMove); window.addEventListener("touchend",handleDragEnd);
+      return ()=>{ window.removeEventListener("mousemove",handleDragMove); window.removeEventListener("mouseup",handleDragEnd); window.removeEventListener("touchmove",handleDragMove); window.removeEventListener("touchend",handleDragEnd); };
+    }
+  }, [dragging, handleDragMove, handleDragEnd]);
+
+  const handleRoomClick = (e) => {
+    if (locked||dragging) return;
+    if (e.target!==roomRef.current && !e.target.closest("[data-room-bg]")) return;
+    const rect=roomRef.current.getBoundingClientRect();
+    const xP=((e.clientX-rect.left)/rect.width)*100;
+    const yP=((e.clientY-rect.top)/rect.height)*100;
+    if (activeTool==="sticker") {
+      setStickers(prev=>[...prev,{id:"s_"+Date.now(),emoji:selectedSticker,x:Math.max(3,Math.min(97,xP)),y:Math.max(3,Math.min(97,yP))}]);
+      setToast(`${selectedSticker} placed!`); return;
+    }
+    setAttendees(prev=>prev.map(p=>p.id===userId?{...p,x:Math.max(5,Math.min(95,xP)),y:Math.max(8,Math.min(92,yP))}:p));
+  };
+
+  const setMyStatus = (s) => { setAttendees(prev=>prev.map(p=>p.id===userId?{...p,status:s.emoji?s:null}:p)); setShowStatusPicker(false); setActiveTool(null); setToast(s.emoji?`${s.emoji} ${s.label}`:"Status cleared"); };
+  const changeStickerEmoji = (sid,em) => setStickers(prev=>prev.map(s=>s.id===sid?{...s,emoji:em}:s));
+  const deleteSticker = (sid) => { setStickers(prev=>prev.filter(s=>s.id!==sid)); setContextMenu(null); setToast("Sticker removed"); };
+
+  useEffect(()=>{ if(highlightId){const t=setTimeout(()=>setHighlightId(null),3000);return()=>clearTimeout(t);} },[highlightId]);
+  const handleScreenshot = () => setToast("📸 Screenshot saved!");
+
+  const getSortedAttendees = () => {
+    const list=[...attendees];
+    const recent=[...list].sort((a,b)=>b.joinedAt-a.joinedAt).slice(0,2).map(p=>p.id);
+    if (listSort==="top") {
+      const tot=p=>Object.values(p.accolades||{}).reduce((s,v)=>s+v,0);
+      list.sort((a,b)=>tot(b)-tot(a));
+      const pinned=list.filter(p=>recent.includes(p.id));
+      const rest=list.filter(p=>!recent.includes(p.id));
+      return [...pinned.map(p=>({...p,recentlyJoined:true})),...rest];
+    }
+    list.sort((a,b)=>b.joinedAt-a.joinedAt); return list;
+  };
+
+  const handleFileUpload = (e) => { const f=e.target.files[0]; if(f){const r=new FileReader();r.onload=ev=>setUserAvatarImg(ev.target.result);r.readAsDataURL(f);} };
+
+  // --- JOIN ---
+  if (screen==="join") {
+    return (
+      <div style={{ minHeight:"100vh", background:"linear-gradient(135deg,#0a0a1a 0%,#1a1a2e 50%,#0f0f23 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:24 }}>
+        <div style={{ animation:"fadeUp 0.5s ease", textAlign:"center", width:"100%", maxWidth:360 }}>
+          <div style={{ fontSize:48, marginBottom:8 }}>🪑</div>
+          <h1 style={{ color:"#fbbf24", fontSize:28, fontWeight:900, margin:"0 0 4px", letterSpacing:-0.5 }}>Gather Room</h1>
+          <p style={{ color:"#71717a", fontSize:14, margin:"0 0 32px" }}>Find your seat. Make connections.</p>
+          <input value={userName} onChange={e=>setUserName(e.target.value)} placeholder="Your display name" maxLength={20}
+            style={{ width:"100%", padding:"14px 18px", borderRadius:12, border:"1px solid rgba(251,191,36,0.2)", background:"rgba(255,255,255,0.05)", color:"#e4e4e7", fontSize:16, outline:"none", fontFamily:"inherit", marginBottom:16 }}
+            onFocus={e=>e.target.style.borderColor="#fbbf24"} onBlur={e=>e.target.style.borderColor="rgba(251,191,36,0.2)"}
+          />
+          <button disabled={!userName.trim()} onClick={()=>setScreen("setup")} style={{ width:"100%", padding:"14px", borderRadius:12, border:"none", background:userName.trim()?"linear-gradient(135deg,#f59e0b,#fbbf24)":"rgba(255,255,255,0.05)", color:userName.trim()?"#000":"#52525b", fontSize:16, fontWeight:800, cursor:userName.trim()?"pointer":"default", fontFamily:"inherit", letterSpacing:0.3 }}>Enter Room →</button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- SETUP ---
+  if (screen==="setup") {
+    return (
+      <div style={{ minHeight:"100vh", background:"linear-gradient(135deg,#0a0a1a 0%,#1a1a2e 50%,#0f0f23 100%)", display:"flex", flexDirection:"column", alignItems:"center", padding:24, overflowY:"auto" }}>
+        <div style={{ animation:"fadeUp 0.4s ease", width:"100%", maxWidth:360, paddingTop:20 }}>
+          <h2 style={{ color:"#fbbf24", fontSize:22, fontWeight:900, margin:"0 0 24px" }}>Set Up Your Look</h2>
+          <div style={{ marginBottom:20 }}>
+            <div style={{ fontSize:12, color:"#a1a1aa", textTransform:"uppercase", letterSpacing:1.5, marginBottom:10, fontWeight:700 }}>Avatar</div>
+            <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:12 }}>
+              <div style={{ width:64, height:64, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:userAvatarImg?"transparent":"rgba(30,30,40,0.8)", border:"2px solid #fbbf24", overflow:"hidden" }}>
+                {userAvatarImg ? <img src={userAvatarImg} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/> : <span style={{fontSize:32}}>{userAvatar}</span>}
+              </div>
+              <label style={{ padding:"8px 14px", borderRadius:8, border:"1px solid rgba(251,191,36,0.3)", background:"rgba(251,191,36,0.08)", color:"#fbbf24", fontSize:13, cursor:"pointer", fontWeight:700 }}>
+                Upload Photo <input type="file" accept="image/*" onChange={handleFileUpload} style={{display:"none"}}/>
+              </label>
+              {userAvatarImg && <button onClick={()=>setUserAvatarImg(null)} style={{padding:"8px 12px",borderRadius:8,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#71717a",fontSize:13,cursor:"pointer"}}>Use Emoji</button>}
+            </div>
+            {!userAvatarImg && <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+              {EMOJI_OPTIONS.map(em=><button key={em} onClick={()=>setUserAvatar(em)} style={{width:38,height:38,borderRadius:10,border:userAvatar===em?"2px solid #fbbf24":"1px solid rgba(255,255,255,0.1)",background:userAvatar===em?"rgba(251,191,36,0.15)":"rgba(255,255,255,0.03)",fontSize:20,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{em}</button>)}
+            </div>}
+          </div>
+          <div style={{marginBottom:20}}>
+            <div style={{fontSize:12,color:"#a1a1aa",textTransform:"uppercase",letterSpacing:1.5,marginBottom:8,fontWeight:700}}>Intro Message</div>
+            <textarea value={userIntro} onChange={e=>setUserIntro(e.target.value)} placeholder="What brings you here today?" maxLength={100} rows={2}
+              style={{width:"100%",padding:"12px 14px",borderRadius:10,border:"1px solid rgba(251,191,36,0.2)",background:"rgba(255,255,255,0.05)",color:"#e4e4e7",fontSize:14,outline:"none",fontFamily:"inherit",resize:"none"}}/>
+          </div>
+          {isHost && <div style={{marginBottom:24}}>
+            <div style={{fontSize:12,color:"#a1a1aa",textTransform:"uppercase",letterSpacing:1.5,marginBottom:8,fontWeight:700}}>Room Vibe</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+              {BACKGROUNDS.map(bg=><button key={bg.key} onClick={()=>setBgChoice(bg)} style={{padding:"10px 12px",borderRadius:10,border:bgChoice.key===bg.key?"2px solid #fbbf24":"1px solid rgba(255,255,255,0.1)",background:bgChoice.key===bg.key?`linear-gradient(135deg,${bg.colors[0]},${bg.colors[2]})`:"rgba(255,255,255,0.03)",color:bgChoice.key===bg.key?"#fbbf24":"#a1a1aa",fontSize:13,cursor:"pointer",fontWeight:700,fontFamily:"inherit"}}>{bg.label}</button>)}
+            </div>
+          </div>}
+          {isHost && <div style={{marginBottom:24}}>
+            <div style={{fontSize:12,color:"#a1a1aa",textTransform:"uppercase",letterSpacing:1.5,marginBottom:8,fontWeight:700}}>Room Name</div>
+            <input value={roomName} onChange={e=>setRoomName(e.target.value)} maxLength={40} style={{width:"100%",padding:"12px 14px",borderRadius:10,border:"1px solid rgba(251,191,36,0.2)",background:"rgba(255,255,255,0.05)",color:"#e4e4e7",fontSize:14,outline:"none",fontFamily:"inherit"}}/>
+          </div>}
+          <button onClick={enterRoom} style={{width:"100%",padding:"14px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#f59e0b,#fbbf24)",color:"#000",fontSize:16,fontWeight:800,cursor:"pointer",fontFamily:"inherit",letterSpacing:0.3}}>Take Your Seat →</button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- ROOM ---
+  const sortedList = getSortedAttendees();
+  const myStatus = attendees.find(p=>p.id===userId)?.status;
+
+  return (
+    <div style={{ height:"100vh", display:"flex", flexDirection:"column", background:"#0a0a1a", overflow:"hidden", position:"relative" }}>
+      {/* Header */}
+      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"rgba(10,10,26,0.95)", borderBottom:"1px solid rgba(251,191,36,0.1)", zIndex:10 }}>
+        <div>
+          <div style={{color:"#fbbf24",fontSize:16,fontWeight:900}}>{roomName}</div>
+          <div style={{color:"#52525b",fontSize:12}}>{attendees.length} people · {stickers.length} stickers · {locked?"🔒 Locked":"🟢 Open"}</div>
+        </div>
+        {isHost && <button onClick={()=>setLocked(!locked)} style={{ padding:"8px 14px", borderRadius:8, border:"1px solid", borderColor:locked?"rgba(239,68,68,0.4)":"rgba(34,197,94,0.4)", background:locked?"rgba(239,68,68,0.1)":"rgba(34,197,94,0.1)", color:locked?"#ef4444":"#22c55e", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>{locked?"🔓 Unlock":"🔒 Lock"}</button>}
+      </div>
+
+      {/* View Toggle */}
+      <div style={{display:"flex",padding:"8px 16px",gap:8,background:"rgba(10,10,26,0.9)",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+        {["room","list"].map(v=><button key={v} onClick={()=>{setView(v);setActiveTool(null);setShowStatusPicker(false);}} style={{flex:1,padding:"8px",borderRadius:8,border:"none",background:view===v?"#fbbf24":"rgba(255,255,255,0.05)",color:view===v?"#000":"#71717a",fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"inherit",textTransform:"capitalize"}}>{v}</button>)}
+      </div>
+
+      {locked && view==="room" && <button onClick={handleScreenshot} style={{margin:"0 16px",padding:"10px",borderRadius:10,border:"1px solid rgba(251,191,36,0.3)",background:"linear-gradient(135deg,rgba(251,191,36,0.15),rgba(251,191,36,0.05))",color:"#fbbf24",fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>📸 Capture This Moment</button>}
+
+      {/* ROOM VIEW */}
+      {view==="room" && (
+        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div ref={roomRef} onClick={handleRoomClick} style={{flex:1,position:"relative",overflow:"hidden",margin:"8px 8px 0",borderRadius:"16px 16px 0 0",border:"1px solid rgba(251,191,36,0.1)",borderBottom:"none",cursor:locked?"default":activeTool==="sticker"?"copy":"crosshair"}}>
+            <div data-room-bg="true" style={{position:"absolute",inset:0}}><RoomBackground bg={bgChoice} width={800} height={600}/></div>
+
+            {stickers.map(st=>(
+              <div key={st.id} style={{position:"absolute",left:`${st.x}%`,top:`${st.y}%`,transform:"translate(-50%,-50%)",fontSize:28,zIndex:5,cursor:"pointer",animation:"stickerDrop 0.25s ease",filter:"drop-shadow(0 2px 4px rgba(0,0,0,0.5))"}}
+                onContextMenu={e=>handleContextMenu("sticker",st.id,e)}
+                onTouchStart={e=>startLongPress("sticker",st.id,e)} onTouchEnd={cancelLongPress} onTouchMove={cancelLongPress}
+                onMouseDownCapture={e=>{if(e.button===0)startLongPress("sticker",st.id,e);}} onMouseUp={cancelLongPress} onMouseLeave={cancelLongPress}>
+                {st.emoji}
+              </div>
+            ))}
+
+            {attendees.map(person=>{
+              const isMe=person.id===userId; const isHL=person.id===highlightId;
+              return (
+                <div key={person.id} style={{position:"absolute",left:`${person.x}%`,top:`${person.y}%`,transform:"translate(-50%,-50%)",cursor:isMe&&!locked?"grab":locked?"default":"pointer",zIndex:isMe?20:isHL?15:10,transition:isMe&&dragging?"none":"left 0.3s ease, top 0.3s ease",animation:isHL?"pulseHighlight 1s ease infinite":"none",borderRadius:"50%"}}
+                  onMouseDown={isMe&&!locked?handleDragStart:undefined}
+                  onTouchStart={e=>{if(isMe&&!locked)handleDragStart(e);else if(!isMe)startLongPress("person",person.id,e);}}
+                  onTouchEnd={cancelLongPress} onTouchMove={cancelLongPress}
+                  onContextMenu={!isMe?e=>handleContextMenu("person",person.id,e):undefined}
+                  onMouseDownCapture={!isMe?e=>{if(e.button===0)startLongPress("person",person.id,e);}:undefined}
+                  onMouseUp={cancelLongPress} onMouseLeave={cancelLongPress}>
+                  {person.status && <div style={{position:"absolute",top:-28,left:"50%",transform:"translateX(-50%)",background:"rgba(251,191,36,0.9)",color:"#000",borderRadius:10,padding:"2px 8px",fontSize:10,fontWeight:800,whiteSpace:"nowrap",zIndex:25,animation:"statusBob 2s ease infinite",boxShadow:"0 2px 8px rgba(0,0,0,0.3)"}}>{person.status.emoji} {person.status.label}</div>}
+                  <Avatar person={person} size={isMe?48:42} highlight={isHL||isMe}/>
+                  {isMe && <div style={{position:"absolute",bottom:-6,left:"50%",transform:"translateX(-50%)",fontSize:9,color:"#fbbf24",fontWeight:800,background:"rgba(0,0,0,0.7)",padding:"1px 6px",borderRadius:4,whiteSpace:"nowrap"}}>YOU</div>}
+                </div>
+              );
+            })}
+
+            {locked && <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.2)",display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}><div style={{color:"#fbbf24",fontSize:18,fontWeight:800,background:"rgba(0,0,0,0.6)",padding:"8px 20px",borderRadius:30}}>🔒 Room Locked — Meeting Over!</div></div>}
+          </div>
+
+          {/* TOYBOX */}
+          {!locked && (
+            <div style={{margin:"0 8px",padding:"8px 12px",borderRadius:"0 0 16px 16px",background:"rgba(15,15,30,0.95)",border:"1px solid rgba(251,191,36,0.1)",borderTop:"none",display:"flex",alignItems:"center",gap:6}}>
+              <button onClick={()=>{setActiveTool(activeTool==="sticker"?null:"sticker");setShowStatusPicker(false);}} style={{padding:"6px 12px",borderRadius:8,border:"1px solid",borderColor:activeTool==="sticker"?"#fbbf24":"rgba(255,255,255,0.1)",background:activeTool==="sticker"?"rgba(251,191,36,0.2)":"rgba(255,255,255,0.05)",color:activeTool==="sticker"?"#fbbf24":"#71717a",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:5,flexShrink:0}}>🎨 Sticker</button>
+
+              {activeTool==="sticker" && <div style={{display:"flex",gap:3,overflowX:"auto",flex:1,paddingRight:4}}>
+                {STICKER_EMOJIS.map(em=><button key={em} onClick={()=>setSelectedSticker(em)} style={{width:32,height:32,borderRadius:6,flexShrink:0,border:selectedSticker===em?"2px solid #fbbf24":"1px solid rgba(255,255,255,0.08)",background:selectedSticker===em?"rgba(251,191,36,0.15)":"transparent",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{em}</button>)}
+              </div>}
+
+              <div style={{position:"relative",marginLeft:activeTool==="sticker"?0:"auto"}}>
+                <button onClick={()=>{setShowStatusPicker(!showStatusPicker);setActiveTool(null);}} style={{padding:"6px 12px",borderRadius:8,border:"1px solid",borderColor:myStatus?"#fbbf24":"rgba(255,255,255,0.1)",background:myStatus?"rgba(251,191,36,0.2)":"rgba(255,255,255,0.05)",color:myStatus?"#fbbf24":"#71717a",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:5,flexShrink:0}}>{myStatus?myStatus.emoji:"💬"} Status</button>
+                {showStatusPicker && <div style={{position:"absolute",bottom:"calc(100% + 8px)",right:0,zIndex:100,background:"rgba(20,20,30,0.95)",borderRadius:12,padding:8,border:"1px solid rgba(251,191,36,0.3)",boxShadow:"0 8px 32px rgba(0,0,0,0.6)",minWidth:160,backdropFilter:"blur(12px)"}}>
+                  {STATUS_OPTIONS.map(s=><button key={s.label} onClick={()=>setMyStatus(s)} style={{display:"flex",alignItems:"center",gap:8,width:"100%",padding:"7px 10px",border:"none",background:myStatus?.label===s.label?"rgba(251,191,36,0.15)":"transparent",color:s.emoji?"#e4e4e7":"#ef4444",fontSize:14,cursor:"pointer",borderRadius:6,fontFamily:"inherit",fontWeight:s.emoji?400:700}}
+                    onMouseEnter={e=>e.currentTarget.style.background="rgba(251,191,36,0.1)"} onMouseLeave={e=>e.currentTarget.style.background=myStatus?.label===s.label?"rgba(251,191,36,0.15)":"transparent"}>
+                    {s.emoji&&<span style={{fontSize:18}}>{s.emoji}</span>}{s.label}
+                  </button>)}
+                </div>}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* LIST VIEW */}
+      {view==="list" && (
+        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div style={{display:"flex",padding:"6px 16px",gap:8}}>
+            {[{key:"top",label:"🏆 Top"},{key:"recent",label:"🕐 Recent"}].map(s=><button key={s.key} onClick={()=>setListSort(s.key)} style={{padding:"5px 12px",borderRadius:6,border:"none",background:listSort===s.key?"rgba(251,191,36,0.15)":"transparent",color:listSort===s.key?"#fbbf24":"#52525b",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{s.label}</button>)}
+          </div>
+          <div style={{flex:1,overflowY:"auto",padding:"0 12px 12px"}}>
+            {sortedList.map(person=>{
+              const tot=Object.values(person.accolades||{}).reduce((s,v)=>s+v,0);
+              return (
+                <div key={person.id} onClick={()=>setProfileView(person)}
+                  onContextMenu={e=>{e.preventDefault();handleLongPress("person",person.id,e.clientX,e.clientY);}}
+                  onTouchStart={e=>startLongPress("person",person.id,e)} onTouchEnd={cancelLongPress} onTouchMove={cancelLongPress}
+                  onMouseDownCapture={e=>{if(e.button===0)startLongPress("person",person.id,e);}} onMouseUp={cancelLongPress} onMouseLeave={cancelLongPress}
+                  style={{display:"flex",alignItems:"center",gap:12,padding:"12px",borderRadius:12,background:person.id===highlightId?"rgba(251,191,36,0.1)":"rgba(255,255,255,0.03)",marginBottom:4,cursor:"pointer",border:person.id===highlightId?"1px solid rgba(251,191,36,0.3)":"1px solid transparent"}}>
+                  <Avatar person={person} size={40} showName={false} highlight={person.isMe}/>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                      <span style={{color:"#e4e4e7",fontSize:15,fontWeight:700}}>{person.name}</span>
+                      {person.isMe && <span style={{fontSize:10,color:"#fbbf24",fontWeight:800,background:"rgba(251,191,36,0.15)",padding:"1px 6px",borderRadius:4}}>YOU</span>}
+                      {person.recentlyJoined && <span style={{fontSize:10,color:"#22c55e",fontWeight:700}}>recently joined</span>}
+                      {person.status && <span style={{fontSize:10,background:"rgba(251,191,36,0.15)",color:"#fbbf24",padding:"1px 6px",borderRadius:4,fontWeight:700}}>{person.status.emoji} {person.status.label}</span>}
+                    </div>
+                    <div style={{color:"#71717a",fontSize:12,fontStyle:"italic",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{person.intro}</div>
+                    {tot>0 && <div style={{display:"flex",gap:6,marginTop:4}}>
+                      {ACCOLADES.filter(a=>(person.accolades[a.key]||0)>0).map(a=><span key={a.key} style={{fontSize:12,color:"#a1a1aa"}}>{a.emoji}{person.accolades[a.key]}</span>)}
+                    </div>}
+                  </div>
+                  <div style={{color:"#52525b",fontSize:12,fontWeight:700}}>{tot>0?tot:""}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Menus */}
+      {contextMenu?.type==="person" && <AccoladeMenu x={contextMenu.x} y={contextMenu.y} inRoomView={view==="room"}
+        onGive={key=>giveAccolade(contextMenu.id,key)}
+        onViewProfile={()=>{setProfileView(attendees.find(p=>p.id===contextMenu.id));setContextMenu(null);}}
+        onGoToRoom={()=>{setHighlightId(contextMenu.id);setView("room");setContextMenu(null);}}
+        onClose={()=>setContextMenu(null)}/>}
+      {contextMenu?.type==="sticker" && <StickerMenu x={contextMenu.x} y={contextMenu.y}
+        sticker={stickers.find(s=>s.id===contextMenu.id)||{emoji:"?"}}
+        onChangeEmoji={em=>changeStickerEmoji(contextMenu.id,em)}
+        onDelete={()=>deleteSticker(contextMenu.id)}
+        onClose={()=>setContextMenu(null)}/>}
+
+      {profileView && <ProfilePanel person={attendees.find(p=>p.id===profileView.id)||profileView} locked={locked} onClose={()=>setProfileView(null)} onGive={(id,key)=>giveAccolade(id,key)}/>}
+      {toast && <Toast message={toast} onDone={()=>setToast(null)}/>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<GatherRoom/>);
+  </script>
+</body>
+</html>

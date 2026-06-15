@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Williams Park — Help Shape Our Town Square</title>
+  <meta name="description" content="Help the St. Petersburg Downtown Partnership collect park activity data and share your vision for Williams Park." />
+  <meta name="theme-color" content="#1a5c3a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; background: #f5f5f5; font-family: 'DM Sans', Helvetica, sans-serif; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    @keyframes chipIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useRef } = React;
+
+    /* ───────── SUPABASE ───────── */
+    const SB_URL = "https://nzcogxjcihgtevjiuipf.supabase.co";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56Y29neGpjaWhndGV2aml1aXBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTIxMzcsImV4cCI6MjA4NjQyODEzN30.hGREfoM3QWXWVKndGBmy3TGbHO7o1tt-eNH3NWbtOZU";
+    const PROJECT = "williams-park";
+
+    async function sbInsert(table, data) {
+      const res = await fetch(`${SB_URL}/rest/v1/${table}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SB_KEY,
+          Authorization: `Bearer ${SB_KEY}`,
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify(Array.isArray(data) ? data : [data]),
+      });
+      if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
+      return res.json();
+    }
+
+    /*
+      ── NEW TABLE — Run once in Supabase SQL editor: ──
+
+      CREATE TABLE survey_responses (
+        id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+        project text NOT NULL,
+        session_id uuid REFERENCES sessions(id),
+        question text NOT NULL,
+        response text NOT NULL,
+        responded_at timestamptz NOT NULL,
+        created_at timestamptz DEFAULT now()
+      );
+      ALTER TABLE survey_responses DISABLE ROW LEVEL SECURITY;
+      CREATE INDEX idx_survey_responses_project ON survey_responses(project);
+      CREATE INDEX idx_survey_responses_session ON survey_responses(session_id);
+    */
+
+    /* ───────── CONFIG ───────── */
+    const ACTIVITIES = [
+      { id: "walking", label: "Walking", icon: "🚶" },
+      { id: "dogs", label: "With Dog", icon: "🐕" },
+      { id: "sitting", label: "Sitting", icon: "🪑" },
+      { id: "families", label: "Families", icon: "👨‍👩‍👧" },
+      { id: "active", label: "Active Play", icon: "⚽" },
+      { id: "food", label: "Eating", icon: "☕" },
+      { id: "art", label: "Art / Reading", icon: "📖" },
+      { id: "event", label: "Event", icon: "🎪" },
+      { id: "cycling", label: "Cycling", icon: "🚲" },
+    ];
+
+    const MICRO_SURVEYS = [
+      {
+        key: "arrival",
+        question: "How did you get here?",
+        options: [
+          { value: "walked", emoji: "🚶", label: "Walked" },
+          { value: "biked", emoji: "🚲", label: "Biked" },
+          { value: "drove", emoji: "🚗", label: "Drove" },
+          { value: "transit", emoji: "🚌", label: "Bus" },
+          { value: "scooter", emoji: "🛴", label: "Scooter" },
+        ],
+      },
+      {
+        key: "visit_frequency",
+        question: "How often do you visit Williams Park?",
+        options: [
+          { value: "first_time", emoji: "👋", label: "First Time" },
+          { value: "rarely", emoji: "🌤️", label: "Rarely" },
+          { value: "monthly", emoji: "📅", label: "Monthly" },
+          { value: "weekly", emoji: "🔄", label: "Weekly" },
+          { value: "daily", emoji: "☀️", label: "Daily" },
+        ],
+      },
+      {
+        key: "safety",
+        question: "How does the park feel right now?",
+        options: [
+          { value: "uneasy", emoji: "😬", label: "Uneasy" },
+          { value: "fine", emoji: "😐", label: "It's Fine" },
+          { value: "safe", emoji: "😌", label: "Very Safe" },
+        ],
+      },
+      {
+        key: "condition",
+        question: "Park conditions today?",
+        options: [
+          { value: "clean", emoji: "✨", label: "Clean" },
+          { value: "ok", emoji: "👌", label: "Okay" },
+          { value: "dirty", emoji: "🗑️", label: "Needs Work" },
+        ],
+      },
+      {
+        key: "cafe",
+        question: "Would you visit a café in the park?",
+        options: [
+          { value: "probably_not", emoji: "🤷", label: "Probably Not" },
+          { value: "maybe", emoji: "🤔", label: "Maybe" },
+          { value: "definitely", emoji: "😍", label: "Definitely" },
+        ],
+      },
+    ];
+
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScdF_c9bpNOvBmHCWTpppDrFPE2uUD7KFJil57y6IK4uc2SUw/viewform";
+
+    const fmt = d => new Date(d).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    const fmtDur = ms => {
+      const m = Math.floor(ms / 60000), h = Math.floor(m / 60);
+      return h > 0 ? `${h}h ${m % 60}m` : `${m}m`;
+    };
+    const haptic = () => { try { navigator.vibrate && navigator.vibrate(10); } catch(e) {} };
+
+    /* ───────── COMPONENTS ───────── */
+
+    function Onboarding({ onStart }) {
+      return (
+        <div style={{ padding: "28px 20px", animation: "fadeIn 0.4s ease-out" }}>
+          <div style={{
+            background: "white", borderRadius: 20, padding: "32px 24px",
+            border: "1.5px solid #e0e0e0", textAlign: "center",
+          }}>
+            <span style={{ fontSize: 56, display: "block", marginBottom: 12 }}>🌳</span>
+            <h2 style={{
+              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontSize: 22, fontWeight: 400, color: "#1a5c3a",
+              margin: "0 0 12px", lineHeight: 1.3,
+            }}>Help us make this park better with data</h2>
+            <p style={{
+              fontSize: 15, color: "#555", lineHeight: 1.6, margin: "0 0 8px",
+            }}>
+              As you travel through or sit in Williams Park, <strong>count the people and activities</strong> you see happening around you.
+            </p>
+            <p style={{
+              fontSize: 14, color: "#888", lineHeight: 1.5, margin: "0 0 24px",
+            }}>
+              Every tap helps the Downtown Partnership understand how the park is used today — so the renovation gets it right.
+            </p>
+
+            <div style={{
+              display: "flex", gap: 10, justifyContent: "center",
+              marginBottom: 24, flexWrap: "wrap",
+            }}>
+              {[
+                { icon: "👆", text: "Tap to count" },
+                { icon: "📋", text: "Answer 3 quick Qs" },
+                { icon: "✅", text: "Submit when done" },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  background: "#f0faf4", borderRadius: 10, padding: "8px 14px",
+                  border: "1px solid #d4eddf",
+                }}>
+                  <span style={{ fontSize: 16 }}>{s.icon}</span>
+                  <span style={{ fontSize: 13, fontWeight: 500, color: "#1a5c3a" }}>{s.text}</span>
+                </div>
+              ))}
+            </div>
+
+            <button onClick={onStart} style={{
+              width: "100%", padding: "16px",
+              background: "#2d8a5e", color: "white", border: "none",
+              borderRadius: 14, fontSize: 18, fontWeight: 600,
+              cursor: "pointer", display: "flex",
+              alignItems: "center", justifyContent: "center", gap: 8,
+            }}>🌿 Let's Go!</button>
+          </div>
+        </div>
+      );
+    }
+
+    function HowItWorks() {
+      const [open, setOpen] = useState(false);
+      return (
+        <div style={{ padding: "0 16px", marginBottom: 2 }}>
+          <button onClick={() => setOpen(!open)} style={{
+            background: "none", border: "none", color: "#999",
+            fontSize: 12, cursor: "pointer", padding: "6px 0",
+            display: "flex", alignItems: "center", gap: 4,
+          }}>
+            <span style={{ fontSize: 10, transform: open ? "rotate(90deg)" : "rotate(0)", transition: "transform 0.15s", display: "inline-block" }}>▶</span>
+            How this works
+          </button>
+          {open && (
+            <p style={{
+              fontSize: 12.5, color: "#888", lineHeight: 1.5,
+              margin: "2px 0 8px 14px", animation: "fadeIn 0.2s ease",
+            }}>
+              Tap activity buttons to count what you see. Answer 3 quick questions about the park. Hit Submit when you're done — your data goes straight to the Downtown Partnership.
+            </p>
+          )}
+        </div>
+      );
+    }
+
+    function MicroSurveyChip({ survey, answer }) {
+      const opt = survey.options.find(o => o.value === answer);
+      if (!opt) return null;
+      return (
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 5,
+          background: "#f0faf4", border: "1px solid #c8e6d5",
+          borderRadius: 20, padding: "5px 12px 5px 8px",
+          animation: "chipIn 0.25s ease-out",
+        }}>
+          <span style={{ fontSize: 13, color: "#2d8a5e" }}>✓</span>
+          <span style={{ fontSize: 12, fontWeight: 600, color: "#2d8a5e" }}>
+            {opt.emoji} {opt.label}
+          </span>
+        </div>
+      );
+    }
+
+    function MicroSurveyCard({ survey, onSelect }) {
+      return (
+        <div style={{
+          background: "white", borderRadius: 14,
+          border: "1.5px solid #e8e8e8", padding: "12px 14px",
+          animation: "slideUp 0.3s ease-out",
+        }}>
+          <h4 style={{
+            fontSize: 12.5, fontWeight: 700, color: "#333", margin: "0 0 8px",
+            textTransform: "uppercase", letterSpacing: "0.02em",
+          }}>{survey.question}</h4>
+          <div style={{ display: "flex", gap: 6 }}>
+            {survey.options.map(o => (
+              <button key={o.value} onClick={() => { haptic(); onSelect(survey.key, o.value); }}
+                style={{
+                  flex: 1, padding: "10px 4px",
+                  background: "#f8f9fa", border: "1.5px solid #e8e8e8",
+                  borderRadius: 10, cursor: "pointer",
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+                  transition: "all 0.12s",
+                }}
+                onTouchStart={e => { e.currentTarget.style.transform = "scale(0.95)"; }}
+                onTouchEnd={e => { e.currentTarget.style.transform = "scale(1)"; }}
+              >
+                <span style={{ fontSize: 22 }}>{o.emoji}</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "#555", textTransform: "uppercase" }}>
+                  {o.label}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function SurveySection({ answers, onSelect }) {
+      const answered = MICRO_SURVEYS.filter(s => answers[s.key]);
+      // Show the next unanswered question as soon as the previous is answered
+      const nextUnanswered = MICRO_SURVEYS.find(s => !answers[s.key]);
+
+      return (
+        <div style={{ padding: "0 16px 6px", display: "flex", flexDirection: "column", gap: 8 }}>
+          {answered.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {answered.map(s => <MicroSurveyChip key={s.key} survey={s} answer={answers[s.key]} />)}
+            </div>
+          )}
+          {nextUnanswered && <MicroSurveyCard survey={nextUnanswered} onSelect={onSelect} />}
+        </div>
+      );
+    }
+
+    function Toast({ entry, onDetail, onDismiss }) {
+      const [vis, setVis] = useState(true);
+      useEffect(() => { const t = setTimeout(() => { setVis(false); onDismiss(); }, 2500); return () => clearTimeout(t); }, []);
+      if (!vis) return null;
+      return (
+        <div style={{
+          position: "fixed", bottom: 80, left: "50%", transform: "translateX(-50%)",
+          background: "#1a5c3a", color: "white", borderRadius: 14,
+          padding: "9px 16px", display: "flex", alignItems: "center", gap: 10,
+          boxShadow: "0 8px 32px rgba(0,0,0,0.18)", zIndex: 100,
+          fontSize: 14, animation: "slideUp 0.2s ease-out",
+          maxWidth: "calc(100vw - 40px)",
+        }}>
+          <span>+1 {entry.label}</span>
+          <button onClick={e => { e.stopPropagation(); onDetail(); setVis(false); onDismiss(); }} style={{
+            background: "rgba(255,255,255,0.2)", border: "none", color: "white",
+            borderRadius: 8, padding: "3px 10px", fontSize: 11, cursor: "pointer", whiteSpace: "nowrap",
+          }}>+ note</button>
+        </div>
+      );
+    }
+
+    function DetailModal({ entry, onSave, onClose }) {
+      const act = ACTIVITIES.find(a => a.id === entry.activityId);
+      const [comment, setComment] = useState(entry.comment || "");
+      const ref = useRef(null);
+      useEffect(() => { ref.current?.focus(); }, []);
+      return (
+        <div style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)",
+          display: "flex", alignItems: "flex-end", justifyContent: "center",
+          zIndex: 200, padding: 16,
+        }} onClick={onClose}>
+          <div onClick={e => e.stopPropagation()} style={{
+            background: "white", borderRadius: 20, padding: 20,
+            width: "100%", maxWidth: 440,
+            boxShadow: "0 -4px 32px rgba(0,0,0,0.15)", animation: "slideUp 0.2s ease-out",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              <span style={{ fontSize: 16, fontWeight: 600, color: "#222" }}>
+                {act?.icon} {act?.label} — {fmt(entry.counted_at)}
+              </span>
+              <button onClick={onClose} style={{
+                background: "#f0f0f0", border: "none", width: 30, height: 30,
+                borderRadius: "50%", fontSize: 16, cursor: "pointer", color: "#888",
+              }}>×</button>
+            </div>
+            <input ref={ref} type="text" placeholder="Add a note… e.g. 'near bandshell', 'large group'"
+              value={comment} onChange={e => setComment(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter") { onSave(comment); onClose(); } }}
+              style={{
+                width: "100%", padding: "12px 14px", border: "1.5px solid #e0e0e0",
+                borderRadius: 12, fontSize: 15, outline: "none",
+              }}
+            />
+            <button onClick={() => { onSave(comment); onClose(); }} style={{
+              width: "100%", marginTop: 10, padding: 12,
+              background: "#2d8a5e", color: "white", border: "none", borderRadius: 12,
+              fontSize: 15, fontWeight: 600, cursor: "pointer",
+            }}>Save</button>
+          </div>
+        </div>
+      );
+    }
+
+    function Header({ view, setView, disabled }) {
+      return (
+        <div style={{
+          background: "linear-gradient(135deg, #1a5c3a 0%, #2d8a5e 50%, #1a5c3a 100%)",
+          padding: "22px 20px 16px", color: "white", position: "relative", overflow: "hidden",
+        }}>
+          <div style={{
+            position: "absolute", inset: 0, opacity: 0.06,
+            backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
+            backgroundSize: "20px 20px",
+          }} />
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+              <span style={{ fontSize: 18 }}>🌳</span>
+              <span style={{
+                fontFamily: "'DM Serif Display', Georgia, serif",
+                fontSize: 11.5, letterSpacing: "0.12em", textTransform: "uppercase", opacity: 0.75,
+              }}>St. Petersburg Downtown Partnership</span>
+            </div>
+            <h1 style={{
+              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontSize: 24, fontWeight: 400, margin: "4px 0 2px", lineHeight: 1.15,
+            }}>Williams Park</h1>
+            <p style={{ fontSize: 13, opacity: 0.8, margin: 0 }}>
+              Help shape the future of our town square
+            </p>
+            {!disabled && (
+              <div style={{ display: "flex", gap: 6, marginTop: 14 }}>
+                {[{ key: "count", label: "Count", icon: "📊" }, { key: "survey", label: "Survey", icon: "💬" }].map(t => (
+                  <button key={t.key} onClick={() => setView(t.key)} style={{
+                    flex: 1, padding: "9px 10px",
+                    background: view === t.key ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.07)",
+                    border: view === t.key ? "1.5px solid rgba(255,255,255,0.35)" : "1.5px solid transparent",
+                    borderRadius: 10, color: "white", fontSize: 14,
+                    fontWeight: view === t.key ? 600 : 400,
+                    cursor: "pointer", display: "flex", alignItems: "center",
+                    justifyContent: "center", gap: 6, transition: "all 0.15s",
+                  }}>{t.icon} {t.label}</button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function SessionBar({ elapsed, total }) {
+      return (
+        <div style={{
+          padding: "8px 16px",
+          background: "#f0faf4", borderBottom: "1px solid #d4eddf",
+          display: "flex", alignItems: "center", gap: 10,
+        }}>
+          <span style={{
+            width: 7, height: 7, borderRadius: "50%", background: "#2d8a5e",
+            display: "inline-block", animation: "pulse 2s infinite",
+          }} />
+          <span style={{ fontSize: 13, fontWeight: 600, color: "#1a5c3a" }}>
+            {fmtDur(elapsed)}
+          </span>
+          <span style={{ fontSize: 13, color: "#b0d4c0" }}>·</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: "#1a5c3a" }}>
+            {total} counted
+          </span>
+        </div>
+      );
+    }
+
+    function CounterGrid({ counts, onTap, rippleId }) {
+      return (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, padding: "10px 16px" }}>
+          {ACTIVITIES.map(act => {
+            const c = counts[act.id] || 0;
+            const rip = rippleId === act.id;
+            return (
+              <button key={act.id} onClick={() => onTap(act)} style={{
+                position: "relative", padding: "16px 8px 12px",
+                background: c > 0 ? "#f0faf4" : "white",
+                border: c > 0 ? "1.5px solid #c8e6d5" : "1.5px solid #e8e8e8",
+                borderRadius: 14, cursor: "pointer",
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+                transition: "all 0.12s", transform: rip ? "scale(0.93)" : "scale(1)",
+              }}>
+                <span style={{ fontSize: 28, lineHeight: 1 }}>{act.icon}</span>
+                <span style={{ fontSize: 11, fontWeight: 500, color: "#555", textAlign: "center", lineHeight: 1.2, marginTop: 2 }}>
+                  {act.label}
+                </span>
+                {c > 0 && (
+                  <span style={{
+                    position: "absolute", top: -7, right: -7,
+                    background: "#2d8a5e", color: "white",
+                    minWidth: 22, height: 22, borderRadius: 11,
+                    fontSize: 11, fontWeight: 700, display: "flex",
+                    alignItems: "center", justifyContent: "center",
+                    padding: "0 5px",
+                    boxShadow: "0 2px 6px rgba(45,138,94,0.3)",
+                    transition: "transform 0.15s",
+                    transform: rip ? "scale(1.2)" : "scale(1)",
+                  }}>{c}</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      );
+    }
+
+    function SubmitPanel({ total, certified, setCertified, onSubmit, submitting, error }) {
+      if (total === 0) return null;
+      return (
+        <div style={{ padding: "12px 16px 16px" }}>
+          <label style={{
+            display: "flex", alignItems: "flex-start", gap: 10,
+            padding: "12px 14px", background: "#f8f9fa",
+            borderRadius: 12, border: `1.5px solid ${certified ? "#2d8a5e" : "#e8e8e8"}`,
+            cursor: "pointer", marginBottom: 10, transition: "border-color 0.2s",
+          }}>
+            <input type="checkbox" checked={certified} onChange={e => setCertified(e.target.checked)} style={{
+              width: 20, height: 20, marginTop: 1, accentColor: "#2d8a5e", cursor: "pointer", flexShrink: 0,
+            }} />
+            <span style={{ fontSize: 13, color: "#444", lineHeight: 1.4 }}>
+              I certify these are accurate results based on my observation of Williams Park.
+            </span>
+          </label>
+          <button onClick={onSubmit} disabled={!certified || submitting} style={{
+            width: "100%", padding: 14,
+            background: certified ? "#2d8a5e" : "#ccc",
+            color: "white", border: "none", borderRadius: 12,
+            fontSize: 16, fontWeight: 600,
+            cursor: certified ? "pointer" : "default",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            transition: "background 0.2s", opacity: submitting ? 0.7 : 1,
+          }}>
+            {submitting ? "Submitting…" : `Submit ${total} Counts`}
+          </button>
+          {error && <p style={{ fontSize: 13, color: "#d32f2f", textAlign: "center", margin: "8px 0 0" }}>{error}</p>}
+        </div>
+      );
+    }
+
+    function ThankYouPage({ total, elapsed, onReset }) {
+      return (
+        <div style={{ padding: "32px 20px", textAlign: "center" }}>
+          <div style={{
+            background: "linear-gradient(135deg, #f0faf4, #e8f5ee)",
+            borderRadius: 20, padding: "36px 24px 28px",
+            border: "1.5px solid #d4eddf", animation: "popIn 0.4s ease-out",
+          }}>
+            <span style={{ fontSize: 56, display: "block", marginBottom: 12 }}>🎉</span>
+            <h2 style={{
+              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontSize: 24, fontWeight: 400, color: "#1a5c3a", margin: "0 0 8px",
+            }}>Thank You!</h2>
+            <p style={{ fontSize: 15, color: "#555", lineHeight: 1.5, margin: "0 0 4px" }}>
+              You counted <strong style={{ color: "#1a5c3a" }}>{total} people</strong> over {fmtDur(elapsed)}.
+            </p>
+            <p style={{ fontSize: 13.5, color: "#888", lineHeight: 1.5, margin: 0 }}>
+              Your data helps the Downtown Partnership understand how the park is used today — so the renovation gets it right.
+            </p>
+          </div>
+
+          <div style={{
+            marginTop: 20, padding: "16px 20px",
+            background: "#fff9e6", borderRadius: 12, border: "1px solid #f0e6c0",
+          }}>
+            <p style={{ fontSize: 13.5, color: "#8a7530", margin: "0 0 12px", lineHeight: 1.45 }}>
+              <strong>Want to share more?</strong> Take our 3-minute survey about what you'd like to see in the park.
+            </p>
+            <a href={FORM_URL} target="_blank" rel="noopener noreferrer" style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              padding: "10px 20px", background: "#2d8a5e", color: "white",
+              borderRadius: 10, fontSize: 14, fontWeight: 600, textDecoration: "none",
+            }}>💬 Take the Survey</a>
+          </div>
+
+          <button onClick={onReset} style={{
+            marginTop: 20, padding: "10px 24px",
+            background: "none", color: "#999",
+            border: "1px solid #ddd", borderRadius: 10,
+            fontSize: 13, cursor: "pointer",
+          }}>Start a New Session</button>
+        </div>
+      );
+    }
+
+    function SurveyView() {
+      return (
+        <div style={{ padding: "20px 16px" }}>
+          <div style={{ background: "white", borderRadius: 16, border: "1.5px solid #e0e0e0", overflow: "hidden" }}>
+            <div style={{
+              background: "linear-gradient(135deg, #f0faf4, #e8f5ee)",
+              padding: "28px 24px", textAlign: "center",
+            }}>
+              <span style={{ fontSize: 44, display: "block", marginBottom: 6 }}>🗣️</span>
+              <h2 style={{
+                fontFamily: "'DM Serif Display', Georgia, serif",
+                fontSize: 21, fontWeight: 400, color: "#1a5c3a", margin: "0 0 6px",
+              }}>Your Voice Matters</h2>
+              <p style={{ fontSize: 13.5, color: "#666", margin: 0, lineHeight: 1.45 }}>
+                Williams Park is getting $800K in safety upgrades, a $2.2M bandshell renovation, and new daily programming. Share your vision.
+              </p>
+            </div>
+            <div style={{ padding: "18px 22px" }}>
+              {[
+                { icon: "🛡️", text: "Safety & comfort" },
+                { icon: "🎯", text: "Daily activities you'd return for" },
+                { icon: "☕", text: "Café or food spot in the park?" },
+                { icon: "🌉", text: "How you get here" },
+                { icon: "🎶", text: "Events & programming gaps" },
+              ].map((item, i, arr) => (
+                <div key={i} style={{
+                  display: "flex", gap: 10, alignItems: "center",
+                  padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #f0f0f0" : "none",
+                }}>
+                  <span style={{ fontSize: 18 }}>{item.icon}</span>
+                  <span style={{ fontSize: 14, color: "#444" }}>{item.text}</span>
+                </div>
+              ))}
+              <a href={FORM_URL} target="_blank" rel="noopener noreferrer" style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                width: "100%", padding: 13, marginTop: 18,
+                background: "#2d8a5e", color: "white", border: "none",
+                borderRadius: 12, fontSize: 16, fontWeight: 600, cursor: "pointer", textDecoration: "none",
+              }}>Take the Survey →</a>
+              <p style={{ fontSize: 11.5, color: "#bbb", textAlign: "center", margin: "6px 0 0" }}>~3 minutes · Anonymous</p>
+            </div>
+          </div>
+          <div style={{ marginTop: 14, padding: "14px 18px", background: "#fff9e6", borderRadius: 12, border: "1px solid #f0e6c0" }}>
+            <p style={{ fontSize: 12.5, color: "#8a7530", margin: 0, lineHeight: 1.45 }}>
+              <strong>Did you know?</strong> Williams Park opened in 1888 and spans 3.3 acres. The renovation aims for a grand reopening in December 2026.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    /* ═══════════ APP ═══════════ */
+    function App() {
+      const [view, setView] = useState("count");
+      const [phase, setPhase] = useState("onboarding");
+      const [entries, setEntries] = useState([]);
+      const [elapsed, setElapsed] = useState(0);
+      const [sessionStart, setSessionStart] = useState(null);
+      const [rippleId, setRippleId] = useState(null);
+      const [lastEntry, setLastEntry] = useState(null);
+      const [detailEntry, setDetailEntry] = useState(null);
+      const [surveyAnswers, setSurveyAnswers] = useState({});
+      const [certified, setCertified] = useState(false);
+      const [submitting, setSubmitting] = useState(false);
+      const [error, setError] = useState(null);
+
+      useEffect(() => {
+        if (phase !== "counting") return;
+        const iv = setInterval(() => setElapsed(Date.now() - sessionStart), 1000);
+        return () => clearInterval(iv);
+      }, [phase, sessionStart]);
+
+      const counts = {};
+      entries.forEach(e => { counts[e.activityId] = (counts[e.activityId] || 0) + 1; });
+      const total = entries.length;
+
+      const startCounting = () => {
+        setSessionStart(Date.now());
+        setSurveyAnswers({});
+        setEntries([]);
+        setElapsed(0);
+        setCertified(false);
+        setError(null);
+        setPhase("counting");
+      };
+
+      const handleTap = useCallback((act) => {
+        haptic();
+        const entry = {
+          id: Date.now() + Math.random(),
+          activityId: act.id,
+          label: act.label,
+          comment: "",
+          counted_at: new Date().toISOString(),
+        };
+        setEntries(prev => [...prev, entry]);
+        setRippleId(act.id);
+        setLastEntry(entry);
+        setTimeout(() => setRippleId(null), 150);
+      }, []);
+
+      const handleSurveySelect = useCallback((key, value) => {
+        setSurveyAnswers(prev => ({ ...prev, [key]: value }));
+      }, []);
+
+      const updateComment = (comment) => {
+        if (!detailEntry) return;
+        setEntries(prev => prev.map(e => e.id === detailEntry.id ? { ...e, comment } : e));
+      };
+
+      const handleSubmit = async () => {
+        if (!certified || submitting) return;
+        setSubmitting(true);
+        setError(null);
+        try {
+          const [sess] = await sbInsert("sessions", {
+            project: PROJECT,
+            started_at: new Date(sessionStart).toISOString(),
+            ended_at: new Date().toISOString(),
+            duration_ms: elapsed,
+            meta: surveyAnswers,
+            certified: true,
+          });
+
+          const countRows = entries.map(e => ({
+            project: PROJECT,
+            session_id: sess.id,
+            activity: e.activityId,
+            label: e.label,
+            comment: e.comment || "",
+            counted_at: e.counted_at,
+          }));
+          if (countRows.length > 0) await sbInsert("counts", countRows);
+
+          const surveyRows = Object.entries(surveyAnswers).map(([q, r]) => ({
+            project: PROJECT,
+            session_id: sess.id,
+            question: q,
+            response: r,
+            responded_at: new Date().toISOString(),
+          }));
+          if (surveyRows.length > 0) await sbInsert("survey_responses", surveyRows);
+
+          setPhase("thankyou");
+        } catch (err) {
+          console.error(err);
+          setError("Couldn't submit — check your connection and try again.");
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      const reset = () => {
+        setPhase("onboarding");
+        setEntries([]);
+        setElapsed(0);
+        setSessionStart(null);
+        setSurveyAnswers({});
+        setCertified(false);
+        setError(null);
+        setView("count");
+      };
+
+      const isLocked = phase === "thankyou" || phase === "onboarding";
+
+      return (
+        <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: "#fff" }}>
+          <Header view={view} setView={setView} disabled={isLocked} />
+
+          {view === "count" ? (
+            <>
+              {phase === "onboarding" && <Onboarding onStart={startCounting} />}
+
+              {phase === "counting" && (
+                <>
+                  <SessionBar elapsed={elapsed} total={total} />
+                  <HowItWorks />
+                  <SurveySection answers={surveyAnswers} onSelect={handleSurveySelect} />
+                  <CounterGrid counts={counts} onTap={handleTap} rippleId={rippleId} />
+                  <SubmitPanel
+                    total={total}
+                    certified={certified}
+                    setCertified={setCertified}
+                    onSubmit={handleSubmit}
+                    submitting={submitting}
+                    error={error}
+                  />
+                  {lastEntry && <Toast entry={lastEntry} onDetail={() => setDetailEntry(lastEntry)} onDismiss={() => setLastEntry(null)} />}
+                  {detailEntry && <DetailModal entry={detailEntry} onSave={updateComment} onClose={() => setDetailEntry(null)} />}
+                </>
+              )}
+
+              {phase === "thankyou" && <ThankYouPage total={total} elapsed={elapsed} onReset={reset} />}
+            </>
+          ) : (
+            <SurveyView />
+          )}
+
+          <div style={{ padding: 18, textAlign: "center", borderTop: "1px solid #f0f0f0", marginTop: 8 }}>
+            <p style={{ fontSize: 11, color: "#ccc", margin: 0 }}>
+              Powered by <strong style={{ color: "#aaa" }}>Community Play Tools</strong>
+              <br /><span style={{ fontSize: 10 }}>communityplaytools.com</span>
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

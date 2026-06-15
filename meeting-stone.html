@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Meeting Stone — Williams Park</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+  body {
+    font-family: 'DM Sans', 'Avenir', sans-serif;
+    background: #0C1117;
+    color: #E8ECF1;
+    min-height: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :root {
+    --bg: #0C1117;
+    --surface: #151C25;
+    --surface-hover: #1A2330;
+    --border: #1E2A38;
+    --accent: #22D68A;
+    --accent-dim: rgba(34,214,138,0.12);
+    --accent-glow: rgba(34,214,138,0.25);
+    --text: #E8ECF1;
+    --text-muted: #7A8B9E;
+    --text-dim: #4A5A6E;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes pulseRing { 0% { transform:scale(0.95); opacity:0.6; } 50% { transform:scale(1.08); opacity:0.2; } 100% { transform:scale(0.95); opacity:0.6; } }
+  @keyframes shimmer { 0% { background-position:-200% 0; } 100% { background-position:200% 0; } }
+  @keyframes slideUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes confettiBurst { 0% { transform:translateY(0) rotate(0deg); opacity:1; } 100% { transform:translateY(-60px) rotate(180deg); opacity:0; } }
+
+  .screen {
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    position: relative;
+    overflow: hidden;
+  }
+  .screen-glow {
+    position: absolute; top:0; left:0; right:0; height:200px;
+    background: radial-gradient(ellipse at 50% 0%, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none; opacity: 0.5;
+  }
+  .screen-inner { position: relative; padding: 48px 24px 32px; }
+
+  /* Back button */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: none; color: var(--text-muted);
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    cursor: pointer; padding: 4px 0; margin-bottom: 20px;
+    transition: color 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .back-btn:hover { color: var(--text); }
+  .back-btn svg { width: 18px; height: 18px; }
+
+  /* Step dots */
+  .steps { display: flex; gap: 6px; justify-content: center; margin-bottom: 28px; }
+  .step-dot {
+    height: 8px; border-radius: 999px; transition: all 0.35s ease;
+  }
+  .step-dot.active { width: 28px; background: var(--accent); }
+  .step-dot.done { width: 8px; background: rgba(34,214,138,0.38); }
+  .step-dot.future { width: 8px; background: var(--border); }
+
+  h2.screen-title { font-size: 22px; font-weight: 600; margin-bottom: 6px; animation: fadeUp 0.4s ease both; }
+  p.screen-sub { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; animation: fadeUp 0.4s ease both 0.05s; }
+
+  /* Activity / Vibe cards */
+  .card-list { display: flex; flex-direction: column; gap: 10px; }
+  .card-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px; background: var(--surface);
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    cursor: pointer; transition: all 0.2s ease; text-align: left;
+    font-family: inherit; color: var(--text);
+  }
+  .card-btn:hover { background: var(--surface-hover); }
+  .card-btn.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .card-btn.selected .card-label { color: var(--accent); }
+  .card-emoji { font-size: 28px; width: 40px; text-align: center; flex-shrink: 0; }
+  .card-label { font-size: 16px; font-weight: 600; }
+  .card-desc { font-size: 13px; color: var(--text-muted); }
+
+  /* Vibe grid */
+  .vibe-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .vibe-btn {
+    flex: 1 1 45%; display: flex; align-items: center; gap: 10px;
+    padding: 16px; background: var(--surface);
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    cursor: pointer; transition: all 0.2s; font-family: inherit; color: var(--text);
+  }
+  .vibe-btn:hover { background: var(--surface-hover); }
+  .vibe-btn.selected { background: var(--accent-dim); border-color: var(--accent); }
+  .vibe-btn.selected span:last-child { color: var(--accent); }
+  .vibe-emoji { font-size: 22px; }
+  .vibe-label { font-size: 15px; font-weight: 500; }
+
+  /* Calendar grid */
+  .cal-header {
+    display: grid; grid-template-columns: 72px repeat(var(--cols), 1fr); gap: 4px;
+    margin-bottom: 4px;
+  }
+  .cal-header-cell {
+    text-align: center; font-size: 12px; font-weight: 600;
+    color: var(--text-muted); padding: 8px 4px;
+    font-family: var(--mono); letter-spacing: 0.3px;
+  }
+  .cal-header-cell .day-name { font-size: 11px; color: var(--text-dim); font-weight: 400; }
+  .cal-grid {
+    display: grid; grid-template-columns: 72px repeat(var(--cols), 1fr); gap: 4px;
+  }
+  .cal-time-label {
+    font-size: 11px; color: var(--text-dim); font-family: var(--mono);
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 10px; height: 44px;
+  }
+  .cal-cell {
+    height: 44px; border-radius: 8px; border: 1.5px solid var(--border);
+    background: var(--surface); cursor: pointer; transition: all 0.15s ease;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: transparent; position: relative;
+  }
+  .cal-cell:hover { background: var(--surface-hover); border-color: var(--text-dim); }
+  .cal-cell.selected {
+    background: var(--accent-dim); border-color: var(--accent);
+    color: var(--accent); font-weight: 600;
+  }
+  .cal-cell.selected::after {
+    content: '✓'; font-size: 14px;
+  }
+
+  .flexible-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px; margin-top: 12px;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); cursor: pointer;
+    font-family: inherit; font-size: 15px; font-weight: 500;
+    color: var(--text-muted); transition: all 0.2s;
+  }
+  .flexible-btn:hover { background: var(--surface-hover); }
+  .flexible-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+  .continue-btn {
+    width: 100%; padding: 16px; margin-top: 24px;
+    border: none; border-radius: 999px;
+    font-size: 16px; font-weight: 600; font-family: inherit;
+    cursor: pointer; transition: all 0.25s ease;
+  }
+  .continue-btn.active {
+    background: linear-gradient(135deg, var(--accent), #1AB877);
+    color: var(--bg); box-shadow: 0 4px 24px var(--accent-glow);
+  }
+  .continue-btn.inactive {
+    background: var(--surface); color: var(--text-dim);
+    border: 1.5px solid var(--border); cursor: default;
+  }
+
+  /* Phone input */
+  .phone-input {
+    width: 100%; padding: 16px; background: var(--surface);
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    color: var(--text); font-size: 18px; font-family: var(--mono);
+    letter-spacing: 1px; outline: none; transition: border-color 0.2s;
+  }
+  .phone-input:focus { border-color: rgba(34,214,138,0.5); }
+
+  .pill { display: inline-block; padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 500;
+    background: var(--accent-dim); border: 1.5px solid var(--accent); color: var(--accent); }
+
+  /* Lobby */
+  .lobby-icon {
+    width: 90px; height: 90px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; position: relative; z-index: 1;
+    transition: all 0.5s ease; margin: 0 auto 40px;
+  }
+
+  /* Match card */
+  .match-card {
+    background: var(--surface); border: 1.5px solid rgba(34,214,138,0.25);
+    border-radius: 18px; padding: 24px;
+  }
+  .match-detail {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px; background: var(--bg); border-radius: var(--radius-sm);
+  }
+
+  .sms-bubble {
+    background: #1A3A28; border-radius: 12px 12px 12px 4px;
+    padding: 12px 14px; font-size: 14px; line-height: 1.5; color: #D4F5E2;
+  }
+
+  .reset-btn {
+    padding: 12px 32px; background: transparent;
+    border: 1.5px solid var(--border); border-radius: 999px;
+    color: var(--text-muted); font-size: 14px; font-weight: 500;
+    font-family: inherit; cursor: pointer; transition: all 0.2s;
+  }
+  .reset-btn:hover { border-color: var(--text-dim); color: var(--text); }
+
+  .landing-btn {
+    width: 100%; max-width: 300px; padding: 16px;
+    background: linear-gradient(135deg, var(--accent), #1AB877);
+    border: none; border-radius: 999px; color: var(--bg);
+    font-size: 16px; font-weight: 600; font-family: inherit;
+    cursor: pointer; box-shadow: 0 4px 24px var(--accent-glow);
+    transition: all 0.25s ease;
+  }
+  .landing-btn:active { transform: scale(0.97); }
+
+  .hidden { display: none !important; }
+  .anim-fu { animation: fadeUp 0.4s ease both; }
+  .anim-su { animation: slideUp 0.6s ease both; }
+</style>
+</head>
+<body>
+
+<div class="screen" id="app"></div>
+
+<script>
+const $ = (sel) => document.querySelector(sel);
+const app = document.getElementById('app');
+
+const ACTIVITIES = [
+  { id:'chess', emoji:'♟️', label:'Chess', desc:'Find an opponent' },
+  { id:'pingpong', emoji:'🏓', label:'Ping Pong', desc:'Rally up' },
+  { id:'conversation', emoji:'☕', label:'Conversation', desc:'Just talk' },
+  { id:'cards', emoji:'🃏', label:'Cards', desc:'Deal me in' },
+];
+const VIBES = [
+  { id:'competitive', emoji:'🔥', label:'Competitive' },
+  { id:'learning', emoji:'🌱', label:'Learning' },
+  { id:'casual', emoji:'😎', label:'Just Vibes' },
+];
+const NAMES = ['Alex','Jordan','Sam','Morgan','Taylor','Casey'];
+const RATINGS = ['⭐ New','👍 Friendly','🏆 Regular'];
+
+let state = { activity:null, vibe:null, times:[], flexible:false, phone:'' };
+
+function getNextDays(n) {
+  const days = [];
+  const now = new Date();
+  for (let i = 0; i < n; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() + i);
+    days.push(d);
+  }
+  return days;
+}
+
+function formatDayHeader(d) {
+  const today = new Date();
+  const tomorrow = new Date(); tomorrow.setDate(today.getDate()+1);
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let label = dayNames[d.getDay()];
+  if (d.toDateString() === today.toDateString()) label = 'Today';
+  else if (d.toDateString() === tomorrow.toDateString()) label = 'Tmrw';
+  return { label, date: `${monthNames[d.getMonth()]} ${d.getDate()}` };
+}
+
+const TIME_SLOTS = ['8 AM','10 AM','12 PM','2 PM','4 PM','6 PM'];
+
+function backBtn(onclick) {
+  return `<button class="back-btn" onclick="${onclick}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back
+  </button>`;
+}
+
+function stepDots(current, total) {
+  let h = '<div class="steps">';
+  for (let i = 0; i < total; i++) {
+    const cls = i === current ? 'active' : i < current ? 'done' : 'future';
+    h += `<div class="step-dot ${cls}"></div>`;
+  }
+  return h + '</div>';
+}
+
+// --- SCREENS ---
+
+function showLanding() {
+  state = { activity:null, vibe:null, times:[], flexible:false, phone:'' };
+  app.innerHTML = `
+    <div class="screen-glow"></div>
+    <div class="screen-inner" style="text-align:center;">
+      <div style="position:relative;display:inline-block;margin:40px 0 32px;">
+        <div style="width:100px;height:100px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;z-index:1;">🗿</div>
+        <div style="position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(34,214,138,0.25);animation:pulseRing 2.5s ease-in-out infinite;"></div>
+        <div style="position:absolute;inset:-26px;border-radius:50%;border:1.5px solid rgba(34,214,138,0.12);animation:pulseRing 2.5s ease-in-out infinite 0.4s;"></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Meeting Stone</div>
+      <h1 style="font-size:28px;font-weight:700;line-height:1.25;margin-bottom:12px;letter-spacing:-0.5px;">
+        Williams Park<br>
+        <span style="color:var(--text-muted);font-weight:400;font-size:20px;">North Totem</span>
+      </h1>
+      <p style="color:var(--text-muted);font-size:15px;line-height:1.6;max-width:300px;margin:0 auto 40px;">
+        Find a neighbor to play with. No app, no account — just scan and match.
+      </p>
+      <button class="landing-btn" onclick="showActivity()">Join the Lobby →</button>
+      <div style="margin-top:24px;font-size:12px;color:var(--text-dim);">🔒 No login required · SMS only · Privacy first</div>
+    </div>
+  `;
+}
+
+function showActivity() {
+  let cards = ACTIVITIES.map((a,i) => `
+    <button class="card-btn" style="animation:fadeUp 0.4s ease both ${0.08+i*0.06}s"
+      onclick="selectActivity('${a.id}')">
+      <span class="card-emoji">${a.emoji}</span>
+      <div>
+        <div class="card-label">${a.label}</div>
+        <div class="card-desc">${a.desc}</div>
+      </div>
+    </button>
+  `).join('');
+  app.innerHTML = `
+    <div class="screen-glow"></div>
+    <div class="screen-inner">
+      ${backBtn('showLanding()')}
+      ${stepDots(0, 4)}
+      <h2 class="screen-title">What are you here for?</h2>
+      <p class="screen-sub">Pick an activity at this totem</p>
+      <div class="card-list">${cards}</div>
+    </div>`;
+}
+
+function selectActivity(id) {
+  state.activity = ACTIVITIES.find(a => a.id === id);
+  document.querySelectorAll('.card-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  setTimeout(showVibe, 250);
+}
+
+function showVibe() {
+  let btns = VIBES.map((v,i) => `
+    <button class="vibe-btn" style="animation:fadeUp 0.4s ease both ${0.08+i*0.06}s"
+      onclick="selectVibe('${v.id}')">
+      <span class="vibe-emoji">${v.emoji}</span>
+      <span class="vibe-label">${v.label}</span>
+    </button>
+  `).join('');
+  app.innerHTML = `
+    <div class="screen-glow"></div>
+    <div class="screen-inner">
+      ${backBtn('showActivity()')}
+      ${stepDots(1, 4)}
+      <h2 class="screen-title">What's the vibe?</h2>
+      <p class="screen-sub">${state.activity.emoji} ${state.activity.label} — set the tone</p>
+      <div class="vibe-grid">${btns}</div>
+    </div>`;
+}
+
+function selectVibe(id) {
+  state.vibe = VIBES.find(v => v.id === id);
+  document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  setTimeout(showTime, 250);
+}
+
+function showTime() {
+  const days = getNextDays(4);
+  const cols = days.length;
+
+  let headerCells = '<div class="cal-header-cell"></div>';
+  days.forEach(d => {
+    const h = formatDayHeader(d);
+    headerCells += `<div class="cal-header-cell">${h.label}<br><span class="day-name">${h.date}</span></div>`;
+  });
+
+  let gridCells = '';
+  TIME_SLOTS.forEach((slot, si) => {
+    gridCells += `<div class="cal-time-label">${slot}</div>`;
+    days.forEach((d, di) => {
+      const key = `${d.toISOString().slice(0,10)}_${si}`;
+      const sel = state.times.includes(key) ? 'selected' : '';
+      gridCells += `<div class="cal-cell ${sel}" data-key="${key}" onclick="toggleTime(this, '${key}')"></div>`;
+    });
+  });
+
+  app.innerHTML = `
+    <div class="screen-glow"></div>
+    <div class="screen-inner">
+      ${backBtn('showVibe()')}
+      ${stepDots(2, 4)}
+      <h2 class="screen-title">When works?</h2>
+      <p class="screen-sub">${state.activity.emoji} ${state.vibe.label} ${state.activity.label} — pick all that work</p>
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -8px;padding:0 8px;">
+        <div style="min-width:340px;--cols:${cols};">
+          <div class="cal-header" style="grid-template-columns:72px repeat(${cols},1fr);">${headerCells}</div>
+          <div class="cal-grid" style="grid-template-columns:72px repeat(${cols},1fr);">${gridCells}</div>
+        </div>
+      </div>
+      <button class="flexible-btn ${state.flexible ? 'selected' : ''}" onclick="toggleFlexible()">
+        🤷 I'm flexible — match me anytime
+      </button>
+      <button class="continue-btn ${(state.times.length > 0 || state.flexible) ? 'active' : 'inactive'}"
+        id="timeContinue"
+        onclick="if(state.times.length>0||state.flexible) showPhone();">
+        Continue${state.times.length > 0 ? ` (${state.times.length} slot${state.times.length>1?'s':''})` : ''}
+      </button>
+    </div>`;
+}
+
+function toggleTime(el, key) {
+  // If flexible is on, turn it off when selecting specific slots
+  if (state.flexible) {
+    state.flexible = false;
+    const fb = document.querySelector('.flexible-btn');
+    if (fb) fb.classList.remove('selected');
+  }
+
+  const idx = state.times.indexOf(key);
+  if (idx >= 0) {
+    state.times.splice(idx, 1);
+    el.classList.remove('selected');
+  } else {
+    state.times.push(key);
+    el.classList.add('selected');
+  }
+  updateContinueBtn();
+}
+
+function toggleFlexible() {
+  state.flexible = !state.flexible;
+  if (state.flexible) {
+    // Clear specific selections
+    state.times = [];
+    document.querySelectorAll('.cal-cell.selected').forEach(c => c.classList.remove('selected'));
+  }
+  document.querySelector('.flexible-btn').classList.toggle('selected', state.flexible);
+  updateContinueBtn();
+}
+
+function updateContinueBtn() {
+  const btn = document.getElementById('timeContinue');
+  const hasSelection = state.times.length > 0 || state.flexible;
+  btn.className = 'continue-btn ' + (hasSelection ? 'active' : 'inactive');
+  if (state.flexible) {
+    btn.textContent = 'Continue (Flexible)';
+  } else if (state.times.length > 0) {
+    btn.textContent = `Continue (${state.times.length} slot${state.times.length>1?'s':''})`;
+  } else {
+    btn.textContent = 'Continue';
+  }
+}
+
+function getTimeLabel() {
+  if (state.flexible) return 'Flexible';
+  if (state.times.length === 1) {
+    const [dateStr, slotIdx] = state.times[0].split('_');
+    const d = new Date(dateStr + 'T12:00:00');
+    const h = formatDayHeader(d);
+    return `${h.label} ${TIME_SLOTS[parseInt(slotIdx)]}`;
+  }
+  return `${state.times.length} time slots`;
+}
+
+function showPhone() {
+  app.innerHTML = `
+    <div class="screen-glow"></div>
+    <div class="screen-inner">
+      ${backBtn('showTime()')}
+      ${stepDots(3, 4)}
+      <h2 class="screen-title">Almost there</h2>
+      <p class="screen-sub">We'll text you when a match is found. That's it.</p>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:24px;animation:fadeUp 0.4s ease both 0.1s;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="pill">${state.activity.emoji} ${state.activity.label}</span>
+          <span class="pill">${state.vibe.emoji} ${state.vibe.label}</span>
+          <span class="pill">🕐 ${getTimeLabel()}</span>
+        </div>
+      </div>
+      <div style="animation:fadeUp 0.4s ease both 0.15s;">
+        <label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:8px;letter-spacing:0.5px;text-transform:uppercase;font-family:var(--mono);">Phone Number</label>
+        <input type="tel" class="phone-input" id="phoneInput" placeholder="(555) 123-4567" oninput="handlePhone(this)" autocomplete="tel">
+        <div style="font-size:12px;color:var(--text-dim);margin-top:8px;">🔒 Used only for match notifications. Never shared.</div>
+      </div>
+      <button class="continue-btn inactive" id="phoneSubmit" onclick="submitPhone()" style="margin-top:28px;">Join the Lobby</button>
+    </div>`;
+  document.getElementById('phoneInput').focus();
+}
+
+function handlePhone(el) {
+  let digits = el.value.replace(/\D/g, '').slice(0, 10);
+  if (digits.length <= 3) el.value = digits;
+  else if (digits.length <= 6) el.value = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+  else el.value = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+  state.phone = digits;
+  const btn = document.getElementById('phoneSubmit');
+  if (digits.length === 10) {
+    btn.className = 'continue-btn active';
+    el.style.borderColor = 'rgba(34,214,138,0.5)';
+  } else {
+    btn.className = 'continue-btn inactive';
+    el.style.borderColor = 'var(--border)';
+  }
+}
+
+function submitPhone() {
+  if (state.phone.length !== 10) return;
+  const btn = document.getElementById('phoneSubmit');
+  btn.textContent = 'Joining Lobby…';
+  btn.style.opacity = '0.7';
+  setTimeout(showLobby, 1000);
+}
+
+function showLobby() {
+  let queueCount = 1;
+  app.innerHTML = `
+    <div class="screen-glow"></div>
+    <div class="screen-inner" style="text-align:center;padding-top:108px;">
+      <div style="position:relative;display:inline-block;margin-bottom:40px;">
+        <div class="lobby-icon" id="lobbyIcon" style="background:var(--accent-dim);">${state.activity.emoji}</div>
+        <div id="ring1" style="position:absolute;inset:-16px;border-radius:50%;border:2px solid rgba(34,214,138,0.19);animation:pulseRing 2s ease-in-out infinite;"></div>
+        <div id="ring2" style="position:absolute;inset:-36px;border-radius:50%;border:1.5px solid rgba(34,214,138,0.09);animation:pulseRing 2s ease-in-out infinite 0.5s;"></div>
+      </div>
+      <h2 id="lobbyTitle" style="font-size:22px;font-weight:600;margin-bottom:8px;">Looking for ${state.activity.label}</h2>
+      <p style="color:var(--text-muted);font-size:14px;margin-bottom:32px;">${state.vibe.label} · ${getTimeLabel()}</p>
+      <div id="lobbyCard" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;max-width:280px;margin:0 auto;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulseRing 1.5s ease-in-out infinite;"></div>
+          <span id="lobbyCount" style="font-size:13px;color:var(--text-muted);font-family:var(--mono);">1 in lobby</span>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:999px;overflow:hidden;">
+          <div style="height:100%;width:60%;border-radius:999px;background:linear-gradient(90deg,var(--accent),rgba(34,214,138,0.25));background-size:200% 100%;animation:shimmer 2s ease-in-out infinite;"></div>
+        </div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:10px;">We'll text you — safe to close this page</div>
+      </div>
+    </div>`;
+
+  setTimeout(() => {
+    const ct = document.getElementById('lobbyCount');
+    if (ct) ct.textContent = '2 in lobby';
+  }, 3000);
+
+  setTimeout(() => {
+    const icon = document.getElementById('lobbyIcon');
+    const title = document.getElementById('lobbyTitle');
+    if (icon) { icon.style.background = 'var(--accent)'; icon.textContent = '✓'; }
+    if (title) { title.textContent = 'Match Found!'; title.style.color = 'var(--accent)'; }
+    const r1 = document.getElementById('ring1');
+    const r2 = document.getElementById('ring2');
+    const card = document.getElementById('lobbyCard');
+    if (r1) r1.style.display = 'none';
+    if (r2) r2.style.display = 'none';
+    if (card) card.innerHTML = '<div style="font-size:14px;color:var(--text-muted);">Preparing your meetup details…</div>';
+    setTimeout(showMatch, 1200);
+  }, 6500);
+}
+
+function showMatch() {
+  const name = NAMES[Math.floor(Math.random()*NAMES.length)];
+  const rating = RATINGS[Math.floor(Math.random()*RATINGS.length)];
+  const timeLabel = getTimeLabel();
+  const whenValue = state.flexible || timeLabel === 'Flexible' ? 'Whenever works for both' : timeLabel;
+
+  app.innerHTML = `
+    <div class="screen-glow"></div>
+    <div class="screen-inner">
+      <div style="text-align:center;" class="anim-su">
+        <div id="confetti" style="position:relative;height:0;margin:0 auto;">
+          ${['🎉','✨','⭐','🎊','💚'].map((e,i) =>
+            `<span style="position:absolute;font-size:22px;left:${(i-2)*30}px;top:0;animation:confettiBurst 1.2s ease-out ${i*0.1}s both;">${e}</span>`
+          ).join('')}
+        </div>
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:36px;margin:24px auto;border:2px solid var(--accent);">🤝</div>
+        <h2 style="font-size:24px;font-weight:700;margin-bottom:4px;">It's On!</h2>
+        <p style="color:var(--text-muted);font-size:14px;margin-bottom:28px;">Your ${state.activity.label.toLowerCase()} match is confirmed</p>
+      </div>
+
+      <div class="match-card" style="animation:slideUp 0.6s ease both 0.15s;">
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:20px;">
+          <div>
+            <div style="font-size:13px;color:var(--accent);font-family:var(--mono);letter-spacing:1px;margin-bottom:4px;">YOUR MATCH</div>
+            <div style="font-size:20px;font-weight:600;">${name}</div>
+            <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">${rating}</div>
+          </div>
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,rgba(34,214,138,0.19),rgba(34,214,138,0.06));display:flex;align-items:center;justify-content:center;font-size:24px;">${state.activity.emoji}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          ${[
+            {icon:'📍',label:'Where',value:'North Totem — Blue Bench'},
+            {icon:'🕐',label:'When',value:whenValue},
+            {icon:'🎯',label:'Vibe',value:state.vibe.label},
+          ].map(r => `
+            <div class="match-detail">
+              <span style="font-size:18px;width:28px;text-align:center;">${r.icon}</span>
+              <div>
+                <div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);letter-spacing:0.5px;">${r.label}</div>
+                <div style="font-size:15px;font-weight:500;">${r.value}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);animation:slideUp 0.6s ease both 0.3s;">
+        <div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);margin-bottom:8px;">📱 SMS PREVIEW</div>
+        <div class="sms-bubble">
+          🗿 Meeting Stone: Your ${state.activity.label.toLowerCase()} match with ${name} is confirmed! Meet at the North Totem (blue bench). ${whenValue !== 'Whenever works for both' ? whenValue + '.' : ''} Have fun! Reply CANCEL to opt out.
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:28px;animation:slideUp 0.6s ease both 0.4s;">
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">Demo complete — in production this arrives as SMS</div>
+        <button class="reset-btn" onclick="showLanding()">↩ Start Over</button>
+      </div>
+    </div>`;
+
+  setTimeout(() => {
+    const c = document.getElementById('confetti');
+    if (c) c.style.display = 'none';
+  }, 2500);
+}
+
+// Boot
+showLanding();
+</script>
+</body>
+</html>

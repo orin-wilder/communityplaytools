@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Poll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange: #E86A33;
+            --orange-hover: #D55A25;
+            --teal: #1A3A3A;
+            --teal-light: #2D5454;
+            --white: #FAFAFA;
+            --white-off: #F0F0F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(165deg, var(--teal) 0%, var(--teal-light) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .poll-container {
+            background: var(--white);
+            border-radius: 1.5rem;
+            max-width: 420px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+        }
+
+        .poll-header {
+            background: var(--teal);
+            padding: 1.5rem 1.75rem;
+            position: relative;
+        }
+
+        .poll-header::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 14px solid var(--teal);
+        }
+
+        .location-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.12);
+            color: var(--white);
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.35rem 0.7rem;
+            border-radius: 2rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .location-tag svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .poll-question {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.35;
+        }
+
+        .poll-body {
+            padding: 2rem 1.75rem 1.75rem;
+        }
+
+        .options-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            position: relative;
+            border: 3px solid var(--white-off);
+            border-radius: 1rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: var(--white);
+        }
+
+        .option-btn:hover {
+            border-color: var(--orange);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(232, 106, 51, 0.25);
+        }
+
+        .option-btn.selected {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(232, 106, 51, 0.2);
+        }
+
+        .option-btn.selected::before {
+            content: '✓';
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            background: var(--orange);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .option-image {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            display: block;
+        }
+
+        .option-label {
+            padding: 0.85rem 0.75rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--teal);
+            text-align: center;
+            background: var(--white-off);
+        }
+
+        .option-btn.selected .option-label {
+            background: var(--orange);
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .submit-btn.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .submit-btn.active:hover {
+            background: var(--orange);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(232, 106, 51, 0.3);
+        }
+
+        .poll-footer {
+            padding: 0 1.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .vote-count {
+            font-size: 0.85rem;
+            color: var(--teal);
+            opacity: 0.6;
+        }
+
+        .vote-count strong {
+            color: var(--orange);
+            opacity: 1;
+        }
+
+        .powered-by {
+            font-size: 0.7rem;
+            color: var(--teal);
+            opacity: 0.4;
+        }
+
+        /* States */
+        .state-location, .state-voted, .state-error, .state-already-voted {
+            display: none;
+        }
+
+        .poll-container.needs-location .state-voting { display: none; }
+        .poll-container.needs-location .state-location { display: block; }
+
+        .poll-container.has-voted .state-voting { display: none; }
+        .poll-container.has-voted .state-voted { display: block; }
+
+        .poll-container.has-error .state-voting { display: none; }
+        .poll-container.has-error .state-error { display: block; }
+
+        .poll-container.already-voted .state-voting { display: none; }
+        .poll-container.already-voted .state-already-voted { display: block; }
+
+        .state-message {
+            padding: 2.5rem 1.75rem;
+            text-align: center;
+        }
+
+        .state-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            font-size: 1.5rem;
+        }
+
+        .state-icon.success { background: rgba(232, 106, 51, 0.12); }
+        .state-icon.info { background: rgba(26, 58, 58, 0.1); }
+        .state-icon.warning { background: rgba(232, 106, 51, 0.12); }
+
+        .state-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .state-text {
+            font-size: 0.95rem;
+            color: var(--teal);
+            opacity: 0.7;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+        }
+
+        .state-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: 0.6rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .state-btn:hover {
+            background: var(--orange-hover);
+            transform: translateY(-2px);
+        }
+
+        .state-btn.secondary {
+            background: var(--teal);
+        }
+
+        .state-btn.secondary:hover {
+            background: var(--teal-light);
+        }
+
+        .results-bar {
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .result-item {
+            margin-bottom: 1rem;
+        }
+
+        .result-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--teal);
+            margin-bottom: 0.4rem;
+        }
+
+        .result-track {
+            height: 10px;
+            background: var(--white-off);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .result-fill {
+            height: 100%;
+            background: var(--orange);
+            border-radius: 5px;
+            transition: width 0.6s ease;
+        }
+
+        .result-fill.secondary {
+            background: var(--teal);
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--white-off);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading .submit-btn {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="poll-container" id="pollContainer">
+        
+        <!-- Location Request State -->
+        <div class="state-location">
+            <div class="poll-header">
+                <div class="location-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                        <circle cx="12" cy="9" r="2.5"/>
+                    </svg>
+                    Location Required
+                </div>
+                <h1 class="poll-question">Help shape your neighborhood</h1>
+            </div>
+            <div class="state-message">
+                <div class="state-icon info">📍</div>
+                <h2 class="state-title">Enable Location</h2>
+                <p class="state-text">This poll is for neighbors in this area. We need your location to verify you can vote here.</p>
+                <button class="state-btn" onclick="requestLocation()">Allow Location</button>
+            </div>
+        </div>
+
+        <!-- Voting State -->
+        <div class="state-voting">
+            <div class="poll-header">
+                <div class="location-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                        <circle cx="12" cy="9" r="2.5"/>
+                    </svg>
+                    <span id="locationName">Your Neighborhood</span>
+                </div>
+                <h1 class="poll-question">What traffic calming would you like to see at this intersection?</h1>
+            </div>
+            <div class="poll-body">
+                <p class="options-label">Tap to select</p>
+                <div class="options-grid">
+                    <button class="option-btn" data-value="4way_stop" onclick="selectOption(this)">
+                        <img src="allway_stop.png" alt="4-way stop sign intersection" class="option-image">
+                        <div class="option-label">4-Way Stop</div>
+                    </button>
+                    <button class="option-btn" data-value="mini_circle" onclick="selectOption(this)">
+                        <img src="traffic_circle.png" alt="Mini traffic circle roundabout" class="option-image">
+                        <div class="option-label">Mini Traffic Circle</div>
+                    </button>
+                </div>
+                <button class="submit-btn" id="submitBtn" onclick="submitVote()">Submit My Vote</button>
+            </div>
+            <div class="poll-footer">
+                <span class="vote-count"><strong id="voteCount">0</strong> neighbors voted</span>
+                <span class="powered-by">Community Poll</span>
+            </div>
+        </div>
+
+        <!-- Already Voted State -->
+        <div class="state-already-voted">
+            <div class="poll-header">
+                <div class="location-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                        <circle cx="12" cy="9" r="2.5"/>
+                    </svg>
+                    <span id="locationNameVoted">Your Neighborhood</span>
+                </div>
+                <h1 class="poll-question">What traffic calming would you like to see at this intersection?</h1>
+            </div>
+            <div class="state-message">
+                <div class="state-icon warning">✓</div>
+                <h2 class="state-title">You Already Voted</h2>
+                <p class="state-text">Thanks for participating! Here's how your neighbors are voting:</p>
+                <div class="results-bar" id="alreadyVotedResults"></div>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div class="state-voted">
+            <div class="poll-header">
+                <div class="location-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                        <circle cx="12" cy="9" r="2.5"/>
+                    </svg>
+                    Vote Recorded
+                </div>
+                <h1 class="poll-question">Thank you, neighbor!</h1>
+            </div>
+            <div class="state-message">
+                <div class="state-icon success">🎉</div>
+                <h2 class="state-title">Vote Submitted</h2>
+                <p class="state-text">Your voice matters. Here's how your neighbors are voting so far:</p>
+                <div class="results-bar" id="resultsBar"></div>
+                <a href="/polls" class="state-btn secondary" style="margin-top: 1rem;">See More Polls</a>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div class="state-error">
+            <div class="poll-header">
+                <div class="location-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 8v4M12 16h.01"/>
+                    </svg>
+                    Error
+                </div>
+                <h1 class="poll-question">Something went wrong</h1>
+            </div>
+            <div class="state-message">
+                <div class="state-icon info">😕</div>
+                <h2 class="state-title">Unable to Vote</h2>
+                <p class="state-text" id="errorMessage">We couldn't process your vote. Please try again.</p>
+                <button class="state-btn" onclick="location.reload()">Try Again</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Configuration
+        const SUPABASE_URL = 'https://mjrhmtxfazapdnzfvvja.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcmhtdHhmYXphcGRuemZ2dmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxODIwNzEsImV4cCI6MjA4NDc1ODA3MX0.T2z0tJHy1StsKWDjdU3hYw-7F36XC81DQxfLq_t23nM';
+        const POLL_ID = 'traffic-calming-1'; // Change per poll
+
+        // State
+        let selectedOption = null;
+        let userLocation = null;
+        let voterToken = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get or create voter token
+            voterToken = localStorage.getItem('voter_token');
+            if (!voterToken) {
+                voterToken = crypto.randomUUID();
+                localStorage.setItem('voter_token', voterToken);
+            }
+
+            // Check if already voted
+            const hasVoted = await checkIfVoted();
+            if (hasVoted) {
+                showAlreadyVoted();
+                return;
+            }
+
+            // Check location permission
+            if (navigator.permissions) {
+                const permission = await navigator.permissions.query({ name: 'geolocation' });
+                if (permission.state === 'granted') {
+                    requestLocation();
+                } else {
+                    document.getElementById('pollContainer').classList.add('needs-location');
+                }
+            } else {
+                document.getElementById('pollContainer').classList.add('needs-location');
+            }
+
+            // Load vote count
+            loadVoteCount();
+        });
+
+        async function checkIfVoted() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/votes?poll_id=eq.${POLL_ID}&voter_token=eq.${voterToken}&select=id`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    }
+                );
+                const data = await response.json();
+                return data.length > 0;
+            } catch (e) {
+                console.error('Error checking vote status:', e);
+                return false;
+            }
+        }
+
+        async function showAlreadyVoted() {
+            const results = await loadResults();
+            document.getElementById('alreadyVotedResults').innerHTML = renderResults(results);
+            document.getElementById('pollContainer').classList.add('already-voted');
+        }
+
+        function requestLocation() {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    document.getElementById('pollContainer').classList.remove('needs-location');
+                    // Could reverse geocode here for neighborhood name
+                },
+                (error) => {
+                    showError('Location access was denied. This poll requires location verification to ensure only neighbors can vote.');
+                }
+            );
+        }
+
+        function selectOption(btn) {
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedOption = btn.dataset.value;
+            document.getElementById('submitBtn').classList.add('active');
+        }
+
+        async function submitVote() {
+            if (!selectedOption || !userLocation) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.classList.remove('active');
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/votes`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        poll_id: POLL_ID,
+                        choice: selectedOption,
+                        voter_token: voterToken,
+                        lat: userLocation.lat,
+                        lng: userLocation.lng
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Vote failed');
+                }
+
+                // Show results
+                const results = await loadResults();
+                document.getElementById('resultsBar').innerHTML = renderResults(results);
+                document.getElementById('pollContainer').classList.add('has-voted');
+
+            } catch (e) {
+                console.error('Vote error:', e);
+                showError('Unable to submit your vote. Please try again.');
+            }
+        }
+
+        async function loadVoteCount() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/votes?poll_id=eq.${POLL_ID}&select=id`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`,
+                            'Prefer': 'count=exact'
+                        }
+                    }
+                );
+                const count = response.headers.get('content-range')?.split('/')[1] || '0';
+                document.getElementById('voteCount').textContent = count;
+            } catch (e) {
+                console.error('Error loading count:', e);
+            }
+        }
+
+        async function loadResults() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/votes?poll_id=eq.${POLL_ID}&select=choice`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    }
+                );
+                const votes = await response.json();
+                
+                const counts = { '4way_stop': 0, 'mini_circle': 0 };
+                votes.forEach(v => counts[v.choice]++);
+                
+                const total = votes.length || 1;
+                return {
+                    '4way_stop': Math.round((counts['4way_stop'] / total) * 100),
+                    'mini_circle': Math.round((counts['mini_circle'] / total) * 100),
+                    total: votes.length
+                };
+            } catch (e) {
+                console.error('Error loading results:', e);
+                return { '4way_stop': 50, 'mini_circle': 50, total: 0 };
+            }
+        }
+
+        function renderResults(results) {
+            return `
+                <div class="result-item">
+                    <div class="result-label">
+                        <span>4-Way Stop</span>
+                        <span>${results['4way_stop']}%</span>
+                    </div>
+                    <div class="result-track">
+                        <div class="result-fill" style="width: ${results['4way_stop']}%"></div>
+                    </div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">
+                        <span>Mini Traffic Circle</span>
+                        <span>${results['mini_circle']}%</span>
+                    </div>
+                    <div class="result-track">
+                        <div class="result-fill secondary" style="width: ${results['mini_circle']}%"></div>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 0.75rem;">${results.total} total votes</p>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('pollContainer').classList.add('has-error');
+        }
+    </script>
+</body>
+</html>
