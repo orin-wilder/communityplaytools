@@ -1,0 +1,8 @@
+# Internal planning & reference notes — kept local, not published
+_reference/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp

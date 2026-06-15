@@ -1,840 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Ryan Stock | Civic Catalyst & Strategic Project Lead</title>
-    <meta name="description" content="Learn about Ryan Stock's background bridging Sony PlayStation innovation leadership and civic advocacy in Pacific Beach. Now bringing both to St. Petersburg.">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-teal: #2C5F6F;
-            --sage-green: #7A9D7E;
-            --warm-gray: #6B6B6B;
-            --sunset-orange: #E17C54;
-            --sky-blue: #A4C8E1;
-            --off-white: #F8F9FA;
-            --charcoal: #2D2D2D;
-            --white: #FFFFFF;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--charcoal);
-            background-color: var(--off-white);
-        }
-
-        h1, h2, h3, h4 {
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        h1 { font-size: 3rem; }
-        h2 { font-size: 2.5rem; }
-        h3 { font-size: 1.8rem; }
-        h4 { font-size: 1.3rem; }
-
-        p { margin-bottom: 1rem; }
-
-        a {
-            color: var(--primary-teal);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        a:hover {
-            color: var(--sunset-orange);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .container-narrow {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            border-radius: 4px;
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background-color: var(--sunset-orange);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background-color: #d16843;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(225, 124, 84, 0.3);
-        }
-
-        section {
-            padding: 80px 0;
-        }
-
-        .section-compact {
-            padding: 60px 0;
-        }
-
-        .section-alt {
-            background-color: var(--white);
-        }
-
-        /* Navigation */
-        nav {
-            background: var(--white);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .nav-brand {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--charcoal);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--sunset-orange);
-        }
-
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary-teal), var(--sage-green));
-            color: var(--white);
-            padding: 100px 0 80px;
-            text-align: center;
-        }
-
-        .page-header h1 {
-            margin-bottom: 1rem;
-        }
-
-        .page-header p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            margin-bottom: 0;
-        }
-
-        /* Who I Am Section */
-        .who-i-am {
-            background: var(--white);
-        }
-
-        .who-i-am h2 {
-            color: var(--primary-teal);
-            margin-bottom: 2rem;
-        }
-
-        .bio-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 60px;
-            align-items: start;
-        }
-
-        .bio-photo {
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        }
-
-        .bio-content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-
-        .bio-highlight {
-            background: var(--off-white);
-            padding: 20px;
-            border-left: 4px solid var(--sage-green);
-            margin: 2rem 0;
-        }
-
-        .bio-highlight strong {
-            color: var(--primary-teal);
-        }
-
-        /* Timeline Section */
-        .timeline-section {
-            background: var(--off-white);
-        }
-
-        .timeline-section h2 {
-            color: var(--primary-teal);
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .career-timeline {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .career-timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 3px;
-            height: 100%;
-            background: var(--sage-green);
-        }
-
-        .timeline-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .timeline-item:nth-child(odd) .timeline-content {
-            grid-column: 1;
-        }
-
-        .timeline-item:nth-child(even) .timeline-content {
-            grid-column: 2;
-        }
-
-        .timeline-item:nth-child(odd) .timeline-dot {
-            left: calc(50% - 10px);
-        }
-
-        .timeline-item:nth-child(even) .timeline-dot {
-            left: calc(50% - 10px);
-        }
-
-        .timeline-content {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .timeline-dot {
-            position: absolute;
-            top: 30px;
-            width: 20px;
-            height: 20px;
-            background: var(--sunset-orange);
-            border-radius: 50%;
-            z-index: 2;
-            border: 4px solid var(--off-white);
-        }
-
-        .timeline-date {
-            color: var(--sunset-orange);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-content h4 {
-            color: var(--primary-teal);
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-content p {
-            color: var(--warm-gray);
-            margin-bottom: 0;
-        }
-
-        /* Testimonials Section */
-        .testimonials-section {
-            background: var(--white);
-        }
-
-        .testimonials-section h2 {
-            color: var(--primary-teal);
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .testimonial {
-            background: var(--off-white);
-            padding: 40px;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            border-left: 5px solid var(--sage-green);
-        }
-
-        .testimonial-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            font-style: italic;
-            margin-bottom: 1.5rem;
-            color: var(--charcoal);
-        }
-
-       .testimonial-author {
-    display: flex;
-    align-items: center;
-    font-weight: 700;
-    color: var(--primary-teal);
-    margin-bottom: 0.3rem;
-}
-
-.testimonial-photo {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 12px;
-    border: 2px solid var(--sage-green);
-    flex-shrink: 0;
-}
-
-        .testimonial-role {
-            color: var(--warm-gray);
-            font-size: 0.95rem;
-        }
-
-        /* Credentials Section */
-        .credentials-section {
-            background: var(--primary-teal);
-            color: var(--white);
-        }
-
-        .credentials-section h2 {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .credentials-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-        }
-
-        .credential-box {
-            background: rgba(255,255,255,0.1);
-            padding: 30px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-        }
-
-        .credential-box h3 {
-            color: var(--sky-blue);
-            margin-bottom: 1.5rem;
-        }
-
-        .credential-box ul {
-            list-style: none;
-        }
-
-        .credential-box li {
-            margin-bottom: 1rem;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .credential-box li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: var(--sky-blue);
-            font-weight: bold;
-        }
-
-        .media-links {
-            margin-top: 1.5rem;
-        }
-
-        .media-links a {
-            color: var(--sky-blue);
-            display: block;
-            margin-bottom: 0.8rem;
-        }
-
-        .media-links a:hover {
-            color: var(--white);
-        }
-
-        /* Why St. Pete Section */
-        .why-stpete {
-            background: var(--off-white);
-        }
-
-        .why-stpete h2 {
-            color: var(--primary-teal);
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .stpete-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .stpete-content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-
-        .focus-areas {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 8px;
-            margin-top: 2rem;
-        }
-
-        .focus-areas h4 {
-            color: var(--primary-teal);
-            margin-bottom: 1rem;
-        }
-
-        .focus-areas ul {
-            list-style: none;
-        }
-
-        .focus-areas li {
-            padding-left: 1.5rem;
-            position: relative;
-            margin-bottom: 0.8rem;
-        }
-
-        .focus-areas li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: var(--sage-green);
-            font-weight: bold;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, var(--primary-teal), var(--sage-green));
-            color: var(--white);
-            text-align: center;
-        }
-
-        .cta-section h2 {
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--charcoal);
-            color: var(--white);
-            padding: 40px 0 20px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h4 {
-            margin-bottom: 1rem;
-            color: var(--sky-blue);
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-column a {
-            color: var(--white);
-            opacity: 0.8;
-        }
-
-        .footer-column a:hover {
-            opacity: 1;
-            color: var(--sky-blue);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 2rem; }
-            
-            section { padding: 50px 0; }
-            .section-compact { padding: 40px 0; }
-
-            .nav-links {
-                gap: 15px;
-                font-size: 0.9rem;
-            }
-
-            .bio-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .career-timeline::before {
-                left: 20px;
-            }
-
-            .timeline-item {
-                grid-template-columns: 1fr;
-                padding-left: 50px;
-            }
-
-            .timeline-item:nth-child(odd) .timeline-content,
-            .timeline-item:nth-child(even) .timeline-content {
-                grid-column: 1;
-            }
-
-            .timeline-dot {
-                left: 10px !important;
-            }
-
-            .credentials-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Community Play Tools</title>
+  <meta name="description" content="Community Play Tools is a civic-tech studio in St. Petersburg, FL, founded by Ryan Stock — bridging Sony PlayStation program-management rigor with proven civic leadership.">
+  <meta property="og:title" content="About — Community Play Tools">
+  <meta property="og:description" content="A civic-tech studio in St. Petersburg, FL. Sony PlayStation rigor meets proven civic leadership.">
+  <meta name="theme-color" content="#103F38">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .bio { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 56px; align-items: start; }
+    .bio img { width: 100%; border-radius: var(--r-lg); box-shadow: var(--shadow-md); }
+    .bio .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .bio p { font-size: 1.08rem; margin-bottom: 1.1rem; }
+    .team { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+    .member { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 28px; }
+    .member img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid var(--mint); margin-bottom: 16px; }
+    .member .role { color: var(--coral); font-weight: 600; font-size: 0.9rem; }
+    .member h3 { margin: 2px 0 10px; }
+    .member p { font-size: 0.95rem; }
+    .member.join { border-style: dashed; display: flex; flex-direction: column; justify-content: center; }
+    .member.join .ic { width: 56px; height: 56px; border-radius: 16px; background: var(--paper-2); display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 16px; }
+    .timeline { max-width: 760px; }
+    .tl { display: grid; grid-template-columns: 130px 1fr; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); }
+    .tl .yr { color: var(--coral); font-weight: 600; font-size: 0.95rem; }
+    .tl h4 { margin-bottom: 4px; }
+    .tl p { font-size: 0.97rem; margin: 0; }
+    .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .qcard { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; }
+    .qcard p { font-size: 1rem; }
+    .qcard .who { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    .qcard .who img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--mint); }
+    .qcard .who .n { font-weight: 600; color: var(--ink); font-size: 0.95rem; }
+    .qcard .who .r { font-size: 0.84rem; color: var(--ink-mute); }
+    .creds { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .creds ul { list-style: none; }
+    .creds li { padding-left: 26px; position: relative; margin-bottom: 12px; color: rgba(245,241,237,0.82); }
+    .creds li::before { content: "→"; position: absolute; left: 0; color: var(--mint); font-weight: 700; }
+    @media (max-width: 940px){ .bio, .quotes, .creds { grid-template-columns: 1fr; gap: 32px; } .tl { grid-template-columns: 1fr; gap: 6px; } }
+  </style>
 </head>
 <body>
-    
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <a href="index.html" class="nav-brand">Ryan Stock</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html" class="active">About</a></li>
-                <li><a href="work.html">Work</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+  <div data-include="partials/nav.html"></div>
 
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="container">
-            <h1>About Ryan Stock</h1>
-            <p>Builder of systems. Connector of people. Catalyst for change.</p>
-        </div>
-    </section>
-
-    <!-- Who I Am -->
-    <section class="who-i-am">
-        <div class="container">
-            <div class="bio-grid">
-                <div>
-                    <img src="ryan-headshot.jpg" alt="Ryan Stock" class="bio-photo">
-                </div>
-                <div class="bio-content">
-    <h2>Who I Am</h2>
-    <p>For seven years, I managed high-stakes programs at Sony PlayStation, leading innovation initiatives, global summits, and payment system launches. Then I spent two years as President of Beautiful PB, a community planning nonprofit in San Diego. Most consultants pick one lane. I've run both, and that's what makes me different.</p>
-    
-    <p>At Sony, I learned to coordinate engineering teams, navigate legal compliance, and deliver on impossible deadlines. In Pacific Beach, I figured out how to move controversial projects through city approval boards and raise $450,000 for a historic building restoration. The skills overlap more than you'd think.</p>
-    
-    <p>Here's what I'm good at: I take problems that involve too many people with competing priorities (city officials who want one thing, developers who want another, residents who want something else) and I find a way forward. Sometimes that means building coalitions. Sometimes it means presenting data that changes the conversation. Always, it means understanding what each stakeholder actually needs versus what they say they need, and designing a solution that works for everyone.</p>
-    
-    <div class="bio-highlight">
-        <strong>The transition:</strong> After seven years building innovation programs at Sony and two years scaling Beautiful PB from under $1,000 to $40,000 in annual budget while raising $450,000 for a historic arts center, I'm bringing both skill sets to St. Petersburg organizations ready for transformation.
+  <header class="page-head">
+    <div class="container">
+      <span class="eyebrow">About</span>
+      <h1>A studio for the work of bringing people together.</h1>
+      <p>Community Play Tools is a civic-tech studio based in St. Petersburg, Florida. We pair strategy and facilitation with tools we design and build ourselves — so good ideas don't die in a half-empty meeting room.</p>
     </div>
-    
-    <p style="text-align: center; margin: 30px 0 20px 0;">
-        <a href="Ryan_Stock_Executive_Overview.pdf" class="btn btn-primary" download>
-            📄 Download Executive Summary (PDF)
-        </a>
-      
-    </p>
-    
-    <p>I'm looking for contracts where there's a specific problem to solve: a pilot program that needs to launch, a controversial project that needs community buy-in, a coalition that needs to align on strategy. <strong>I come in, get it done, and leave your team with the capacity to sustain the work.</strong></p>
-</div>
-            </div>
+  </header>
+
+  <!-- The firm / principal bio -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="bio reveal">
+        <div><img src="ryan-headshot.jpg" alt="Ryan Stock, founder of Community Play Tools">
+          <div class="badges">
+            <span class="chip">St. Petersburg, FL</span><span class="chip">Founded 2026</span>
+          </div>
         </div>
-    </section>
-
-    <!-- Career Timeline -->
-    <section class="timeline-section">
-        <div class="container">
-            <h2>Career Journey</h2>
-            <div class="career-timeline">
-                
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">2017 - 2025</div>
-                        <h4>Sony Interactive Entertainment</h4>
-                        <p><strong>Senior Program Manager</strong> | Commerce, Tax, Payments & Fraud, Innovation Engine</p>
-                        <p>Led cross-functional programs including PayPal integration, international tax systems, PS5 prerelease purchasing, and innovation partnerships with IDEO. Facilitated global summits for 80-240 participants.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">2024 - 2026</div>
-                        <h4>Beautiful PB</h4>
-                        <p><strong>President</strong> | Community Nonprofit</p>
-                        <p>Scaled organizational budget from <$1,000 to $40,000 annually. Led PB Pathways bike boulevard through controversial parking district approval. Raised $450,000 for PB Arts Center restoration.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">2024 - 2025</div>
-                        <h4>Pacific Beach Planning Group</h4>
-                        <p><strong>Board Member & Streets Subcommittee Chair</strong></p>
-                        <p>Represented community interests on urban planning decisions. Chaired Streets and Sidewalks subcommittee, overseeing mobility and infrastructure projects. Developed data-driven parking survey methodology.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">2024 - 2025</div>
-                        <h4>Pacific Beach Parking Advisory Board</h4>
-                        <p><strong>Board Member</strong></p>
-                        <p>Navigated controversial parking allocation decisions. Balanced community needs with sustainable transportation goals. Only member to successfully shepherd bike boulevard project through approval process.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">2026 - Present</div>
-                        <h4>St. Petersburg, Florida</h4>
-                        <p><strong>Strategic Consultant</strong> | Available for Engagement</p>
-                        <p>Relocating to St. Petersburg to bring Fortune 500 program management rigor and civic leadership expertise to local organizations.</p>
-                    </div>
-                </div>
-
-            </div>
+        <div>
+          <span class="eyebrow">Founder &amp; principal</span>
+          <h2 style="margin:14px 0 18px;">Ryan Stock</h2>
+          <p>Most consultants pick one lane. Ryan has run two. For seven years he managed high-stakes programs at Sony PlayStation — innovation initiatives, global summits, and payment-system launches — learning to coordinate engineers, navigate legal compliance, and deliver on impossible deadlines.</p>
+          <p>Then he spent two years as President of Beautiful PB, a San Diego community-planning nonprofit, where he moved controversial projects through city approval boards and raised $450,000 to restore a historic building. The skills overlap more than you'd think: both are about too many people with competing priorities, and finding a way forward.</p>
+          <p>Community Play Tools is where those two halves come together — Fortune-500 program rigor and grassroots civic leadership, now focused on St. Petersburg and the tools that make participation feel like play.</p>
+          <div class="badges">
+            <span class="chip">Program management</span><span class="chip">Coalition building</span><span class="chip">Facilitation</span><span class="chip">Citizen science</span><span class="chip">Civic-tech product</span>
+          </div>
+          <p style="margin-top:22px;"><a href="contact.html" class="btn btn-dark">Work with us <span class="arrow" aria-hidden="true">→</span></a></p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Testimonials -->
-    <section class="testimonials-section" id="testimonials">
-        <div class="container-narrow">
-            <h2>What Leaders Say</h2>
-            
-            <div class="testimonial">
-                <p class="testimonial-text">"The Pacific Beach Planning Group has been impressed by Ryan's leadership, which combines thoughtful humility with exceptional expertise and drive. We have watched with admiration as he grew from a regular board member into a strong advocate for our community, effectively chairing the Streets subcommittee while also serving as President of beautifulPB. Notably, Ryan played a key role in developing our recent community parking survey, which gathers essential on-the-ground data on parking challenges. This survey will inform our data-driven approach to mobility improvements, ensuring decisions are grounded in real community experiences. Ryan has raised the bar for how younger leaders can contribute to urban planning, mobility improvements, and community advocacy in Pacific Beach, demonstrating that passion and deep engagement with the details can truly drive meaningful, lasting change for our neighborhood."</p>
-                <p class="testimonial-author">
-                    <img src="marcelle_bothwell.jpeg" alt="Marcella Bothwell" class="testimonial-photo">
-                    Marcella Bothwell, MD, MBA
-                </p>
-                <p class="testimonial-role">Chair, <a href="https://www.pbplanning.org/" target="_blank" style="color: var(--sage-green);">Pacific Beach Planning Group</a></p>
-            </div>
-
-            <div class="testimonial">
-                <p class="testimonial-text">"Ryan's leadership style is characterized by a unique blend of initial humility and ultimate mastery. Watching him evolve from a hesitant Vice President to a powerhouse community leader—chairing the Streets subcommittee and serving as President of Beautiful PB—has been inspiring. He has set a high standard for how younger generations can take the lead in urbanism and community advocacy, proving that with passion and a willingness to dive into the 'nitty-gritty,' one person can drive institutional change."</p>
-                <p class="testimonial-author">
-                    <img src="rj_kunysz.jpg" alt="RJ" class="testimonial-photo">
-                    RJ
-                </p>
-                <p class="testimonial-role">Board Member, <a href="https://beautifulpb.com/" target="_blank" style="color: var(--sage-green);">Beautiful PB</a></p>
-            </div>
-
-            <div class="testimonial">
-                <p class="testimonial-text">"Ryan joined our leadership team at a critical time, and I watched him take a significant 'leap' into the role, immediately taking control of complex organizational tasks that many would find daunting. He has been far more than a figurehead; he has been a tireless advocate, fielding constant requests for speaking engagements and representing our mission with poise before the Town Council and the Community Planning Board. Simply put, Ryan has brought this organization a long way through his dedicated leadership... He has a rare ability to dive into the 'nitty-gritty' of local issues, identify where a difference can be made, and then influence the community toward a progressive, forward-thinking agenda. He is not just a participant in meetings; he is the driver of the results that follow them."</p>
-                <p class="testimonial-author">
-                    <img src="chris-olson1.png" alt="Chris Olson" class="testimonial-photo">
-                    Chris Olson
-                </p>
-                <p class="testimonial-role">Co-Founder, <a href="https://beautifulpb.com/" target="_blank" style="color: var(--sage-green);">Beautiful PB</a></p>
-            </div>
+  <!-- Team (expandable) -->
+  <section class="section-tight bg-alt">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">The team</span><h2>Small, senior, and growing.</h2><p>CPT is intentionally lean — you work directly with the people doing the work, backed by a network of collaborators we bring in as projects need them.</p></div>
+      <div class="team" data-reveal-stagger>
+        <div class="member">
+          <img src="ryan-headshot.jpg" alt="Ryan Stock">
+          <div class="role">Founder &amp; principal</div>
+          <h3>Ryan Stock</h3>
+          <p>Strategy, facilitation, and product. Ex–Sony PlayStation senior program manager; past President of Beautiful PB.</p>
         </div>
-    </section>
-    <!-- Credentials -->
-    <section class="credentials-section section-compact">
-        <div class="container">
-            <h2>Credentials & Recognition</h2>
-            <div class="credentials-grid">
-                
-                <div class="credential-box">
-                    <h3>Leadership Positions</h3>
-                    <ul>
-                        <li><strong>Beautiful PB:</strong> President (2024-2026), Vice President (2023-2024)</li>
-                        <li><strong>Pacific Beach Planning Group:</strong> Board Member & Streets Subcommittee Chair (2024-2025)</li>
-                        <li><strong>Pacific Beach Parking Advisory Board:</strong> Board Member (2024-2025)</li>
-                        <li><strong>Sony Interactive Entertainment:</strong> Senior Program Manager (2017-2025)</li>
-                    </ul>
-                </div>
-
-                <div class="credential-box">
-                    <h3>Key Achievements</h3>
-                    <ul>
-                        <li>Scaled Beautiful PB budget from <$1,000 to $40,000 in one year</li>
-                        <li>Raised $450,000 for PB Arts Center (41% of $1.1M goal in 12 months)</li>
-                        <li>100% success rate navigating parking district approvals</li>
-                        <li>Led PS5 launch commerce initiatives on time</li>
-                    </ul>
-                </div>
-
-                <div class="credential-box">
-                    <h3>Media Coverage</h3>
-                    <p>Featured in San Diego Union-Tribune, Times of San Diego, Beach and Bay Press, KSUN Radio, and local television broadcasts</p>
-                    <div class="media-links">
-                        <a href="https://www.sandiegouniontribune.com/2024/05/31/ryan-stock-begins-term-as-beautifulpbs-new-president/" target="_blank">San Diego Union-Tribune: Ryan Stock begins term as beautifulPB's new president →</a>
-                        <a href="https://www.sandiegouniontribune.com/2024/04/24/discussion-begins-on-review-update-of-the-pacific-beach-community-plan/" target="_blank">San Diego Union-Tribune: Discussion begins on Pacific Beach Community Plan →</a>
-                        <a href="https://timesofsandiego.com/life/2025/06/30/pb-pathways-phase-3-refresh-traffic-calming-measures/" target="_blank">Times of San Diego: PB Pathways Phase 3 →</a>
-                    </div>
-                </div>
-
-                <div class="credential-box">
-                    <h3>Project Links</h3>
-                    <ul>
-                        <li><a href="https://beautifulpb.com/" target="_blank" style="color: var(--sky-blue);">Beautiful PB</a></li>
-                        <li><a href="https://www.pbartscenter.org/" target="_blank" style="color: var(--sky-blue);">PB Arts Center</a></li>
-                        <li><a href="https://beautifulpb.com/pb-pathways/" target="_blank" style="color: var(--sky-blue);">PB Pathways</a></li>
-                        <li><a href="https://beautifulpb.com/pb-counts/" target="_blank" style="color: var(--sky-blue);">PB Counts Traffic Data</a></li>
-                        <li><a href="https://www.pbplanning.org/" target="_blank" style="color: var(--sky-blue);">PB Planning Group</a></li>
-                        <li><a href="https://communityplaytools.com/work" target="_blank" style="color: var(--sky-blue);">Case Study Portfolio</a></li>
-                    </ul>
-                </div>
-
-            </div>
+        <div class="member join">
+          <div class="ic" aria-hidden="true">＋</div>
+          <div class="role">Collaborator network</div>
+          <h3>Designers, builders &amp; facilitators</h3>
+          <p>We partner with trusted specialists — engineers, designers, and community organizers — and scale the team to the engagement.</p>
         </div>
-    </section>
-
-    <!-- Why St. Pete -->
-    <section class="why-stpete">
-        <div class="container">
-            <h2>Why St. Petersburg?</h2>
-            <div class="stpete-content">
-                <p>I've recently relocated to St. Petersburg, drawn by the city's remarkable growth trajectory and its potential to model the future of urban innovation. The convergence of the Innovation District, downtown revitalization, and progressive mobility initiatives creates a unique opportunity to build sustainable, people-centered infrastructure.</p>
-                
-                <p>St. Petersburg is at a critical inflection point—positioned to become a national leader in smart city development, sustainable transportation, and technology-driven civic engagement. I want to contribute to building that future.</p>
-                
-                <p>I speak fluently across sectors—translating between "City Council," "Parking Board," and "Tech Innovation" to move high-stakes projects forward. My experience bridges Fortune 500 strategic rigor and grassroots civic leadership, giving me unique perspective on the challenges St. Petersburg faces as it scales.</p>
-                
-                <div class="focus-areas">
-                    <h4>My Areas of Focus in St. Pete:</h4>
-                    <ul>
-                        <li>Building cultural infrastructure for cycling and car-free living</li>
-                        <li>Activating streets with lightweight, scalable technology</li>
-                        <li>Facilitating community engagement for major development projects</li>
-                        <li>Designing innovation programs that connect research, industry, and community</li>
-                        <li>Creating data-driven approaches to mobility and urban planning</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="member join">
+          <div class="ic" aria-hidden="true">👋</div>
+          <div class="role">Open</div>
+          <h3>Want to build with us?</h3>
+          <p>We're always glad to meet people who care about making civic life more human. <a href="contact.html">Say hello →</a></p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- CTA -->
-    <section class="cta-section section-compact">
-        <div class="container">
-            <h2>Let's Work Together</h2>
-            <p>Ready to discuss how we can accelerate your organization's mission?</p>
-            <a href="index.html#contact" class="btn btn-primary">Start a Conversation</a>
+  <!-- Timeline -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Background</span><h2>The road here.</h2></div>
+      <div class="timeline reveal">
+        <div class="tl"><div class="yr">2017–2025</div><div><h4>Sony Interactive Entertainment</h4><p>Senior Program Manager — Commerce, Tax, Payments &amp; Fraud, and the Innovation Engine. Led PayPal integration, international tax systems, the PS5 prerelease purchase system, and innovation work with IDEO. Facilitated global summits of 80–240 people.</p></div></div>
+        <div class="tl"><div class="yr">2023–2026</div><div><h4>Beautiful PB</h4><p>Vice President, then President. Scaled the budget from under $1,000 to $40,000 a year, led PB Pathways through contested approval, and raised $450,000 for the PB Arts Center.</p></div></div>
+        <div class="tl"><div class="yr">2024–2025</div><div><h4>Pacific Beach civic boards</h4><p>Board member and Streets Subcommittee Chair on the Planning Group; member of the Parking Advisory Board — representing community interests on mobility and infrastructure decisions.</p></div></div>
+        <div class="tl"><div class="yr">2026–</div><div><h4>Community Play Tools · St. Petersburg</h4><p>Founded CPT to bring program rigor and civic leadership to St. Pete — and launched Signal Fire, the studio's flagship product.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section-tight bg-alt" id="testimonials">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">In their words</span><h2>What community leaders say.</h2></div>
+      <div class="quotes" data-reveal-stagger>
+        <div class="qcard">
+          <p>"Ryan's leadership combines thoughtful humility with exceptional expertise and drive. He has raised the bar for how younger leaders can contribute to urban planning, mobility, and community advocacy — proving that passion and deep engagement with the details can drive lasting change."</p>
+          <div class="who"><img src="marcelle_bothwell.jpeg" alt="Marcella Bothwell"><div><div class="n">Marcella Bothwell, MD, MBA</div><div class="r">Chair, Pacific Beach Planning Group</div></div></div>
         </div>
-    </section>
+        <div class="qcard">
+          <p>"Watching him evolve from a hesitant Vice President to a powerhouse community leader has been inspiring. He set a high standard for how younger generations can lead in urbanism — proving that with passion and a willingness to dive into the nitty-gritty, one person can drive institutional change."</p>
+          <div class="who"><img src="rj_kunysz.jpg" alt="RJ Kunysz"><div><div class="n">RJ Kunysz</div><div class="r">Board Member, Beautiful PB</div></div></div>
+        </div>
+        <div class="qcard">
+          <p>"Ryan joined at a critical time and immediately took control of complex tasks many would find daunting. He has a rare ability to dive into the nitty-gritty of local issues, find where a difference can be made, and influence the community toward a forward-thinking agenda. He is the driver of the results that follow."</p>
+          <div class="who"><img src="chris-olson1.png" alt="Chris Olson"><div><div class="n">Chris Olson</div><div class="r">Co-Founder, Beautiful PB</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-column">
-                    <h4>Ryan Stock</h4>
-                    <p>Civic Catalyst & Strategic Project Lead</p>
-                    <p>📍 St. Petersburg, Florida</p>
-                    <p style="margin-top: 1rem; opacity: 0.8;">Now accepting engagements</p>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="work.html">Work</a></li>
-                        <li><a href="index.html#contact">Contact</a></li>
-                        <li><a href="Ryan_Stock_Executive_Overview.pdf" download>One-Page Overview (PDF)</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Projects</h4>
-                    <ul>
-                        <li><a href="https://beautifulpb.com/" target="_blank">Beautiful PB</a></li>
-                        <li><a href="https://www.pbartscenter.org/" target="_blank">PB Arts Center</a></li>
-                        <li><a href="https://beautifulpb.com/pb-pathways/" target="_blank">PB Pathways</a></li>
-                        <li><a href="https://www.pbplanning.org/" target="_blank">PB Planning Group</a></li>
-                        <li><a href="https://communityplaytools.com/work" target="_blank">Case Study Portfolio</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Connect</h4>
-                    <ul>
-                        <li><a href="RyanStockPMP@gmail.com">Email</a></li>
-                        <li><a href="https://www.linkedin.com/in/ryan-stock-bb955555/" target="_blank">LinkedIn</a></li>
-                        <li><a href="tel:858-414-8819">858-414-8819</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>© 2026 Ryan Stock. All rights reserved.</p>
-            </div>
+  <!-- Credentials -->
+  <section class="section-tight bg-ink">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Credentials &amp; recognition</span><h2 style="color:var(--paper);">Track record you can check.</h2></div>
+      <div class="creds reveal">
+        <div>
+          <h4 style="color:var(--paper);margin-bottom:16px;">Key achievements</h4>
+          <ul>
+            <li>Raised $450,000 for the PB Arts Center (41% of a $1.1M goal) in 12 months</li>
+            <li>Scaled Beautiful PB's budget from under $1,000 to $40,000 a year</li>
+            <li>100% success rate navigating contested parking-district approvals</li>
+            <li>11 years — San Diego's longest-running community traffic study</li>
+            <li>Delivered PS5-launch commerce initiatives on time at Sony</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color:var(--paper);margin-bottom:16px;">Media coverage</h4>
+          <ul>
+            <li><a href="https://www.sandiegouniontribune.com/2024/05/31/ryan-stock-begins-term-as-beautifulpbs-new-president/" target="_blank" rel="noopener">San Diego Union-Tribune — new beautifulPB president</a></li>
+            <li><a href="https://timesofsandiego.com/life/2025/06/30/pb-pathways-phase-3-refresh-traffic-calming-measures/" target="_blank" rel="noopener">Times of San Diego — PB Pathways Phase 3</a></li>
+            <li>Also featured in Beach &amp; Bay Press, KSUN Radio, and local TV</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Let's build something that matters.</h2>
+        <p>Whether you're a city department, a downtown partnership, a developer, or a foundation — we'd like to hear what you're working on.</p>
+        <div class="hero-cta"><a href="contact.html" class="btn btn-primary">Start a conversation <span class="arrow" aria-hidden="true">→</span></a></div>
+      </div>
+    </div>
+  </section>
+
+  <div data-include="partials/footer.html"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

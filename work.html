@@ -1,924 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work - Ryan Stock | Project Portfolio</title>
-    <meta name="description" content="Detailed case studies of Ryan Stock's work across civic infrastructure and corporate innovation. From Sony PlayStation to Pacific Beach community leadership.">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-teal: #2C5F6F;
-            --sage-green: #7A9D7E;
-            --warm-gray: #6B6B6B;
-            --sunset-orange: #E17C54;
-            --sky-blue: #A4C8E1;
-            --off-white: #F8F9FA;
-            --charcoal: #2D2D2D;
-            --white: #FFFFFF;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--charcoal);
-            background-color: var(--off-white);
-        }
-
-        h1, h2, h3, h4, h5 {
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        h1 { font-size: 3rem; }
-        h2 { font-size: 2.5rem; }
-        h3 { font-size: 1.8rem; }
-        h4 { font-size: 1.5rem; }
-        h5 { font-size: 1.2rem; }
-
-        p { margin-bottom: 1rem; }
-
-        a {
-            color: var(--primary-teal);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        a:hover {
-            color: var(--sunset-orange);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            border-radius: 4px;
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background-color: var(--sunset-orange);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background-color: #d16843;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(225, 124, 84, 0.3);
-        }
-
-        section {
-            padding: 80px 0;
-        }
-
-        .section-compact {
-            padding: 60px 0;
-        }
-
-        /* Navigation */
-        nav {
-            background: var(--white);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .nav-brand {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--charcoal);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--sunset-orange);
-        }
-
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary-teal), var(--sage-green));
-            color: var(--white);
-            padding: 100px 0 80px;
-            text-align: center;
-        }
-
-        .page-header h1 {
-            margin-bottom: 1rem;
-        }
-
-        .page-header p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            margin-bottom: 0;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Portfolio Navigation */
-        .portfolio-nav {
-            background: var(--white);
-            padding: 30px 0;
-            text-align: center;
-            border-bottom: 2px solid var(--off-white);
-        }
-
-        .portfolio-nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-
-        .portfolio-nav-links a {
-            color: var(--warm-gray);
-            font-weight: 600;
-            font-size: 1.1rem;
-            padding: 10px 20px;
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-
-        .portfolio-nav-links a:hover {
-            background: var(--off-white);
-            color: var(--primary-teal);
-        }
-
-        /* Project Section Headers */
-        .project-category {
-            background: var(--off-white);
-            padding: 60px 0 40px;
-        }
-
-        .project-category h2 {
-            color: var(--primary-teal);
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .category-intro {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 0;
-            color: var(--warm-gray);
-        }
-
-        /* Project Card */
-        .project {
-            background: var(--white);
-            padding: 80px 0;
-        }
-
-        .project:nth-child(even) {
-            background: var(--off-white);
-        }
-
-        .project-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .project-image {
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        }
-
-        .project-video {
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        }
-
-        .project-details h3 {
-            color: var(--primary-teal);
-            margin-bottom: 1.5rem;
-        }
-
-        .project-section {
-            margin-bottom: 2rem;
-        }
-
-        .project-section h5 {
-            color: var(--sage-green);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .project-section ul {
-            margin-left: 1.5rem;
-        }
-
-        .project-section li {
-            margin-bottom: 0.5rem;
-        }
-
-        .project-skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 1.5rem;
-        }
-
-        .skill-tag {
-            background-color: var(--sky-blue);
-            color: var(--charcoal);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        .project-links {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 2px solid var(--off-white);
-        }
-
-        .project-link {
-            color: var(--sunset-orange);
-            font-weight: 600;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Sub-initiatives (for citizen science section) */
-        .sub-initiatives {
-            margin-top: 2rem;
-            padding: 25px;
-            background: var(--off-white);
-            border-radius: 8px;
-        }
-
-        .sub-initiatives h5 {
-            color: var(--primary-teal);
-            margin-bottom: 1.5rem;
-        }
-
-        .sub-initiative {
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .sub-initiative:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .sub-initiative h6 {
-            color: var(--sage-green);
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .sub-initiative p {
-            color: var(--warm-gray);
-            margin-bottom: 0.5rem;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, var(--primary-teal), var(--sage-green));
-            color: var(--white);
-            text-align: center;
-        }
-
-        .cta-section h2 {
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--charcoal);
-            color: var(--white);
-            padding: 40px 0 20px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h4 {
-            margin-bottom: 1rem;
-            color: var(--sky-blue);
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-column a {
-            color: var(--white);
-            opacity: 0.8;
-        }
-
-        .footer-column a:hover {
-            opacity: 1;
-            color: var(--sky-blue);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 2rem; }
-            h3 { font-size: 1.5rem; }
-            
-            section { padding: 50px 0; }
-
-            .nav-links {
-                gap: 15px;
-                font-size: 0.9rem;
-            }
-
-            .portfolio-nav-links {
-                gap: 20px;
-            }
-
-            .project-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work — Community Play Tools</title>
+  <meta name="description" content="Case studies across civic infrastructure, community-powered data, St. Petersburg engagement, and corporate innovation — focused on stakeholder alignment and measurable outcomes.">
+  <meta property="og:title" content="Work — Community Play Tools">
+  <meta property="og:description" content="Contested projects, moved forward. Civic infrastructure, community data, and global innovation programs.">
+  <meta name="theme-color" content="#103F38">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .case { padding: clamp(56px, 7vw, 84px) 0; border-top: 1px solid var(--line); }
+    .case:first-of-type { border-top: 0; }
+    .case-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .case.flip .case-media { order: 2; }
+    .case-media img { width: 100%; border-radius: var(--r-lg); box-shadow: var(--shadow-md); }
+    .case-media.ph { aspect-ratio: 4/3; border-radius: var(--r-lg); background: linear-gradient(135deg, var(--pine), var(--pine-2)); display: grid; place-items: center; color: var(--mint); font-family: var(--font-display); font-size: 2.2rem; box-shadow: var(--shadow-md); }
+    .case h3 { margin-bottom: 20px; }
+    .case .block { margin-bottom: 18px; }
+    .case .block .k { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); display: block; margin-bottom: 5px; }
+    .bg-alt .case .block .k, .case .block .k { color: var(--coral); }
+    .case ul { margin: 6px 0 0 1.1rem; }
+    .case li { margin-bottom: 6px; color: var(--ink-soft); }
+    .case .chips { margin-top: 20px; }
+    .case .links { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
+    @media (max-width: 940px) { .case-inner { grid-template-columns: 1fr; gap: 32px; } .case.flip .case-media { order: 0; } }
+  </style>
 </head>
 <body>
-    
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <a href="index.html" class="nav-brand">Ryan Stock</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="work.html" class="active">Work</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+  <div data-include="partials/nav.html"></div>
 
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="container">
-            <h1>Selected Work</h1>
-            <p>Projects across civic infrastructure and corporate innovation, always focused on stakeholder alignment and measurable outcomes.</p>
-        </div>
-    </section>
-
-    <!-- Portfolio Navigation -->
-    <div class="portfolio-nav">
-        <div class="portfolio-nav-links">
-            <a href="#civic">Civic Projects</a>
-            <a href="#citizen-science">Community-Powered Data</a>
-            <a href="#corporate">Corporate Projects</a>
-        </div>
+  <header class="page-head">
+    <div class="container">
+      <span class="eyebrow">Work</span>
+      <h1>Contested projects, moved forward.</h1>
+      <p>Projects across civic infrastructure, community-powered data, and corporate innovation — always focused on stakeholder alignment and outcomes you can measure.</p>
     </div>
+  </header>
 
-    <!-- CIVIC PROJECTS SECTION -->
-    <section class="project-category" id="civic">
-        <div class="container">
-            <h2>Civic Infrastructure & Community Building</h2>
-            <p class="category-intro">Leading controversial projects through complex regulatory environments with data-driven community engagement.</p>
-        </div>
-    </section>
+  <!-- Category: Civic -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Civic infrastructure</span><h2>Leading hard projects through real friction.</h2></div>
 
-    <!-- Project 1: PB Pathways -->
-    <section class="project" id="pb-pathways">
-        <div class="container">
-            <div class="project-content">
-                <div>
-                    <img src="pb-pathways-01.jpg" alt="PB Pathways bike boulevard" class="project-image">
-                </div>
-                <div class="project-details">
-                    <h3>PB Pathways Phase 3</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>A proposed bike boulevard faced intense community opposition over parking removal in a highly contested parking district—a process that historically blocked similar projects.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Designed and facilitated six community workshops to surface concerns and build consensus. Deployed citizen science tools including automated traffic counting and speed surveys. Presented data-driven recommendations to multiple approval boards including the Parking Advisory Board and Planning Group.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li><strong>Only project to successfully pass through the Parking Advisory Board</strong> with top approval vote</li>
-                            <li>Secured unanimous Planning Group recommendation</li>
-                            <li>Shifted community conversation from parking protection to sustainable mobility</li>
-                            <li>Featured in San Diego Union-Tribune and Times of San Diego</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Stakeholder Diplomacy</span>
-                        <span class="skill-tag">Data Analysis</span>
-                        <span class="skill-tag">Community Facilitation</span>
-                        <span class="skill-tag">Regulatory Navigation</span>
-                    </div>
-                    
-                    <div class="project-links">
-                        <a href="https://beautifulpb.com/pb-pathways/" target="_blank" class="project-link">Learn More About PB Pathways →</a>
-                        <a href="https://beautifulpb.com/pb-counts/" target="_blank" class="project-link">View PB Counts Traffic Data Report →</a>
-                        <a href="https://timesofsandiego.com/life/2025/06/30/pb-pathways-phase-3-refresh-traffic-calming-measures/" target="_blank" class="project-link">Read Media Coverage →</a>
-                    </div>
-                </div>
+      <div class="case" id="pb-pathways">
+        <div class="case-inner">
+          <div class="case-media reveal"><img src="pb-pathways-01.jpg" alt="PB Pathways bike boulevard"></div>
+          <div class="case-body reveal">
+            <h3>PB Pathways Phase 3</h3>
+            <div class="block"><span class="k">Challenge</span><p>A proposed bike boulevard faced intense opposition over parking removal in a highly contested district — a process that had historically blocked similar projects.</p></div>
+            <div class="block"><span class="k">Action</span><p>Designed and facilitated six community workshops to surface concerns and build consensus, deployed citizen-science traffic and speed tools, and presented data-driven recommendations to multiple approval boards.</p></div>
+            <div class="block"><span class="k">Result</span>
+              <ul>
+                <li><strong>Only project to pass the Parking Advisory Board</strong> with the top approval vote</li>
+                <li>Secured a unanimous Planning Group recommendation</li>
+                <li>Shifted the conversation from parking protection to sustainable mobility</li>
+              </ul>
             </div>
-        </div>
-    </section>
-
-    <!-- Project 2: PB Art Center -->
-    <section class="project" id="pb-art-center">
-        <div class="container">
-            <div class="project-content">
-                <div class="project-details">
-                    <h3>Pacific Beach Art Center</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>A historic 1927 library building sat abandoned and deteriorating, while the Pacific Beach community lacked dedicated arts and cultural space.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Seized the opportunity to acquire the building from San Diego Unified School District. Built a coalition with the YMCA and community stakeholders. Led capital campaign strategy and community engagement to restore the building as a community arts center.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li>Secured the historic building through partnership negotiations</li>
-                            <li>Raised <strong>$450,000 in pledges within 12 months</strong> (41% of $1.1M goal)</li>
-                            <li>Positioned project for spring 2026 activation</li>
-                            <li>Created sustainable model for community-led historic preservation</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Coalition Building</span>
-                        <span class="skill-tag">Fundraising Strategy</span>
-                        <span class="skill-tag">Historic Preservation</span>
-                        <span class="skill-tag">Partnership Negotiation</span>
-                    </div>
-                    
-                    <div class="project-links">
-                        <a href="https://www.pbartscenter.org/" target="_blank" class="project-link">Visit PB Arts Center Website →</a>
-                    </div>
-                </div>
-                <div>
-                    <img src="pb-art-center-01.jpg" alt="Pacific Beach Art Center historic building" class="project-image">
-                </div>
+            <div class="chips"><span class="chip">Stakeholder diplomacy</span><span class="chip">Data analysis</span><span class="chip">Community facilitation</span><span class="chip">Regulatory navigation</span></div>
+            <div class="links">
+              <a href="https://beautifulpb.com/pb-pathways/" target="_blank" rel="noopener" class="text-link">Learn about PB Pathways <span class="arrow" aria-hidden="true">→</span></a>
+              <a href="https://timesofsandiego.com/life/2025/06/30/pb-pathways-phase-3-refresh-traffic-calming-measures/" target="_blank" rel="noopener" class="text-link">Read media coverage <span class="arrow" aria-hidden="true">→</span></a>
             </div>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <!-- Project 3: Garnet Vision -->
-    <section class="project" id="garnet-vision">
-        <div class="container">
-            <div class="project-content">
-                <div>
-                    <img src="garnet-vision.jpg" alt="Garnet Avenue commercial corridor" class="project-image">
-                </div>
-                <div class="project-details">
-                    <h3>Garnet Avenue Vision</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>A major commercial corridor needed a compelling vision for pedestrianization to compete for limited community capital improvement funding.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Developed pedestrianization concept and design strategy. Represented the vision at multiple community input events and Town Council capital improvement fair. Built public support through compelling visualization and community organizing.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li><strong>Voted into top 3 for major community projects</strong> at capital improvement fair</li>
-                            <li>Generated community momentum for long-term streetscape transformation</li>
-                            <li>Established template for commercial corridor redesign advocacy</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Urban Design</span>
-                        <span class="skill-tag">Public Speaking</span>
-                        <span class="skill-tag">Visual Communication</span>
-                        <span class="skill-tag">Advocacy Strategy</span>
-                    </div>
-                </div>
+      <div class="case flip" id="pb-art-center">
+        <div class="case-inner">
+          <div class="case-media reveal"><img src="pb-art-center-01.jpg" alt="Pacific Beach Art Center historic building"></div>
+          <div class="case-body reveal">
+            <h3>Pacific Beach Art Center</h3>
+            <div class="block"><span class="k">Challenge</span><p>A historic 1927 library building sat abandoned and deteriorating while the community lacked any dedicated arts and cultural space.</p></div>
+            <div class="block"><span class="k">Action</span><p>Seized the opportunity to acquire the building from the school district, built a coalition with the YMCA and community stakeholders, and led capital-campaign strategy and engagement.</p></div>
+            <div class="block"><span class="k">Result</span>
+              <ul>
+                <li>Secured the historic building through partnership negotiations</li>
+                <li><strong>$450,000 in pledges within 12 months</strong> (41% of a $1.1M goal)</li>
+                <li>Created a sustainable model for community-led historic preservation</li>
+              </ul>
             </div>
+            <div class="chips"><span class="chip">Coalition building</span><span class="chip">Fundraising strategy</span><span class="chip">Historic preservation</span><span class="chip">Partnership negotiation</span></div>
+            <div class="links"><a href="https://www.pbartscenter.org/" target="_blank" rel="noopener" class="text-link">Visit PB Arts Center <span class="arrow" aria-hidden="true">→</span></a></div>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <!-- Project: Community Merit -->
-    <section class="project" id="community-merit">
-        <div class="container">
-            <div class="project-content">
-                <div>
-                    <img src="community_merit_1.png" alt="Community Merit civic engagement platform" class="project-image">
-                </div>
-                <div class="project-details">
-                    <h3>Community Merit</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>Traditional civic engagement methods feel like homework, resulting in low participation rates and the same small group of voices dominating community decisions.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Designed and built a civic engagement platform featuring merit badges, multi-step events, and gamified check-ins that convert individual civic actions into collective neighborhood intelligence. Created a system where participation feels like play rather than obligation.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li>Built a scalable engagement framework applicable to any community initiative</li>
-                            <li>Gamified civic participation to broaden community voice beyond the usual suspects</li>
-                            <li>Created reusable platform adaptable to multiple neighborhood contexts</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Civic Tech</span>
-                        <span class="skill-tag">Gamification</span>
-                        <span class="skill-tag">Community Engagement</span>
-                        <span class="skill-tag">Product Design</span>
-                    </div>
-                    
-                    <div class="project-links">
-                        <a href="cmapp.html" class="project-link">Explore Community Merit →</a>
-                    </div>
-                </div>
+      <div class="case" id="garnet-vision">
+        <div class="case-inner">
+          <div class="case-media reveal"><img src="garnet-vision.jpg" alt="Garnet Avenue commercial corridor"></div>
+          <div class="case-body reveal">
+            <h3>Garnet Avenue Vision</h3>
+            <div class="block"><span class="k">Challenge</span><p>A major commercial corridor needed a compelling vision for pedestrianization to compete for limited capital-improvement funding.</p></div>
+            <div class="block"><span class="k">Action</span><p>Developed the pedestrianization concept and design strategy, then represented it at community input events and the Town Council capital-improvement fair.</p></div>
+            <div class="block"><span class="k">Result</span><ul><li><strong>Voted into the top 3</strong> community projects at the capital-improvement fair</li><li>Generated momentum for long-term streetscape transformation</li></ul></div>
+            <div class="chips"><span class="chip">Urban design</span><span class="chip">Public speaking</span><span class="chip">Visual communication</span><span class="chip">Advocacy strategy</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category: Community-powered data -->
+  <section class="section-tight bg-alt">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Community-powered data</span><h2>Evidence the whole neighborhood helped gather.</h2></div>
+      <div class="case" id="citizen-science" style="border-top:0;">
+        <div class="case-inner">
+          <div class="case-media ph reveal" aria-hidden="true">PB&nbsp;Counts</div>
+          <div class="case-body reveal">
+            <h3>Citizen-science infrastructure</h3>
+            <div class="block"><span class="k">Challenge</span><p>Advocacy lacked reliable, repeatable data. Decisions were made on anecdotes, and volunteers had enthusiasm but no framework for systematic collection.</p></div>
+            <div class="block"><span class="k">Action</span><p>Built repeatable systems spanning traffic studies, speed monitoring, and parking surveys; secured county funding for automated technology; and created train-the-trainer models so volunteers could run surveys independently.</p></div>
+            <div class="block"><span class="k">Result</span>
+              <ul>
+                <li><strong>11 years of continuous data</strong> — San Diego's longest-running community traffic study</li>
+                <li><strong>County grant secured</strong> for automated traffic technology</li>
+                <li>Comprehensive parking data now informs Planning Group housing decisions</li>
+              </ul>
             </div>
+            <div class="chips"><span class="chip">Citizen science</span><span class="chip">Data systems design</span><span class="chip">Community mobilization</span><span class="chip">Volunteer training</span></div>
+            <div class="links"><a href="https://beautifulpb.com/pb-counts/" target="_blank" rel="noopener" class="text-link">View PB Counts reports <span class="arrow" aria-hidden="true">→</span></a></div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- CITIZEN SCIENCE SECTION -->
-    <section class="project-category" id="citizen-science">
-        <div class="container">
-            <h2>Community-Powered Data & Engagement</h2>
-            <p class="category-intro">Building scalable systems that amplify community intelligence through citizen science and volunteer mobilization.</p>
+  <!-- Category: St. Pete -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">St. Petersburg</span><h2>Local work, on the ground.</h2></div>
+      <div class="case" id="williams-park" style="border-top:0;">
+        <div class="case-inner">
+          <div class="case-media reveal"><img src="wp_counter_1.png" alt="Williams Park Counter tool"></div>
+          <div class="case-body reveal">
+            <h3>Williams Park · St. Petersburg Downtown Partnership</h3>
+            <div class="block"><span class="k">Challenge</span><p>The Williams Park renovation in downtown St. Petersburg needed meaningful public input and engagement data to inform design decisions.</p></div>
+            <div class="block"><span class="k">Action</span><p>Built interactive public-engagement tools for the SPDP that pair community data collection with playful visualization, lowering the barrier to participation while generating actionable data.</p></div>
+            <div class="block"><span class="k">Result</span><ul><li>Accessible digital engagement supporting SPDP's renovation priorities</li><li>Community-powered data feeding real park-design decisions</li><li>A civic-tech model applicable to future St. Pete public-space projects</li></ul></div>
+            <div class="chips"><span class="chip">Civic tech</span><span class="chip">Public engagement</span><span class="chip">Data collection</span><span class="chip">Community partnership</span></div>
+            <div class="links"><a href="williams-park.html" class="text-link">Try the Williams Park tool <span class="arrow" aria-hidden="true">→</span></a></div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Project 4: Citizen Science Infrastructure -->
-    <section class="project" id="citizen-science-project">
-        <div class="container">
-            <div class="project-content">
-                <div class="project-details">
-                    <h3>Citizen Science Infrastructure for Pacific Beach</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>Community advocacy lacked reliable, repeatable data collection methods. Decisions were made on anecdotes rather than evidence. Volunteers had enthusiasm but no framework for systematic data gathering.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Built comprehensive citizen science infrastructure spanning traffic studies, speed monitoring, and parking surveys. Secured county funding for automated technology. Created train-the-trainer models enabling volunteers to independently conduct surveys. Established replicable frameworks that other neighborhoods could adopt.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li><strong>11 years of continuous data collection</strong> - longest-running community traffic study in San Diego</li>
-                            <li><strong>County grant secured</strong> for automated traffic technology, establishing framework for other neighborhoods</li>
-                            <li><strong>6 community workshops facilitated</strong> for PB Pathways, engaging broader cross-section than typical meetings</li>
-                            <li><strong>Comprehensive parking data</strong> now informs Planning Group decisions on housing and development</li>
-                            <li>Created train-the-trainer model where volunteers independently conduct surveys with consistent methodology</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="sub-initiatives">
-                        <h5>Key Initiatives:</h5>
-                        
-                        <div class="sub-initiative">
-                            <h6>PB Counts - Traffic Study Program</h6>
-                            <p><strong>11 years running.</strong> Longest-running community-led traffic study in San Diego. Technologically enhanced with automated traffic counters providing continuous data at key locations. Established framework and county connection for other community groups to obtain similar funding and survey their neighborhoods.</p>
-                            <p><a href="https://beautifulpb.com/pb-counts/" target="_blank" class="project-link">View PB Counts Reports →</a></p>
-                        </div>
-                        
-                        <div class="sub-initiative">
-                            <h6>Speed Surveys</h6>
-                            <p>Created repeatable process for community members to borrow radar guns and conduct speed surveys on their streets. Developed framework and instructions ensuring consistent, reliable data collection across multiple volunteers and locations.</p>
-                            <p><a href="https://drive.google.com/file/d/1FvedyB2fSh8LNlM5RXQLyLtv4NVDWY3F/view?usp=sharing" target="_blank" class="project-link">Watch Speed Survey Promo Video →</a></p>
-                        </div>
-                        
-                        <div class="sub-initiative">
-                            <h6>Community Parking Survey</h6>
-                            <p>Designed comprehensive survey collecting data on parking availability and transportation modes in Pacific Beach. Survey dissects modes of transport and parking impact by neighborhood section, age demographics, and household car ownership - critical data supporting Planning Group advisory decisions on smart housing and development choices.</p>
-                            <p><a href="https://drive.google.com/file/d/17cwPXgGsRDc8zbuXK1HgLvwIQJtGIHrR/view?usp=sharing" target="_blank" class="project-link">View Parking Survey Dashboard →</a></p>
-                        </div>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Citizen Science</span>
-                        <span class="skill-tag">Data Systems Design</span>
-                        <span class="skill-tag">Community Mobilization</span>
-                        <span class="skill-tag">Survey Methodology</span>
-                        <span class="skill-tag">Technology Integration</span>
-                        <span class="skill-tag">Volunteer Training</span>
-                    </div>
-                </div>
-                <div>
-                    <a href="https://www.youtube.com/watch?v=CZ6HDXtQE3M" target="_blank">
-                        <img src="camera_dashboard.png" alt="Traffic camera dashboard" class="project-image" style="margin-bottom: 30px;">
-                    </a>
-                    <iframe src="https://drive.google.com/file/d/1FvedyB2fSh8LNlM5RXQLyLtv4NVDWY3F/preview" class="project-video" height="400" allow="autoplay"></iframe>
-                </div>
-            </div>
+  <!-- Category: Corporate -->
+  <section class="section-tight bg-ink">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Where the rigor comes from</span><h2>Seven years leading high-stakes programs at Sony PlayStation.</h2><p>Before the civic work, our principal spent seven years at Sony Interactive Entertainment coordinating engineering, finance, legal, and global teams under impossible deadlines.</p></div>
+      <div class="grid-3" data-reveal-stagger>
+        <div class="pillar" style="background:rgba(255,255,255,0.04);border-color:rgba(245,241,237,0.14);">
+          <h4 style="color:var(--paper);">Sony Innovation Engine</h4>
+          <p style="color:rgba(245,241,237,0.72);">Senior PM on the innovation pipeline; partnered with IDEO to prototype AR and "low-screen" tactile play, building frameworks for rapid market testing.</p>
         </div>
-    </section>
+        <div class="pillar" style="background:rgba(255,255,255,0.04);border-color:rgba(245,241,237,0.14);">
+          <h4 style="color:var(--paper);">PlayStation Network Commerce</h4>
+          <p style="color:rgba(245,241,237,0.72);">Implemented PayPal, international tax systems, and the PS5 prerelease purchase system — all delivered on time during the console launch.</p>
+        </div>
+        <div class="pillar" style="background:rgba(255,255,255,0.04);border-color:rgba(245,241,237,0.14);">
+          <h4 style="color:var(--paper);">Global Innovation Summits</h4>
+          <p style="color:rgba(245,241,237,0.72);">Designed and facilitated multi-day summits and hackathons for 80–240 participants, building a repeatable playbook for large-scale events.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Project: Williams Park Counter Toy -->
-    <section class="project" id="williams-park">
-        <div class="container">
-            <div class="project-content">
-                <div>
-                    <img src="wp_counter_1.png" alt="Williams Park Counter Toy" class="project-image">
-                </div>
-                <div class="project-details">
-                    <h3>Williams Park Counter Toy</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>The Williams Park renovation in downtown St. Petersburg needed meaningful public input and engagement data to inform design decisions ahead of construction beginning in April 2026.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Built an interactive public engagement tool for the St. Petersburg Downtown Partnership that combines community data collection with playful visualization. Designed the tool to lower the barrier for public participation in park planning while generating actionable data for decision-makers.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li>Created an accessible digital engagement tool supporting SPDP's Williams Park renovation priorities</li>
-                            <li>Community-powered data collection informing park design decisions</li>
-                            <li>Demonstrated civic tech approach applicable to future St. Petersburg public space projects</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Civic Tech</span>
-                        <span class="skill-tag">Public Engagement</span>
-                        <span class="skill-tag">Data Collection</span>
-                        <span class="skill-tag">Community Partnership</span>
-                    </div>
-                    
-                    <div class="project-links">
-                        <a href="williams-park.html" class="project-link">Try the Williams Park Counter Toy →</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- CTA -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Have a project like one of these?</h2>
+        <p>Tell us what you're trying to move forward. We'll tell you honestly whether we're the right fit.</p>
+        <div class="hero-cta"><a href="contact.html" class="btn btn-primary">Start a conversation <span class="arrow" aria-hidden="true">→</span></a></div>
+      </div>
+    </div>
+  </section>
 
-<!-- Creative Projects -->
-    <section class="project-category">
-        <div class="container">
-            <h2>Creative Range</h2>
-            <p class="category-intro">Strategic communication takes many forms—including visual storytelling that makes complex urban issues accessible to all ages.</p>
-        </div>
-    </section>
-
-    <section class="project">
-        <div class="container">
-            <div class="project-content">
-                <div class="project-details">
-                    <h3>Pathfinders: The Mural Code</h3>
-                    
-                    <div class="project-section">
-                        <p>A graphic novel series introducing middle schoolers to urban planning concepts through adventure storytelling. Combines my technical expertise in mobility infrastructure with creative narrative design to make civic engagement accessible to the next generation.</p>
-                        <p><a href="https://drive.google.com/file/d/1Bj9k7OfNfCLeFL_LKWtlf96tbNg9Xnko/view?usp=sharing" target="_blank" class="btn btn-primary">Read the Comic →</a></p>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Visual Communication</span>
-                        <span class="skill-tag">Youth Engagement</span>
-                        <span class="skill-tag">Urban Planning Education</span>
-                    </div>
-                </div>
-                <div>
-                    <a href="https://drive.google.com/file/d/1Bj9k7OfNfCLeFL_LKWtlf96tbNg9Xnko/view?usp=sharing" target="_blank">
-    <img src="1_Cover.png" alt="Pathfinders comic cover" class="project-image" style="cursor: pointer; max-width: 400px; width: 100%;">
-</a>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- CORPORATE PROJECTS SECTION -->
-    <section class="project-category" id="corporate">
-        <div class="container">
-            <h2>Strategy & Technology Leadership</h2>
-            <p class="category-intro">Leading high-stakes programs at Sony Interactive Entertainment, bridging engineering, finance, legal, and global teams.</p>
-        </div>
-    </section>
-
-    <!-- Project 5: Sony Innovation Engine -->
-    <section class="project" id="sony-innovation">
-        <div class="container">
-            <div class="project-content">
-                <div class="project-details">
-                    <h3>Sony Innovation Engine</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>Sony Interactive Entertainment needed to explore interactive play markets beyond traditional console gaming and identify new revenue opportunities in emerging technologies.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Served as Senior Program Manager leading innovation pipeline development. Partnered with IDEO to prototype AR experiences and "low screen" tactile electronic play. Built frameworks for rapid iteration and market testing across global teams.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li>Created high-velocity pipeline for testing long-shot, new market concepts</li>
-                            <li>Prototyped multiple interactive play formats including VR/AR and tactile electronics</li>
-                            <li>Developed strategic assessment frameworks for emerging technology opportunities</li>
-                            <li>Contributed to SIE's diversification strategy beyond console hardware</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Innovation Management</span>
-                        <span class="skill-tag">Strategic Partnerships</span>
-                        <span class="skill-tag">Rapid Prototyping</span>
-                        <span class="skill-tag">Emerging Technology</span>
-                    </div>
-                </div>
-                <div>
-                    <img src="sony-innovation-01.jpg" alt="Sony innovation workshop" class="project-image">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project 6: PlayStation Commerce -->
-    <section class="project" id="playstation-commerce">
-        <div class="container">
-            <div class="project-content">
-                <div>
-                    <img src="sony-innovation-02.jpg" alt="Sony technology workspace" class="project-image">
-                </div>
-                <div class="project-details">
-                    <h3>PlayStation Network Commerce</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>PlayStation Network needed to expand payment options and implement complex international tax systems while maintaining platform stability during the critical PS5 launch.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Led program management for commerce platform enhancements. Coordinated cross-functional teams across engineering, finance, legal, and compliance. Developed prerelease purchase and queuing system for PlayStation Direct.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li><strong>Successfully implemented PayPal as payment method</strong> for PlayStation Network</li>
-                            <li><strong>Launched international tax systems</strong> across multiple jurisdictions</li>
-                            <li><strong>Delivered PS5 prerelease purchase system on time</strong> for console launch</li>
-                            <li>Maintained zero-downtime deployments during critical revenue periods</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Technical Program Management</span>
-                        <span class="skill-tag">Cross-Functional Coordination</span>
-                        <span class="skill-tag">Payments Infrastructure</span>
-                        <span class="skill-tag">Compliance Management</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project 7: Global Summits -->
-    <section class="project" id="global-summits">
-        <div class="container">
-            <div class="project-content">
-                <div class="project-details">
-                    <h3>Global Innovation Summits</h3>
-                    
-                    <div class="project-section">
-                        <h5>Challenge:</h5>
-                        <p>Align global teams across multiple time zones on shared innovation strategy and build culture of collaborative experimentation.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Action:</h5>
-                        <p>Designed and facilitated multi-day innovation summits and hackathons for 80-240 participants. Created workshop formats ranging from single-day intensive sessions to week-long collaborative sprints. Led Commerce Innovation Summit for PlayStation Network payments team.</p>
-                    </div>
-                    
-                    <div class="project-section">
-                        <h5>Result:</h5>
-                        <ul>
-                            <li>Successfully aligned global stakeholders on strategic priorities</li>
-                            <li>Generated actionable innovation concepts through high-engagement formats</li>
-                            <li>Built lasting cross-functional relationships across SIE organization</li>
-                            <li>Established repeatable playbook for large-scale innovation events</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="project-skills">
-                        <span class="skill-tag">Event Design</span>
-                        <span class="skill-tag">Large-Group Facilitation</span>
-                        <span class="skill-tag">Workshop Methodology</span>
-                        <span class="skill-tag">Strategic Alignment</span>
-                    </div>
-                </div>
-                <div>
-                    <img src="sony-summit-01.jpg" alt="Sony global innovation summit" class="project-image">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta-section section-compact">
-        <div class="container">
-            <h2>Ready to Build Something Similar?</h2>
-            <p>Let's discuss how we can accelerate your organization's mission.</p>
-            <a href="contact.html" class="btn btn-primary">Start a Conversation</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
+  <div data-include="partials/footer.html"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

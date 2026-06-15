@@ -1,590 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Ryan Stock | Start a Conversation</title>
-    <meta name="description" content="Ready to discuss a strategic engagement? Let's discuss how we can accelerate your organization's mission.">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-teal: #2C5F6F;
-            --sage-green: #7A9D7E;
-            --warm-gray: #6B6B6B;
-            --sunset-orange: #E17C54;
-            --sky-blue: #A4C8E1;
-            --off-white: #F8F9FA;
-            --charcoal: #2D2D2D;
-            --white: #FFFFFF;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--charcoal);
-            background-color: var(--off-white);
-        }
-
-        h1, h2, h3, h4 {
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        h1 { font-size: 3rem; }
-        h2 { font-size: 2.5rem; }
-        h3 { font-size: 1.8rem; }
-        h4 { font-size: 1.3rem; }
-
-        p { margin-bottom: 1rem; }
-
-        a {
-            color: var(--primary-teal);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        a:hover {
-            color: var(--sunset-orange);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        section {
-            padding: 80px 0;
-        }
-
-        .section-compact {
-            padding: 60px 0;
-        }
-
-        /* Navigation */
-        nav {
-            background: var(--white);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .nav-brand {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--charcoal);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--sunset-orange);
-        }
-
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary-teal), var(--sage-green));
-            color: var(--white);
-            padding: 100px 0 80px;
-            text-align: center;
-        }
-
-        .page-header h1 {
-            margin-bottom: 1rem;
-        }
-
-        .page-header p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            margin-bottom: 0;
-        }
-
-        /* Process Section */
-        .process-section {
-            background: var(--white);
-        }
-
-        .process-section h2 {
-            color: var(--primary-teal);
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .process-steps {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .process-step {
-            text-align: center;
-            padding: 30px 20px;
-            background: var(--off-white);
-            border-radius: 8px;
-        }
-
-        .process-number {
-            width: 60px;
-            height: 60px;
-            background: var(--sage-green);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--white);
-        }
-
-        .process-step h4 {
-            color: var(--primary-teal);
-            margin-bottom: 0.5rem;
-        }
-
-        .process-step p {
-            font-size: 0.95rem;
-            color: var(--warm-gray);
-            margin-bottom: 0;
-        }
-
-        /* Contact Form Section */
-        .contact-form-section {
-            background: var(--off-white);
-        }
-
-        .form-container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .form-intro {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .form-intro h2 {
-            color: var(--primary-teal);
-            margin-bottom: 1rem;
-        }
-
-        .form-intro p {
-            font-size: 1.1rem;
-            color: var(--warm-gray);
-        }
-
-        .contact-form {
-            background: var(--white);
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--charcoal);
-            font-weight: 600;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-teal);
-        }
-
-        .form-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .form-submit {
-            width: 100%;
-            background-color: var(--sunset-orange);
-            color: var(--white);
-            padding: 16px;
-            border: none;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .form-submit:hover {
-            background-color: #d16843;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(225, 124, 84, 0.4);
-        }
-
-        /* Alternative Contact */
-        .alt-contact-section {
-            background: var(--white);
-        }
-
-        .alt-contact-section h2 {
-            color: var(--primary-teal);
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .contact-methods-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .contact-method-card {
-            background: var(--off-white);
-            padding: 40px 30px;
-            border-radius: 8px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .contact-method-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        }
-
-        .contact-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .contact-method-card h4 {
-            color: var(--primary-teal);
-            margin-bottom: 0.5rem;
-        }
-
-        .contact-method-card a {
-            color: var(--sunset-orange);
-            font-weight: 600;
-        }
-
-        /* FAQ Section */
-        .faq-section {
-            background: var(--off-white);
-        }
-
-        .faq-section h2 {
-            color: var(--primary-teal);
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .faq-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .faq-item {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid var(--sage-green);
-        }
-
-        .faq-item h4 {
-            color: var(--primary-teal);
-            margin-bottom: 1rem;
-        }
-
-        .faq-item p {
-            color: var(--warm-gray);
-            margin-bottom: 0;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--charcoal);
-            color: var(--white);
-            padding: 40px 0 20px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h4 {
-            margin-bottom: 1rem;
-            color: var(--sky-blue);
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-column a {
-            color: var(--white);
-            opacity: 0.8;
-        }
-
-        .footer-column a:hover {
-            opacity: 1;
-            color: var(--sky-blue);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 2rem; }
-            
-            section { padding: 50px 0; }
-
-            .nav-links {
-                gap: 15px;
-                font-size: 0.9rem;
-            }
-
-            .process-steps {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .contact-methods-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Community Play Tools</title>
+  <meta name="description" content="Tell us what you're trying to build. Request a proposal from Community Play Tools — a civic-tech studio in St. Petersburg, FL.">
+  <meta property="og:title" content="Contact — Community Play Tools">
+  <meta property="og:description" content="Request a proposal. Tell us what you're trying to build and we'll share an honest read on fit.">
+  <meta name="theme-color" content="#103F38">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+    .form-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 36px; box-shadow: var(--shadow-sm); }
+    .field { margin-bottom: 20px; }
+    .field label { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 7px; color: var(--ink); }
+    .field input, .field textarea {
+      width: 100%; padding: 13px 15px; border: 1.5px solid var(--line); border-radius: var(--r-sm);
+      font-family: inherit; font-size: 1rem; color: var(--ink); background: var(--paper); transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus, .field textarea:focus { outline: none; border-color: var(--pine); box-shadow: 0 0 0 3px rgba(16,63,56,0.12); }
+    .field textarea { min-height: 140px; resize: vertical; }
+    .form-card .btn-primary { width: 100%; justify-content: center; }
+    .ways .way { display: flex; gap: 14px; padding: 20px 0; border-top: 1px solid var(--line); }
+    .ways .way:first-child { border-top: 0; padding-top: 0; }
+    .ways .way .ic { font-size: 1.4rem; }
+    .ways .way h4 { margin-bottom: 3px; }
+    .ways .way a { font-weight: 600; }
+    .ways .way p { font-size: 0.9rem; color: var(--ink-mute); margin: 2px 0 0; }
+    .faq { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    .faq .item { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--coral); border-radius: var(--r-md); padding: 26px; }
+    .faq h4 { margin-bottom: 9px; }
+    .faq p { font-size: 0.96rem; margin: 0; }
+    @media (max-width: 940px){ .contact-grid, .faq { grid-template-columns: 1fr; gap: 32px; } }
+  </style>
 </head>
 <body>
-    
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <a href="index.html" class="nav-brand">Ryan Stock</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="work.html">Work</a></li>
-                <li><a href="contact.html" class="active">Contact</a></li>
-            </ul>
+  <div data-include="partials/nav.html"></div>
+
+  <header class="page-head">
+    <div class="container">
+      <span class="eyebrow">Contact</span>
+      <h1>Tell us what you're trying to build.</h1>
+      <p>Whether you're a city department, a downtown partnership, a developer, or a foundation, we'll give you an honest read on whether we're the right fit — and how we'd approach it.</p>
+    </div>
+  </header>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Form -->
+        <div class="form-card reveal">
+          <h3 style="margin-bottom:8px;">Request a proposal</h3>
+          <p style="margin-bottom:24px;">A sentence or two about your challenge is plenty to start.</p>
+          <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/success.html">
+            <input type="hidden" name="form-name" value="contact">
+            <p style="display:none;"><label>Don't fill this out if you're human: <input name="bot-field"></label></p>
+            <div class="field"><label for="name">Name</label><input type="text" id="name" name="name"></div>
+            <div class="field"><label for="org">Organization</label><input type="text" id="org" name="organization"></div>
+            <div class="field"><label for="email">Email *</label><input type="email" id="email" name="email" required></div>
+            <div class="field"><label for="message">What are you trying to solve? *</label><textarea id="message" name="message" required placeholder="What's the challenge, and what would success look like?"></textarea></div>
+            <button type="submit" class="btn btn-primary">Send message <span class="arrow" aria-hidden="true">→</span></button>
+          </form>
         </div>
-    </nav>
 
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="container">
-            <h1>Let's Build Something That Matters</h1>
-            <p>Ready to tackle a complex challenge? Let's discuss how we can accelerate your mission.</p>
+        <!-- Other ways + assurance -->
+        <div class="reveal">
+          <div class="ways">
+            <div class="way"><div class="ic" aria-hidden="true">📧</div><div><h4>Email</h4><a href="mailto:ryan@communityplaytools.com">ryan@communityplaytools.com</a><p>We reply to every message within 48 hours.</p></div></div>
+            <div class="way"><div class="ic" aria-hidden="true">📱</div><div><h4>Phone</h4><a href="tel:858-414-8819">858-414-8819</a><p>Available weekdays, 9am–6pm ET.</p></div></div>
+            <div class="way"><div class="ic" aria-hidden="true">💼</div><div><h4>LinkedIn</h4><a href="https://www.linkedin.com/in/ryan-stock-bb955555/" target="_blank" rel="noopener">Connect with Ryan Stock</a><p>Good for a quick intro or question.</p></div></div>
+          </div>
+          <div style="margin-top:28px;padding:24px;border-radius:var(--r-md);background:var(--paper-2);">
+            <p style="margin:0;font-size:0.98rem;"><strong>Pricing.</strong> Engagements are scoped to the problem, so we don't quote a number before we understand it. Tell us what you're working on and we'll come back with an approach and a proposal.</p>
+          </div>
         </div>
-    </section>
-    <!-- Contact Form -->
-    <section class="contact-form-section">
-        <div class="container">
-            <div class="form-container">
-                <div class="form-intro">
-                    <h2>Start the Conversation</h2>
-                    <p>Whether you're an innovation district, creative startup, real estate developer, or civic foundation, let's explore how we can work together.</p>
-                </div>
-                
-                <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field"  action="/success.html">
-                    <input type="hidden" name="form-name" value="contact">
-                    <p style="display: none;">
-                        <label>Don't fill this out if you're human: <input name="bot-field" /></label>
-                    </p>
-                    
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="message">Tell me about your challenge *</label>
-                        <textarea id="message" name="message" required placeholder="What problem are you trying to solve? What would success look like?"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="form-submit">Send Message</button>
-                </form>
-            </div>
-        </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Alternative Contact Methods -->
-    <section class="alt-contact-section">
-        <div class="container">
-            <h2>Other Ways to Connect</h2>
-            <div class="contact-methods-grid">
-                <div class="contact-method-card">
-                    <div class="contact-icon">📧</div>
-                    <h4>Email</h4>
-                    <a href="mailto:RyanStockPMP@gmail.com">RyanStockPMP@gmail.com</a>
-                    <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--warm-gray);">I respond to all emails within 48 hours</p>
-                </div>
-                
-                <div class="contact-method-card">
-                    <div class="contact-icon">📱</div>
-                    <h4>Phone</h4>
-                    <a href="tel:858-414-8819">858-414-8819</a>
-                    <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--warm-gray);">Available for calls weekdays 9am-6pm EST</p>
-                </div>
-                
-                <div class="contact-method-card">
-                    <div class="contact-icon">💼</div>
-                    <h4>LinkedIn</h4>
-                    <a href="https://www.linkedin.com/in/ryan-stock-bb955555/" target="_blank">Connect on LinkedIn</a>
-                    <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--warm-gray);">Send me a message or connection request</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- FAQ -->
+  <section class="section-tight bg-alt">
+    <div class="container">
+      <div class="section-head center"><span class="eyebrow" style="justify-content:center;">FAQ</span><h2>A few things people ask.</h2></div>
+      <div class="faq" data-reveal-stagger>
+        <div class="item"><h4>How quickly can you start?</h4><p>After an initial conversation and agreement on scope, we can usually begin within two weeks. Faster is sometimes possible for urgent work.</p></div>
+        <div class="item"><h4>Remote or on-site?</h4><p>We're based in St. Petersburg and work hybrid — on-site for meetings, workshops, and stakeholder engagement, remote for planning and execution.</p></div>
+        <div class="item"><h4>What's the typical engagement length?</h4><p>Most run six to twelve months. Our approach is designed to transfer knowledge and build your team's capacity, so the work continues after we step back.</p></div>
+        <div class="item"><h4>What do you not take on?</h4><p>Not purely technical builds, not dedicated fundraising, and not short tactical work under three months. We focus on strategic initiatives that need stakeholder alignment and systems thinking.</p></div>
+        <div class="item"><h4>Can you share references?</h4><p>Absolutely — former Sony colleagues and community leaders from Beautiful PB and the Pacific Beach Planning Group, provided after an initial conversation.</p></div>
+        <div class="item"><h4>Can you build a tool for us?</h4><p>Yes. We adapt Signal Fire and our other tools to new communities, or build something new from the same playbook. Start with the form and tell us the goal.</p></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- FAQ Section -->
-    <section class="faq-section">
-        <div class="container">
-            <h2>Frequently Asked Questions</h2>
-            <div class="faq-container">
-                
-                <div class="faq-item">
-                    <h4>What does an engagement typically cost?</h4>
-                    <p>Engagements are custom-priced based on scope, complexity, and duration. Typical 6-12 month strategic engagements range from $8,000-$15,000 per month depending on time commitment and deliverables. Let's discuss your specific needs and budget during our discovery call.</p>
-                </div>
-
-                <div class="faq-item">
-                    <h4>How long does it take to start?</h4>
-                    <p>After our initial conversation and agreement on scope, we can typically start within 2 weeks. For urgent projects, faster timelines may be possible.</p>
-                </div>
-
-                <div class="faq-item">
-                    <h4>Do you work remotely or on-site?</h4>
-                    <p>We are based in St. Petersburg and prefer a hybrid approach—combining on-site presence for critical meetings, workshops, and stakeholder engagement with remote work for planning and execution. The exact balance depends on your organization's needs and location.</p>
-                </div>
-
-                <div class="faq-item">
-                    <h4>What if we need you for longer than 12 months?</h4>
-                    <p>Engagements can be extended beyond 12 months if there's mutual value. However, my approach is designed to transfer knowledge and build internal capacity so your team can sustain the work independently. Extensions are evaluated on a case-by-case basis.</p>
-                </div>
-
-                <div class="faq-item">
-                    <h4>What types of projects do you NOT take on?</h4>
-                    <p>I don't take on projects that are purely technical (requiring deep engineering expertise), purely fundraising-focused (I can support strategy but not serve as a dedicated fundraiser), or short-term tactical work under 3 months. I focus on strategic initiatives that require stakeholder alignment, systems thinking, and transformational change.</p>
-                </div>
-
-                <div class="faq-item">
-                    <h4>Can you provide references?</h4>
-                    <p>Absolutely. I'm happy to connect you with former colleagues from Sony, community leaders from Beautiful PB and the Pacific Beach Planning Group, and other stakeholders I've worked with. References are provided after our initial conversation.</p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-column">
-                    <h4>Ryan Stock</h4>
-                    <p>Civic Catalyst & Strategic Project Lead</p>
-                    <p>📍 St. Petersburg, Florida</p>
-                    <p style="margin-top: 1rem; opacity: 0.8;">Now accepting new client engagements</p>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="work.html">Work</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Projects</h4>
-                    <ul>
-                        <li><a href="https://beautifulpb.com/" target="_blank">Beautiful PB</a></li>
-                        <li><a href="https://www.pbartscenter.org/" target="_blank">PB Arts Center</a></li>
-                        <li><a href="https://beautifulpb.com/pb-pathways/" target="_blank">PB Pathways</a></li>
-                        <li><a href="https://www.pbplanning.org/" target="_blank">PB Planning Group</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h4>Connect</h4>
-                    <ul>
-                        <li><a href="mailto:RyanStockPMP@gmail.com">Email</a></li>
-                        <li><a href="https://www.linkedin.com/in/ryan-stock-bb955555/" target="_blank">LinkedIn</a></li>
-                        <li><a href="tel:858-414-8819">858-414-8819</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>© 2026 Ryan Stock. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
+  <div data-include="partials/footer.html"></div>
+  <script src="assets/js/main.js"></script>
 </body>
 </html>

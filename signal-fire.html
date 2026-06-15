@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal Fire — Community Play Tools</title>
+  <meta name="description" content="Signal Fire is a permission structure for strangers to become participants. Durable QR-coded totems at the places you already walk past turn a solo visit into a community gathering — no app required. A Community Play Tools product, live in St. Petersburg.">
+  <meta property="og:title" content="Signal Fire — a permission structure for strangers to become participants">
+  <meta property="og:description" content="Scan a marker at the beach court, the garden, the park — see what's happening, and walk in knowing you're welcome. A Community Play Tools product.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#DA5520">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    /* Signal Fire wears its own "Civic Beacon" ember within the CPT shell */
+    .sf { --coral: #DA5520; --coral-deep: #BD4318; }
+
+    .sf-hero { position: relative; overflow: hidden; padding: clamp(64px, 9vw, 116px) 0 clamp(48px, 6vw, 88px); }
+    .sf-hero .hero-grid-bg { -webkit-mask-image: radial-gradient(ellipse 70% 65% at 78% 28%, #000 0%, transparent 70%); mask-image: radial-gradient(ellipse 70% 65% at 78% 28%, #000 0%, transparent 70%); }
+    .sf-hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; position: relative; z-index: 1; }
+    .sf-hero h1 { font-size: clamp(3rem, 6.5vw, 5rem); margin: 22px 0 22px; }
+    .sf-hero h1 .em { color: var(--coral); }
+    .sf-visual { display: grid; place-items: center; }
+    .sf-visual .feature-visual { width: 100%; aspect-ratio: 4/5; }
+    .sf-visual .totem-mock { transform: rotate(-3deg); max-width: 340px; width: 84%; }
+
+    .insight { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .insight .big-q { font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.25; font-weight: 500; }
+    .insight .big-q .em { color: var(--coral); }
+
+    .layers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; counter-reset: layer; }
+    .layer { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; position: relative; }
+    .layer .tag { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); }
+    .layer h3 { margin: 8px 0 10px; }
+    .layer p { font-size: 0.97rem; margin: 0; }
+
+    .surfaces { display: grid; gap: 20px; }
+    .surface { display: grid; grid-template-columns: 150px 1fr; gap: 28px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; }
+    .surface .url { font-family: var(--font-display); color: var(--coral); font-size: 0.95rem; }
+    .surface h3 { margin: 4px 0 8px; }
+    .surface p { margin: 0; font-size: 0.98rem; }
+    .surface .glyph { width: 96px; height: 96px; border-radius: 20px; display: grid; place-items: center; font-size: 2.4rem; background: rgba(218,85,32,0.10); margin: 0 auto; }
+
+    .audience { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .aud { padding: 30px; border-radius: var(--r-lg); border: 1px solid rgba(245,241,237,0.16); background: rgba(255,255,255,0.04); }
+    .aud .ic { font-size: 1.8rem; margin-bottom: 14px; }
+    .aud h3 { color: var(--paper); margin-bottom: 10px; }
+    .aud p { color: rgba(245,241,237,0.76); font-size: 0.97rem; margin: 0; }
+
+    .affordances { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 40px; }
+    .affordances .a { display: flex; gap: 14px; padding: 16px 0; border-top: 1px solid var(--line); }
+    .affordances .a .ic { color: var(--coral); font-weight: 700; }
+    .affordances .a b { color: var(--ink); }
+    .affordances .a span { color: var(--ink-soft); font-size: 0.96rem; }
+
+    .cuts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .cut { display: flex; gap: 14px; padding: 20px 22px; background: var(--paper-2); border-radius: var(--r-md); }
+    .cut .x { color: var(--ink-mute); font-weight: 700; flex-shrink: 0; }
+    .cut b { color: var(--ink); }
+    .cut span { color: var(--ink-soft); font-size: 0.95rem; }
+
+    .beacon { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .beacon-demo { background: var(--ink); border-radius: var(--r-lg); padding: 30px; box-shadow: var(--shadow-lg); }
+    .beacon-demo .row { display: flex; align-items: center; justify-content: space-between; background: rgba(245,241,237,0.05); border: 1px solid rgba(245,241,237,0.10); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+    .beacon-demo .row.now { border-color: rgba(218,85,32,0.55); box-shadow: 0 0 0 3px rgba(218,85,32,0.14); }
+    .beacon-demo .row .t { color: var(--paper); font-weight: 600; }
+    .beacon-demo .row .w { font-size: 0.8rem; color: rgba(245,241,237,0.55); }
+    .beacon-demo .row.now .w { color: var(--coral); display: inline-flex; align-items: center; gap: 7px; }
+    .beacon-demo .row.now .w::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--coral); }
+    .beacon-demo .pill { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; }
+    .beacon-demo .pill.live { background: var(--coral); color: #fff; }
+    .beacon-demo .pill.soon { background: rgba(245,241,237,0.10); color: rgba(245,241,237,0.6); }
+
+    .stack { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .stack .s { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 18px 20px; }
+    .stack .s .k { font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); }
+    .stack .s .v { font-weight: 600; color: var(--ink); margin-top: 3px; }
+
+    @media (max-width: 940px) {
+      .sf-hero-grid, .insight, .beacon { grid-template-columns: 1fr; gap: 32px; }
+      .sf-visual { order: -1; }
+      .layers, .surfaces, .audience, .affordances, .cuts, .stack { grid-template-columns: 1fr; }
+      .surface { grid-template-columns: 1fr; text-align: center; gap: 16px; }
+      .surface .glyph { width: 72px; height: 72px; font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div data-include="partials/nav.html"></div>
+
+  <div class="sf">
+    <!-- Hero -->
+    <header class="sf-hero">
+      <div class="hero-grid-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="sf-hero-grid">
+          <div class="reveal">
+            <span class="hero-tag"><span class="dot" aria-hidden="true"></span> Flagship product · Live in St. Petersburg</span>
+            <h1>Signal&nbsp;<span class="em">Fire</span></h1>
+            <p class="hero-sub" style="font-size:1.35rem;">A permission structure for strangers to become participants. The signal that you're welcome — placed in the real world, before anyone opens an app.</p>
+            <div class="hero-cta">
+              <a href="https://signalfire.live" target="_blank" rel="noopener" class="btn btn-primary">Visit signalfire.live <span class="arrow" aria-hidden="true">→</span></a>
+              <a href="https://signalfire.live/host-with-us" target="_blank" rel="noopener" class="btn btn-ghost">Host with us</a>
+            </div>
+          </div>
+          <div class="sf-visual reveal">
+            <div class="feature-visual" aria-hidden="true">
+              <div class="totem-mock">
+                <div class="tm-top">
+                  <div class="tm-qr"></div>
+                  <div>
+                    <div class="tm-name">The Beach Court</div>
+                    <div class="tm-loc">North Shore Park · St. Pete</div>
+                  </div>
+                </div>
+                <div class="tm-event now">
+                  <div class="when">Happening now · until 7:30</div>
+                  <div class="title">Open Pickup Volleyball</div>
+                </div>
+                <div class="tm-event">
+                  <div class="when">Thu · 6:00 PM</div>
+                  <div class="title">Sunset Skate Meetup</div>
+                </div>
+                <div class="tm-event">
+                  <div class="when">Sat · 9:00 AM</div>
+                  <div class="title">Community Garden Hours</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- The insight -->
+    <section class="section-tight">
+      <div class="container">
+        <div class="insight reveal">
+          <div>
+            <span class="eyebrow">The founding insight</span>
+            <p class="big-q" style="margin-top:18px;">Most people don't skip an unfamiliar gathering because they lack interest. They skip it because <span class="em">nothing tells them they're welcome.</span></p>
+          </div>
+          <div>
+            <p>Signal Fire provides that signal physically, before anyone opens an app. The product lives next to a chain-link fence at a beach court, on a stake at a community garden, on a post at a park.</p>
+            <p>It has to earn its place in that environment before it earns a place on a screen. Scan the marker, see what's happening here, and walk in already knowing you belong — no prior relationship required.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works: layers -->
+    <section class="section-tight bg-alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">How it works</span><h2>Physical first, then a screen.</h2><p>Signal Fire is a fullstack product with three layers — and the order matters. Presence creates permission; the app only adds what a persistent identity unlocks.</p></div>
+        <div class="layers" data-reveal-stagger>
+          <div class="layer">
+            <span class="tag">01 · Physical</span>
+            <h3>The totem</h3>
+            <p>A durable, QR-coded marker placed at a recurring gathering spot. Scanning it opens a location-specific event board right in the browser — no download, no account, no friction.</p>
+          </div>
+          <div class="layer">
+            <span class="tag">02 · Web</span>
+            <h3>The boards</h3>
+            <p>A Rails application serves the public site, the totem boards, host pages, and a host dashboard — and exposes a clean JSON API for the mobile app to consume.</p>
+          </div>
+          <div class="layer">
+            <span class="tag">03 · Mobile</span>
+            <h3>The follow</h3>
+            <p>An Expo / React Native app adds the things that need a persistent identity: favorites, host follows, and a personalized weekly digest so you never miss what's next.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Three surfaces -->
+    <section class="section-tight">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">Three surfaces</span><h2>Place first, then people.</h2><p>The primary unit is the totem — a place — not the event. Quiet totems still show up; hidden cards aren't acceptable.</p></div>
+        <div class="surfaces" data-reveal-stagger>
+          <div class="surface">
+            <div class="glyph" aria-hidden="true">🏙️</div>
+            <div>
+              <div class="url">signalfire.live/stpete</div>
+              <h3>City Board</h3>
+              <p>The network's homepage. A stranger lands here from a sticker, a friend's text, or a search result and reads, in order: that the network exists, that it's local, that it's curated, and that they're invited. Six place-cards, events nested underneath.</p>
+            </div>
+          </div>
+          <div class="surface">
+            <div class="glyph" aria-hidden="true">🪧</div>
+            <div>
+              <div class="url">scan → totem board</div>
+              <h3>Totem Board</h3>
+              <p>The per-location board a QR scan opens. A founding-host story panel — reading about a person before you arrive lowers stranger anxiety — sits above upcoming events, a check-in during the active window, and a link to the host's full portfolio.</p>
+            </div>
+          </div>
+          <div class="surface">
+            <div class="glyph" aria-hidden="true">🧑‍🤝‍🧑</div>
+            <div>
+              <div class="url">signalfire.live/h/{host}</div>
+              <h3>Host Page</h3>
+              <p>A shareable URL for a host's complete gathering portfolio — built to live in an Instagram bio and community channels. The primary call to action is simple: <strong>Follow this host</strong>, and know when they're next.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who it's for -->
+    <section class="section-tight bg-ink">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">Who it's for</span><h2 style="color:var(--paper);">Three promises, one network.</h2></div>
+        <div class="audience" data-reveal-stagger>
+          <div class="aud">
+            <div class="ic" aria-hidden="true">🚶</div>
+            <h3>For attendees</h3>
+            <p>Discover recurring, host-verified gatherings at the places you already walk past. Scan a marker, see what's happening, and walk in knowing you're welcome — no prior relationship required.</p>
+          </div>
+          <div class="aud">
+            <div class="ic" aria-hidden="true">🔥</div>
+            <h3>For hosts</h3>
+            <p>Get found across your whole gathering portfolio, not just one event. Build a following of people who want to know when you're next — without relying on platforms that don't serve hyperlocal, recurring gatherings.</p>
+          </div>
+          <div class="aud">
+            <div class="ic" aria-hidden="true">🌐</div>
+            <h3>For the network</h3>
+            <p>Prove that physical presence creates social permission — and that a small, curated, admin-verified set of real gatherings is more trustworthy and more usable than a scraped, algorithmically ranked feed.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Civic Beacon design -->
+    <section class="section-tight bg-alt">
+      <div class="container">
+        <div class="beacon reveal">
+          <div>
+            <span class="eyebrow">Design language · Civic Beacon</span>
+            <h2 style="margin:16px 0 18px;">Orange means now.</h2>
+            <p>Ember is reserved for one job: live states, active calls to action, and present-moment affordances. Everywhere else is calm paper and ink — so when the one warm signal appears, it carries weight.</p>
+            <p style="font-weight:600;color:var(--ink);">If orange shows up on a screen and isn't pointing at something happening right now — or a button that leads straight to it — it's a bug.</p>
+            <p style="margin-top:18px;">The voice matches the look: plain neighborhood-speak. The test — could it appear on a chalkboard outside a coffee shop and be read sincerely? If not, we rewrite it.</p>
+          </div>
+          <div class="beacon-demo" aria-hidden="true">
+            <div class="row now"><div><div class="t">Open Pickup Volleyball</div><div class="w">Happening now · until 7:30</div></div><span class="pill live">Live</span></div>
+            <div class="row"><div><div class="t">Sunset Skate Meetup</div><div class="w">Thursday · 6:00 PM</div></div><span class="pill soon">Soon</span></div>
+            <div class="row"><div><div class="t">Community Garden Hours</div><div class="w">Saturday · 9:00 AM</div></div><span class="pill soon">Soon</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- V1.5 affordances -->
+    <section class="section-tight">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">V1.5</span><h2>The everyday affordances.</h2><p>The things that make a product feel finished — added in V1.5 once the core idea was proven.</p></div>
+        <div class="affordances" data-reveal-stagger>
+          <div class="a"><span class="ic" aria-hidden="true">＋</span><span><b>Save to calendar.</b> One tap adds any event to your calendar as an .ics file.</span></div>
+          <div class="a"><span class="ic" aria-hidden="true">＋</span><span><b>Share event.</b> Native sharing via the Web Share API, straight from any board.</span></div>
+          <div class="a"><span class="ic" aria-hidden="true">＋</span><span><b>Expanded recurrence.</b> Monthly, every-other-week, and custom RRULE patterns.</span></div>
+          <div class="a"><span class="ic" aria-hidden="true">＋</span><span><b>Inline host follow.</b> Follow a host right from the event detail, without leaving.</span></div>
+          <div class="a"><span class="ic" aria-hidden="true">＋</span><span><b>Weekly digest push.</b> One personalized push per active user per week — never for someone with zero favorites or follows.</span></div>
+          <div class="a"><span class="ic" aria-hidden="true">＋</span><span><b>Admin Event Scout.</b> Admins trigger an AI web search for real local events, review results, and approve — every AI-sourced event carries a provenance label.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deliberate cuts -->
+    <section class="section-tight bg-alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">Product discipline</span><h2>What we deliberately left out.</h2><p>What a product refuses to do says as much as what it ships.</p></div>
+        <div class="cuts" data-reveal-stagger>
+          <div class="cut"><span class="x" aria-hidden="true">✕</span><span><b>Scraped or unclaimed events.</b> They dilute the curation promise. Every gathering is hosted by a real, verified person.</span></div>
+          <div class="cut"><span class="x" aria-hidden="true">✕</span><span><b>Reactions.</b> No signal yet supports them, so they stay out until they earn a place.</span></div>
+          <div class="cut"><span class="x" aria-hidden="true">✕</span><span><b>A map on the city board.</b> Deferred to V2 — six totems fit one screen.</span></div>
+          <div class="cut"><span class="x" aria-hidden="true">✕</span><span><b>Filters and search.</b> Unnecessary at this scale; a clean, curated list beats a query box.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pilot stats -->
+    <section class="section-tight bg-pine">
+      <div class="container">
+        <div class="section-head center"><span class="eyebrow" style="justify-content:center;">The St. Pete pilot</span><h2 style="color:var(--paper);">Proving it on the ground.</h2></div>
+        <div class="stats reveal">
+          <div class="stat"><div class="num">~<span data-count="6">0</span></div><div class="label">Founding totems placed across St. Petersburg</div></div>
+          <div class="stat"><div class="num"><span data-count="6">0</span> wks</div><div class="label">Of live field data on scan, check-in &amp; return</div></div>
+          <div class="stat"><div class="num"><span data-count="0">0</span></div><div class="label">Apps a stranger needs to take part</div></div>
+          <div class="stat"><div class="num">100<span class="unit">%</span></div><div class="label">Host-verified — curated, never scraped</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Under the hood -->
+    <section class="section-tight">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">Under the hood</span><h2>Built to be durable and cheap to run.</h2><p>A pragmatic, modern stack — fullstack web and mobile, hosted on Render.</p></div>
+        <div class="stack" data-reveal-stagger>
+          <div class="s"><div class="k">Web</div><div class="v">Ruby on Rails 8.1</div></div>
+          <div class="s"><div class="k">Mobile</div><div class="v">Expo / React Native (TS)</div></div>
+          <div class="s"><div class="k">Database</div><div class="v">PostgreSQL via Supabase</div></div>
+          <div class="s"><div class="k">Background jobs</div><div class="v">Solid Queue (no Redis)</div></div>
+          <div class="s"><div class="k">Email</div><div class="v">Resend</div></div>
+          <div class="s"><div class="k">AI routing</div><div class="v">OpenRouter (Gemini)</div></div>
+          <div class="s"><div class="k">Hosting</div><div class="v">Render</div></div>
+          <div class="s"><div class="k">Push</div><div class="v">Dedicated push service</div></div>
+          <div class="s"><div class="k">AI safety</div><div class="v">Admin-approved, provenance-labeled</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section-tight bg-ink">
+      <div class="container">
+        <div class="cta-band reveal">
+          <h2 style="color:var(--paper);">Light a fire in your community.</h2>
+          <p style="color:rgba(245,241,237,0.78);">Want totems at your park, court, or garden — or a place-based network for your city? Visit Signal Fire, sign up to host, or talk to Community Play Tools about bringing it to your community.</p>
+          <div class="hero-cta">
+            <a href="https://signalfire.live" target="_blank" rel="noopener" class="btn btn-primary">Visit signalfire.live <span class="arrow" aria-hidden="true">→</span></a>
+            <a href="contact.html" class="btn btn-ghost">Talk to CPT</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div data-include="partials/footer.html"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
