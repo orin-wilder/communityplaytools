@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For the people building Cityverse — Ryan Stock, Community Play Tools</title>
+  <meta name="description" content="A note from Ryan Stock at Community Play Tools to the team building Cityverse and the AI Center of Excellence in St. Petersburg — on the overlap between the two, made the way Ryan actually builds things.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:title" content="Same thesis, different totem.">
+  <meta property="og:description" content="A note for the people building Cityverse and the AI Center of Excellence, from Community Play Tools.">
+  <meta name="theme-color" content="#103F38">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <!--
+    TODO (Ryan): this page is intentionally unlinked from nav/footer and marked
+    noindex — it's meant to be sent directly, not discovered. Before you send it:
+    1. Confirm the Cityverse / AI Center of Excellence framing below still matches
+       what they're building now (public info on Cityverse's product specifics
+       looked partly stale when this was written — the mission-level framing is
+       the safe, durable part; don't let me put words in their mouth).
+    2. Consider opening with their names if you want it warmer — left generic on
+       purpose since I didn't want to guess spellings or titles.
+    3. Swap the mailto / CTA at the bottom for whatever's actually the next step
+       (coffee, a call, an intro email) once you know it.
+  -->
+  <style>
+    .note-shell { max-width: 760px; margin: 0 auto; }
+    .note-shell p.lead { margin-bottom: 22px; }
+    .note-shell .section-head { max-width: none; }
+    .overlap-quote {
+      font-family: var(--font-display); font-size: 1.3rem; line-height: 1.4;
+      color: var(--ink); border-left: 3px solid var(--coral); padding: 4px 0 4px 22px; margin: 28px 0;
+    }
+    .mashup-embed-wrap {
+      border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden;
+      box-shadow: var(--shadow-md); background: var(--paper);
+    }
+    .mashup-embed-wrap iframe { display: block; width: 100%; height: 900px; border: 0; }
+    @media (max-width: 720px) { .mashup-embed-wrap iframe { height: 1050px; } }
+    .ps { margin-top: 40px; padding-top: 24px; border-top: 1px dashed var(--line); font-size: 0.98rem; color: var(--ink-mute); }
+  </style>
+</head>
+<body>
+  <div data-include="partials/nav.html"></div>
+
+  <header class="page-head">
+    <div class="container note-shell">
+      <span class="eyebrow">A note, not a pitch</span>
+      <h1>Same thesis, different totem.</h1>
+      <p class="lead">We've talked once already, and I know a warm intro to your CTO is already in motion, so this isn't a cold pitch. Think of it as the homework I did before we talk again, built the way I actually build things: something you can click on, not just read.</p>
+    </div>
+  </header>
+
+  <section class="section-tight">
+    <div class="container note-shell">
+      <span class="eyebrow">The overlap</span>
+      <h2 style="margin:16px 0 22px;">You're overlaying the city. So am I — just one totem at a time.</h2>
+      <p>Cityverse's pitch, as I read it, is a trustworthy digital layer over a real, physical St. Petersburg — built for the people who actually live here, not an algorithm optimizing for engagement. I'm not borrowing that thesis for this page. It's the exact idea behind <strong>Signal Fire</strong>, the product I've been building and running here in St. Pete.</p>
+      <p class="overlap-quote">Most people don't skip an unfamiliar gathering because they're not interested. They skip it because nothing tells them they're welcome.</p>
+      <p>Signal Fire's answer is physical first: a durable QR marker planted at a beach court, a community garden, a park. Scan it and you get a place-specific board — who's really here, what's happening right now, hosted by a real person — before anyone opens an app. Curated, never scraped, on purpose. It's the same argument I'd guess sits under your own thinking about local journalism and community media, just pointed at gatherings instead of news: a small, trustworthy, human-curated signal beats an infinite algorithmic one.</p>
+    </div>
+  </section>
+
+  <section class="section-tight bg-pine">
+    <div class="container note-shell">
+      <span class="eyebrow" style="justify-content:flex-start;">Proof, not adjectives</span>
+      <h2 style="margin:16px 0 18px;">Live in St. Pete right now.</h2>
+      <div class="stats reveal" style="margin-top:8px;">
+        <div class="stat"><div class="num">~<span data-count="6">0</span></div><div class="label">Founding totems placed across St. Petersburg</div></div>
+        <div class="stat"><div class="num"><span data-count="6">0</span> wks</div><div class="label">Of live field data on scan, check-in &amp; return</div></div>
+        <div class="stat"><div class="num"><span data-count="0">0</span></div><div class="label">Apps a stranger needs to take part</div></div>
+        <div class="stat"><div class="num">100<span class="unit">%</span></div><div class="label">Host-verified — curated, never scraped</div></div>
+      </div>
+      <p style="margin-top:30px;color:rgba(245,241,237,0.82);">Fullstack: Rails 8.1 on the web side, Expo / React Native for mobile, PostgreSQL via Supabase, hosted on Render. Built and shipped by one person.</p>
+      <div class="hero-cta" style="margin-top:14px;">
+        <a href="signal-fire.html" class="btn btn-primary">Read the full Signal Fire build <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="https://signalfire.live" target="_blank" rel="noopener" class="btn btn-ghost">Visit signalfire.live</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container note-shell">
+      <span class="eyebrow">Where AI actually shows up</span>
+      <h2 style="margin:16px 0 22px;">An AI feature I'd defend in front of your team.</h2>
+      <p>The AI Center of Excellence's whole premise, as I understand it, is helping people, businesses, and governments <em>see it, engage it, and master it</em> when it comes to AI — not just be talked at by it. Signal Fire's <strong>Admin Event Scout</strong> is my small, real attempt at holding that same standard inside a shipped product.</p>
+      <p>Scout goes looking for real local events with an AI web search (OpenRouter, routed to Gemini). A human has to say yes before anything publishes. Every AI-sourced event carries a visible provenance label, so nobody mistakes the machine's guess for a host's word. The design principle is simple: AI does the searching, a person owns the judgment call.</p>
+      <p><a href="signal-fire.html#ai-scout" class="text-link">See it in the actual product <span class="arrow" aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+
+  <section class="section-tight bg-alt">
+    <div class="container note-shell">
+      <span class="eyebrow">A small, real interactive moment</span>
+      <h2 style="margin:16px 0 22px;">Since a website should show, not just tell:</h2>
+      <p>Here's <strong>Idea Mashup</strong>, live, embedded right in this page. Pick a real St. Pete place, pick a real CPT mechanic, get a civic-tech concept back in about half a second.</p>
+      <p style="margin-bottom:26px;">It's deliberately <em>not</em> AI — a couple of arrays and a template, run entirely in your browser. I wanted at least one thing on this page you could fully inspect instead of just trusting.</p>
+      <div class="mashup-embed-wrap reveal">
+        <iframe src="idea-mashup.html" title="Idea Mashup — interactive civic-tech concept generator" loading="lazy"></iframe>
+      </div>
+      <p style="margin-top:18px;"><a href="idea-mashup.html" class="text-link">Open it full-page <span class="arrow" aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+
+  <section class="section-tight bg-ink">
+    <div class="container note-shell">
+      <span class="eyebrow">How I actually build</span>
+      <h2 style="margin:16px 0 22px;color:var(--paper);">Program rigor, civic scar tissue, and an AI-native workflow.</h2>
+      <p style="color:rgba(245,241,237,0.82);">Seven years at Sony PlayStation taught me how to coordinate engineers, legal, and finance under deadlines that don't move — PayPal integration, international tax systems, the PS5 prerelease purchase system, on time, during a console launch. Two years running Beautiful PB in San Diego taught me the civic side: pushing a contested bike boulevard through a parking board that had blocked similar projects before, and raising $450,000 to save a historic building. Different rooms, same skill — too many people with competing priorities, find a way forward.</p>
+      <p style="color:rgba(245,241,237,0.82);">Now I build the tools myself. Rails and React Native, Supabase for data, and Claude Code as a daily working tool the same way I'd use a linter or a test suite — it clears the mechanical work so I can spend my judgment on the actual product decisions. This site, Signal Fire's codebase, and the Idea Mashup toy above were all built that way.</p>
+      <p style="color:rgba(245,241,237,0.82);">To be direct about scope: I'm not an ML engineer and I'm not chasing that title. What I am is a full-stack builder who ships fast and is honest about how, and a civic organizer who knows this city's texture — from Williams Park to the Historic Gas Plant District redevelopment I've been following closely.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container note-shell">
+      <span class="eyebrow">Let's talk</span>
+      <h2 style="margin:16px 0 18px;">If any of this rhymes with what you're building, I'd like to compare notes.</h2>
+      <p>No deck needed, no formal proposal. I'd like to talk about where Signal Fire, Idea Mashup, or something new could plug into what Cityverse and the AI Center of Excellence are building — in person if that's easier. St. Pete's small enough for that.</p>
+      <div class="hero-cta">
+        <a href="mailto:ryan@communityplaytools.com" class="btn btn-primary">Email me directly <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="work.html" class="btn btn-ghost">See the rest of the work</a>
+      </div>
+      <p class="ps">P.S. — if it's useful context: <a href="about.html">the full background</a> and <a href="tools.html">the rest of the toolkit</a> are on the main site, unfiltered for this note. Nothing here is dressed up differently for you than it is for anyone else who clicks around.</p>
+    </div>
+  </section>
+
+  <div data-include="partials/footer.html"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
