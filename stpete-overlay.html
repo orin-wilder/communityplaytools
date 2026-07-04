@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The St. Pete Overlay — Community Play Tools</title>
+  <meta name="description" content="A clickable, hand-drawn map of St. Petersburg: the places Community Play Tools has shipped civic tools, the ones we're watching, and the ideas we'd point at each. Vanilla JS, zero libraries.">
+  <meta property="og:title" content="The St. Pete Overlay — Community Play Tools">
+  <meta property="og:description" content="Eight real St. Pete places, one hand-drawn map. What we shipped, what we're watching, and what we'd build next.">
+  <meta name="theme-color" content="#103F38">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div data-include="partials/nav.html"></div>
+
+  <header class="page-head">
+    <div class="container">
+      <span class="eyebrow">Tools · The St. Pete Overlay</span>
+      <h1>Our map of the city we work in.</h1>
+      <p>Eight real places. What we shipped there, what we're watching, and what we'd build next. Every pin is a place we've actually stood, and every claim on a card is checkable, which is the standard we'd want from any civic map.</p>
+    </div>
+  </header>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="reveal">
+        <div data-stpete-overlay></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-pine">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Your city has places like these too.</h2>
+        <p>The overlay is a way of seeing: where people already gather, where signal is missing, and where a small tool could widen who shows up. We'd be glad to draw one with you.</p>
+        <div class="hero-cta">
+          <a href="contact.html" class="btn btn-primary">Start a conversation <span class="arrow" aria-hidden="true">→</span></a>
+          <a href="tools.html" class="btn btn-ghost">See the rest of the toolkit</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-include="partials/footer.html"></div>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/stpete-overlay.js" defer></script>
+</body>
+</html>

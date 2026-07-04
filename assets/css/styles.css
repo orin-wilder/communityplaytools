@@ -136,6 +136,10 @@ section { padding: clamp(64px, 9vw, 120px) 0; }
 
 .bg-pine .btn-ghost, .bg-ink .btn-ghost { color: var(--paper); border-color: rgba(245,241,237,0.32); }
 .bg-pine .btn-ghost:hover, .bg-ink .btn-ghost:hover { border-color: var(--paper); color: var(--paper); }
+/* .bg-pine a / .bg-ink a would otherwise tint solid buttons mint */
+.bg-pine .btn-primary, .bg-ink .btn-primary,
+.bg-pine .btn-primary:hover, .bg-ink .btn-primary:hover { color: #fff; }
+.bg-pine .btn-dark, .bg-ink .btn-dark { color: var(--paper); }
 
 .text-link { font-weight: 600; display: inline-flex; align-items: center; gap: 6px; color: var(--coral); }
 .text-link .arrow { transition: transform .25s var(--ease); }
@@ -376,4 +380,64 @@ section { padding: clamp(64px, 9vw, 120px) 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   .reveal, [data-reveal-stagger] > * { opacity: 1 !important; transform: none !important; }
+}
+
+/* ---- St. Pete Overlay (assets/js/stpete-overlay.js) -------- */
+.ovl { display: grid; grid-template-columns: 1.5fr 1fr; gap: 28px; align-items: start; }
+.ovl-chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; }
+.ovl .chip-btn {
+  font-family: var(--font-sans); font-size: 0.92rem; font-weight: 600; color: var(--ink-soft);
+  background: var(--card); border: 1.5px solid var(--line); border-radius: var(--r-pill);
+  padding: 9px 17px; cursor: pointer; transition: all .2s var(--ease);
+}
+.ovl .chip-btn:hover { border-color: var(--ink); color: var(--ink); }
+.ovl .chip-btn[aria-pressed="true"] { background: var(--pine); border-color: var(--pine); color: #fff; }
+
+.ovl-map { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 14px 14px 4px; box-shadow: var(--shadow-md); }
+.ovl-map svg { width: 100%; height: auto; display: block; border-radius: var(--r-md); background: var(--paper); }
+.ovl-fine { font-size: 0.82rem; color: var(--ink-mute); padding: 10px 8px 8px; margin: 0; }
+
+.ovl-map .water { fill: rgba(16, 63, 56, 0.10); }
+.ovl-map .water-lbl { font: 600 15px var(--font-sans); letter-spacing: 0.3em; fill: rgba(16, 63, 56, 0.35); }
+.ovl-map .pier { stroke: rgba(26, 23, 20, 0.35); stroke-width: 3; stroke-linecap: round; }
+.ovl-map .pier-tip { fill: rgba(26, 23, 20, 0.35); }
+.ovl-map .st { stroke: var(--line-soft); stroke-width: 2; }
+.ovl-map .st-strong { stroke: rgba(26, 23, 20, 0.16); stroke-width: 2.5; }
+.ovl-map .hwy { fill: none; stroke: rgba(26, 23, 20, 0.20); stroke-width: 3.5; stroke-dasharray: 10 7; }
+.ovl-map .st-lbl { font: 600 13px var(--font-sans); letter-spacing: 0.06em; fill: var(--ink-mute); }
+.ovl-map .compass circle { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.ovl-map .compass text { font: 700 15px var(--font-sans); fill: var(--ink-mute); }
+.ovl-map .compass line { stroke: var(--ink-mute); stroke-width: 2; }
+
+.ovl-pin { cursor: pointer; outline: none; }
+.ovl-pin .hit { fill: transparent; }
+.ovl-pin .halo { fill: rgba(16, 63, 56, 0.14); transition: r .25s var(--ease); }
+.ovl-pin .dot { fill: var(--pine); }
+.ovl-pin .lbl { font: 600 15px var(--font-sans); fill: var(--ink); paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+.ovl-pin--shipped .halo { fill: rgba(255, 94, 58, 0.18); }
+.ovl-pin--shipped .dot { fill: var(--coral); }
+.ovl-pin--pilot .halo { fill: rgba(232, 71, 42, 0.14); }
+.ovl-pin--pilot .dot { fill: var(--coral-deep); }
+.ovl-pin--rising .halo { fill: rgba(79, 205, 166, 0.22); }
+.ovl-pin--rising .dot { fill: #2FA37F; }
+.ovl-pin:hover .halo, .ovl-pin:focus-visible .halo { r: 18; }
+.ovl-pin:focus-visible .dot { stroke: var(--ink); stroke-width: 2.5; }
+.ovl-pin.sel .halo { r: 20; stroke: var(--ink); stroke-width: 1.5; fill-opacity: 0.9; }
+
+.ovl-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 28px; box-shadow: var(--shadow-md); }
+.ovl-card h3 { margin: 10px 0 12px; }
+.ovl-card p { font-size: 0.99rem; margin-bottom: 10px; }
+.ovl-status {
+  display: inline-block; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 5px 12px; border-radius: var(--r-pill);
+  background: rgba(16, 63, 56, 0.10); color: var(--pine);
+}
+.ovl-card--shipped .ovl-status { background: rgba(255, 94, 58, 0.13); color: var(--coral-deep); }
+.ovl-card--pilot .ovl-status { background: rgba(232, 71, 42, 0.11); color: var(--coral-deep); }
+.ovl-card--rising .ovl-status { background: rgba(79, 205, 166, 0.18); color: #1E7A5E; }
+.ovl-links { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+
+@media (max-width: 860px) {
+  .ovl { grid-template-columns: 1fr; gap: 20px; }
+  .ovl-map .lbl { font-size: 17px; }
 }
