@@ -11,6 +11,7 @@ index.html         Home
 work.html          Engagement case studies
 tools.html         Civic-tech tools showcase
 signal-fire.html   Signal Fire — flagship product deep-dive
+stpete-overlay.html  The St. Pete Overlay — clickable SVG city map
 approach.html      Philosophy, how we work, who we serve
 about.html         The firm, Ryan Stock, team, testimonials
 contact.html       Request-a-proposal form (Netlify) + FAQ
@@ -18,7 +19,7 @@ success.html       Form confirmation
 404.html           Not-found page
 links.html         Linktree-style share page
 assets/css/        styles.css — the "Civic Play" design system
-assets/js/         main.js — includes, nav, scroll reveal, counters
+assets/js/         main.js — includes, nav, scroll reveal, counters; stpete-overlay.js — overlay map logic
 partials/          nav.html, footer.html (shared, injected via JS)
 ```
 

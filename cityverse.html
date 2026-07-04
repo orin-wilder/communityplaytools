@@ -21,12 +21,6 @@
       font-family: var(--font-display); font-size: 1.3rem; line-height: 1.4;
       color: var(--ink); border-left: 3px solid var(--coral); padding: 4px 0 4px 22px; margin: 28px 0;
     }
-    .mashup-embed-wrap {
-      border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden;
-      box-shadow: var(--shadow-md); background: var(--paper);
-    }
-    .mashup-embed-wrap iframe { display: block; width: 100%; height: 900px; border: 0; }
-    @media (max-width: 720px) { .mashup-embed-wrap iframe { height: 1050px; } }
     .ps { margin-top: 40px; padding-top: 24px; border-top: 1px dashed var(--line); font-size: 0.98rem; color: var(--ink-mute); }
     .ai-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(79,205,166,0.14); color: var(--pine); border: 1px solid rgba(16,63,56,0.18); border-radius: var(--r-pill); padding: 8px 16px; font-size: 0.9rem; font-weight: 600; margin: 6px 0 4px; }
   </style>
@@ -49,6 +43,7 @@
       <p>Cityverse's pitch, as I read it, is a trustworthy digital layer over a real, physical St. Petersburg, built for the people who actually live here instead of an algorithm optimizing for engagement. I'm not borrowing that thesis for this page. It's the exact idea behind <strong>Signal Fire</strong>, the product I've been building and running here in St. Pete.</p>
       <p class="overlap-quote">Most people don't skip an unfamiliar gathering because they're not interested. They skip it because nothing tells them they're welcome.</p>
       <p>Signal Fire's answer is physical first: a durable QR marker planted at a beach court, a community garden, a park. Scan it and you get a place-specific board, who's really here, what's happening right now, hosted by a real person, before anyone opens an app. Curated, never scraped, on purpose. It's the same argument, I'd guess, running under a lot of what you're building: a small, trustworthy, human-curated signal beats an infinite algorithmic one. That's the thread I keep seeing between your company's work and mine, using AI and technology to genuinely reinvigorate civic and community life instead of just optimizing for attention.</p>
+      <p>And I did read past the homepage. A Civic Language Model trained on hyper-local St. Pete data. TERM putting regular people in the mayor's chair to feel what the tradeoffs actually cost. The line that <strong>AI adoption is more cultural than technical</strong>, which could be CPT's mission statement with the nouns swapped: play is how a culture adopts anything new, and making adoption feel like play instead of homework is the entire reason my company exists.</p>
     </div>
   </section>
 
@@ -81,16 +76,19 @@
   </section>
 
   <section class="section-tight bg-alt">
-    <div class="container note-shell">
-      <span class="eyebrow">A small, real interactive moment</span>
-      <h2 style="margin:16px 0 22px;">Since a website should show, not just tell:</h2>
-      <p>Here's <strong>Idea Mashup</strong>, live, embedded right in this page. Pick a real St. Pete place, pick a real CPT mechanic, get a civic-tech concept back in about half a second.</p>
-      <p style="margin-bottom:14px;">It's deliberately <em>not</em> AI, just a couple of arrays and a template, run entirely in your browser. I wanted at least one thing on this page you could fully inspect instead of just trusting.</p>
-      <p style="margin-bottom:26px;"><span class="ai-badge">🤖 Built with Claude Code, this week</span><br>The code, the copy, and the little JS generator behind it came out of one AI-assisted coding session: Claude Code doing a lot of the actual typing, me directing the product and design decisions and reviewing every line that mattered. That loop, me directing, AI executing, me reviewing, is how I build almost everything now, including this page.</p>
-      <div class="mashup-embed-wrap reveal">
-        <iframe src="idea-mashup.html" title="Idea Mashup — interactive civic-tech concept generator" loading="lazy"></iframe>
+    <div class="container">
+      <div class="section-head" style="max-width:760px;margin-left:0;text-align:left;">
+        <span class="eyebrow">Show, don't tell</span>
+        <h2 style="margin:16px 0 22px;">You're building an overlay for the city. Here's mine, hand-drawn.</h2>
+        <p style="margin-bottom:10px;">A website should be a work sample, so I built one into this page: a clickable overlay of St. Petersburg. Coral pins are places CPT has actually shipped, pine ones are sketches I'd happily hand you, and the mint one on 22nd Ave N is the address this whole note is pointing at.</p>
+        <p>No frameworks, no iframe, no AI, just an SVG, a couple hundred lines of vanilla JavaScript, and a city I've actually walked. View source; that's the point.</p>
       </div>
-      <p style="margin-top:18px;"><a href="idea-mashup.html" class="text-link">Open it full-page <span class="arrow" aria-hidden="true">→</span></a></p>
+      <div class="reveal">
+        <div data-stpete-overlay></div>
+      </div>
+      <div class="container note-shell" style="padding:0;">
+        <p style="margin-top:30px;"><span class="ai-badge">🤖 Built with Claude Code</span><br>This map, the copy around it, and the <a href="idea-mashup.html">Idea Mashup</a> generator it links into all came out of AI-assisted coding sessions: Claude Code doing a lot of the actual typing, me directing the product and design decisions and reviewing every line that mattered. That loop, me directing, AI executing, me reviewing, is how I build almost everything now, including this page.</p>
+      </div>
     </div>
   </section>
 
@@ -119,5 +117,6 @@
 
   <div data-include="partials/footer.html"></div>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/stpete-overlay.js" defer></script>
 </body>
 </html>
