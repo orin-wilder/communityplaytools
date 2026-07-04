@@ -22,9 +22,9 @@
 <body>
   <div id="root"></div>
 
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js" integrity="sha384-ezQ6HS3FLspd9te19o2McUV6FAK091+GG7KO54f/R8DKgCDi7fULhapNrd5LY+vG" crossorigin="anonymous"></script>
 
   <script type="text/babel">
     const { useState, useEffect, useCallback, useRef } = React;
@@ -49,22 +49,8 @@
       return res.json();
     }
 
-    /*
-      ── NEW TABLE — Run once in Supabase SQL editor: ──
-
-      CREATE TABLE survey_responses (
-        id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-        project text NOT NULL,
-        session_id uuid REFERENCES sessions(id),
-        question text NOT NULL,
-        response text NOT NULL,
-        responded_at timestamptz NOT NULL,
-        created_at timestamptz DEFAULT now()
-      );
-      ALTER TABLE survey_responses DISABLE ROW LEVEL SECURITY;
-      CREATE INDEX idx_survey_responses_project ON survey_responses(project);
-      CREATE INDEX idx_survey_responses_session ON survey_responses(session_id);
-    */
+    // Table schema and setup SQL for survey_responses live in
+    // _reference/williams-park-schema.sql (not shipped here on purpose).
 
     /* ───────── CONFIG ───────── */
     const ACTIVITIES = [

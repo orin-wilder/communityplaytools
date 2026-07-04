@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous" />
     <style>
         :root {
             --orange: #E86A33;
@@ -483,9 +483,39 @@
             border-radius: 0.25rem;
             font-size: 0.8rem;
         }
+
+        .admin-gate {
+            position: fixed; inset: 0; z-index: 999;
+            background: var(--teal);
+            display: flex; align-items: center; justify-content: center;
+            padding: 1.5rem;
+        }
+        .admin-gate-card {
+            background: var(--white); border-radius: 1rem; padding: 2rem;
+            max-width: 360px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+        .admin-gate-card h2 { font-family: 'Fraunces', serif; margin-bottom: 0.5rem; }
+        .admin-gate-card p { color: var(--gray); font-size: 0.92rem; margin-bottom: 1rem; }
+        .admin-gate-error { color: var(--red); font-size: 0.88rem; margin-top: 0.75rem; }
     </style>
 </head>
 <body>
+
+    <!-- Password gate: this is a client-side speed bump, not real access control.
+         Anyone who reads this file's source can read the hash below and could,
+         in principle, brute-force it offline. It exists to stop casual/accidental
+         discovery of an unlinked admin URL, not a determined attacker. -->
+    <div id="adminGate" class="admin-gate">
+      <form id="adminGateForm" class="admin-gate-card" autocomplete="off">
+        <h2>Admin access</h2>
+        <p>This page manages live poll content. Enter the admin password to continue.</p>
+        <input type="password" id="adminGatePw" class="form-input" placeholder="Password" autofocus>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:12px;">Unlock</button>
+        <p id="adminGateError" class="admin-gate-error" hidden>Incorrect password.</p>
+      </form>
+    </div>
+
+    <div id="adminProtected" style="display:none;">
 
     <!-- Header -->
     <header class="page-header">
@@ -641,8 +671,48 @@
 
     </main>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    </div><!-- #adminProtected -->
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
     <script>
+        // ---- Password gate (client-side speed bump, see comment near <body>) ----
+        (function () {
+            const GATE_HASH = '98e7fce3b0d33678327f75f32b3e05ec5e5ea566f129e910de40c94bf53eb1f0';
+            const gate = document.getElementById('adminGate');
+            const protectedEl = document.getElementById('adminProtected');
+            const form = document.getElementById('adminGateForm');
+            const input = document.getElementById('adminGatePw');
+            const errorEl = document.getElementById('adminGateError');
+
+            async function sha256Hex(text) {
+                const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+                return Array.prototype.map.call(new Uint8Array(buf), b => b.toString(16).padStart(2, '0')).join('');
+            }
+
+            function unlock() {
+                gate.style.display = 'none';
+                protectedEl.style.display = '';
+            }
+
+            if (sessionStorage.getItem('cpt_admin_ok') === GATE_HASH) {
+                unlock();
+            }
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const hash = await sha256Hex(input.value);
+                if (hash === GATE_HASH) {
+                    sessionStorage.setItem('cpt_admin_ok', GATE_HASH);
+                    errorEl.hidden = true;
+                    unlock();
+                } else {
+                    errorEl.hidden = false;
+                    input.value = '';
+                    input.focus();
+                }
+            });
+        })();
+
         // Configuration
         const SUPABASE_URL = 'https://mjrhmtxfazapdnzfvvja.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcmhtdHhmYXphcGRuemZ2dmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxODIwNzEsImV4cCI6MjA4NDc1ODA3MX0.T2z0tJHy1StsKWDjdU3hYw-7F36XC81DQxfLq_t23nM';
