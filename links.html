@@ -1,114 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Links — Community Play Tools</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: #0f1117;
-            color: #e0e0e0;
-            min-height: 100vh;
-            padding: 3rem 1.5rem;
-        }
-
-        .container {
-            max-width: 540px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #888;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-        }
-
-        h1 span { color: #5ce0b8; }
-
-        /*
-            =============================================
-            TO ADD A NEW LINK:
-            Copy one <a> block below and change the
-            href and text. That's it!
-            =============================================
-        */
-
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-            background: #1e2029;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .links a {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.25rem;
-            background: #161821;
-            color: #e0e0e0;
-            text-decoration: none;
-            font-size: 1rem;
-            transition: background 0.15s, color 0.15s;
-        }
-
-        .links a:hover {
-            background: #1c1f2b;
-            color: #5ce0b8;
-        }
-
-        .links a::after {
-            content: '→';
-            color: #444;
-            transition: color 0.15s, transform 0.15s;
-        }
-
-        .links a:hover::after {
-            color: #5ce0b8;
-            transform: translateX(3px);
-        }
-
-        .tag {
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            padding: 2px 7px;
-            border-radius: 4px;
-            margin-left: 0.75rem;
-            flex-shrink: 0;
-        }
-
-        .tag.demo { background: #5ce0b822; color: #5ce0b8; }
-        .tag.tool { background: #5c9ee022; color: #5c9ee0; }
-        .tag.page { background: #e0c45c22; color: #e0c45c; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Links — Community Play Tools</title>
+  <meta name="description" content="Every live Community Play Tools project, demo, and page, in one place.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    body { padding: 56px 20px 64px; }
+    .links-wrap { max-width: 560px; margin: 0 auto; }
+    .links-head { text-align: center; margin-bottom: 36px; }
+    .links-head .brand-mark {
+      display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px;
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mute);
+    }
+    .links-head .brand-mark .dot {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--pine); position: relative; flex-shrink: 0;
+    }
+    .links-head .brand-mark .dot::after {
+      content: ""; position: absolute; inset: -3px; border-radius: 50%; background: var(--coral); width: 5px; height: 5px; margin: auto; box-shadow: 0 0 0 2px rgba(255,94,58,0.25);
+    }
+    .links-head h1 {
+      font-family: var(--font-display); font-size: clamp(1.7rem, 5vw, 2.2rem); font-weight: 600; letter-spacing: -0.01em; color: var(--ink);
+    }
+    .links-head p { margin-top: 10px; color: var(--ink-soft); font-size: 1rem; }
+    .link-list { display: flex; flex-direction: column; gap: 12px; list-style: none; }
+    .link-card {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md);
+      padding: 16px 18px; box-shadow: var(--shadow-sm);
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
+    }
+    .link-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: transparent; }
+    .link-card:focus-visible { outline: 2px solid var(--pine); outline-offset: 3px; }
+    .link-title { color: var(--ink); font-weight: 600; font-size: 1rem; }
+    .link-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .link-tag {
+      font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+    }
+    .link-tag.demo { background: rgba(79, 205, 166, 0.16); color: #1F7A5C; }
+    .link-tag.tool { background: rgba(16, 63, 56, 0.10); color: var(--pine); }
+    .link-tag.page { background: rgba(26, 23, 20, 0.07); color: var(--ink-soft); }
+    .link-tag.live { background: rgba(255, 94, 58, 0.14); color: var(--coral-deep); }
+    .link-arrow { color: var(--ink-mute); transition: transform .2s var(--ease), color .2s var(--ease); }
+    .link-card:hover .link-arrow { color: var(--coral); transform: translateX(3px); }
+    .links-foot { text-align: center; margin-top: 40px; }
+    .links-foot a { font-size: 0.9rem; color: var(--ink-mute); }
+    .links-foot a:hover { color: var(--coral); }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1><span>CPT</span> — Project Links</h1>
-
-        <div class="links">
-            <!-- ✏️ Add new links here — just copy an <a> block -->
-            <a href="/meeting-stone.html">Meeting Stone Demo <span class="tag demo">demo</span></a>
-            <a href="/williams-park.html">Park Survey <span class="tag tool">tool</span></a>
-            <a href="/gelato-selector_demo.html">Gelato Menu Quiz <span class="tag demo">demo</span></a>
-            <a href="/gelato-sorter_demo.html">Gelato Preselect <span class="tag demo">demo</span></a>
-            <a href="/did-sentiment.html">DID Survey <span class="tag tool">tool</span></a>
-            <a href="/cmapp.html">Community Merit — Local Rewards <span class="tag tool">tool</span></a>
-            <a href="/ga-host.html">Gather Again - Event tool <span class="tag tool">tool</span></a>
-            <a href="/work.html">Collected Works <span class="tag page">page</span></a>
-        </div>
+  <div class="links-wrap">
+    <div class="links-head">
+      <span class="brand-mark"><span class="dot" aria-hidden="true"></span> Community Play Tools</span>
+      <h1>Every live project, one tap away.</h1>
+      <p>Demos, tools, and pages, straight from the studio.</p>
     </div>
+
+    <!--
+      TO ADD A NEW LINK:
+      Copy one <li class="link-card"> block below, change the href,
+      the title text, and the tag class/label (demo, tool, page, or live).
+    -->
+    <ul class="link-list">
+      <li>
+        <a class="link-card" href="/stpete-overlay.html">
+          <span class="link-title">The St. Pete Overlay</span>
+          <span class="link-right"><span class="link-tag demo">demo</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/idea-mashup.html">
+          <span class="link-title">Idea Mashup</span>
+          <span class="link-right"><span class="link-tag demo">demo</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="https://signalfire.live" target="_blank" rel="noopener">
+          <span class="link-title">Signal Fire</span>
+          <span class="link-right"><span class="link-tag live">live</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/meeting-stone.html">
+          <span class="link-title">Meeting Stone Demo</span>
+          <span class="link-right"><span class="link-tag demo">demo</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/williams-park.html">
+          <span class="link-title">Park Survey</span>
+          <span class="link-right"><span class="link-tag tool">tool</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/gelato-selector_demo.html">
+          <span class="link-title">Gelato Menu Quiz</span>
+          <span class="link-right"><span class="link-tag demo">demo</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/gelato-sorter_demo.html">
+          <span class="link-title">Gelato Preselect</span>
+          <span class="link-right"><span class="link-tag demo">demo</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/did-sentiment.html">
+          <span class="link-title">DID Survey</span>
+          <span class="link-right"><span class="link-tag tool">tool</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/cmapp.html">
+          <span class="link-title">Community Merit — Local Rewards</span>
+          <span class="link-right"><span class="link-tag tool">tool</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/ga-host.html">
+          <span class="link-title">Gather Again — Event tool</span>
+          <span class="link-right"><span class="link-tag tool">tool</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/work.html">
+          <span class="link-title">Collected Works</span>
+          <span class="link-right"><span class="link-tag page">page</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="link-card" href="/index.html">
+          <span class="link-title">Main site</span>
+          <span class="link-right"><span class="link-tag page">page</span><span class="link-arrow" aria-hidden="true">→</span></span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="links-foot">
+      <a href="/index.html">communityplaytools.com</a>
+    </div>
+  </div>
 </body>
 </html>
