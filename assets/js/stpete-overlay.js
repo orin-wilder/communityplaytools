@@ -40,7 +40,7 @@
       status: { type: 'pilot', text: 'Signal Fire territory' },
       body: [
         'The bay-front strip of courts, pools, and picnic shelters where a dozen pickup games happen every week that nobody outside them ever hears about.',
-        'This is the exact problem Signal Fire’s totems exist for — the beach court here is the model for its founding boards: scan, see what’s on, walk in welcome.'
+        'This is the exact problem Signal Fire’s totems exist for. The beach court here is the model for its founding boards: scan, see what’s on, walk in welcome.'
       ],
       links: [{ href: 'signal-fire.html', label: 'How Signal Fire works' }]
     },
@@ -51,7 +51,7 @@
       status: { type: 'idea', text: 'A sketch, free to steal' },
       body: [
         'The postcard shot: green lawn, waterfront, the Pier District behind it. Packed on a Saturday, nearly empty on a Tuesday morning.',
-        'The gap between those two states is a discovery problem, not a demand problem — exactly the kind of signal a place-based board is built to carry.'
+        'The gap between those two states is a discovery problem, not a demand problem, which is exactly the kind of signal a place-based board is built to carry.'
       ],
       links: [{ href: 'idea-mashup.html#place=straub-pier&mechanic=totem', label: 'Remix this idea' }]
     },
@@ -61,7 +61,7 @@
       x: 655, y: 362, label: { x: 655, y: 388, anchor: 'middle' },
       status: { type: 'idea', text: 'A sketch, free to steal' },
       body: [
-        'Central Ave’s arts-and-nightlife stretch — murals, small venues, busy at 9pm and dead at 9am. A neighborhood living in one time zone.',
+        'Central Ave’s arts-and-nightlife stretch (murals, small venues), busy at 9pm and dead at 9am. A neighborhood living in one time zone.',
         'A host-follow network fits here: follow the venue and the organizer, not the algorithm, and find out what the district is like in its other twelve hours.'
       ],
       links: [{ href: 'idea-mashup.html#place=edge-district&mechanic=followhost', label: 'Remix this idea' }]
@@ -73,7 +73,7 @@
       status: { type: 'idea', text: 'A sketch, free to steal' },
       body: [
         'The walkable stretch of Central west of downtown: vintage shops and restaurants with a strong small-business identity and no shared civic voice yet.',
-        'The same quiz mechanic CPT built for a local gelato counter points naturally at a whole district of storefronts — “which shop should I wander into?” is a solvable problem.'
+        'The same quiz mechanic CPT built for a local gelato counter points naturally at a whole district of storefronts, and “which shop should I wander into?” is a solvable problem.'
       ],
       links: [{ href: 'idea-mashup.html#place=grand-central&mechanic=quiz', label: 'Remix this idea' }]
     },
@@ -83,7 +83,7 @@
       x: 560, y: 468, label: { x: 560, y: 494, anchor: 'middle' },
       status: { type: 'idea', text: 'Listening first' },
       body: [
-        'St. Pete’s historic Black business corridor, rebuilding its identity block by block — where the history is a living asset, not a plaque.',
+        'St. Pete’s historic Black business corridor, rebuilding its identity block by block, where the history is a living asset, not a plaque.',
         'Any tool here has to put the corridor’s own voices first. Merit-style check-ins that reward showing up for it could help, but only curated by the people who keep its story.'
       ],
       links: [{ href: 'idea-mashup.html#place=deuces&mechanic=merit', label: 'Remix this idea' }]
@@ -95,7 +95,7 @@
       status: { type: 'watching', text: 'Following closely' },
       body: [
         'Ground zero for the biggest redevelopment decision St. Pete will make this decade: a former Black neighborhood, a stadium deal, and a lot of residents who want a real say in what gets built.',
-        'CPT has been following it closely. It’s the civic-engagement test case of the next five years — and the strongest argument in town for tools that widen who gets heard.'
+        'CPT has been following it closely. It’s the civic-engagement test case of the next five years, and the strongest argument in town for tools that widen who gets heard.'
       ],
       links: [{ href: 'idea-mashup.html#place=gas-plant&mechanic=checkin', label: 'Remix this idea' }]
     },
@@ -105,8 +105,8 @@
       x: 150, y: 180, label: { x: 150, y: 214, anchor: 'middle' },
       status: { type: 'rising', text: 'Rising now' },
       body: [
-        'The reimagined St. Petersburg Science Center on 22nd Ave N — 50,000 square feet aimed at AI learning, with the AI Center of Excellence, the AI Village, and the Cityverse Hybritorium under one roof.',
-        'Not a CPT project (yet). But it might be the most important civic-tech address in the city by the time it opens — and it’s the pin the rest of this map keeps glancing at.'
+        'The reimagined St. Petersburg Science Center on 22nd Ave N: 50,000 square feet aimed at AI learning, with the AI Center of Excellence, the AI Village, and the Cityverse Hybritorium under one roof.',
+        'Not a CPT project (yet). But it might be the most important civic-tech address in the city by the time it opens, and it’s the pin the rest of this map keeps glancing at.'
       ],
       links: [{ href: 'https://sciencecenter.ai', label: 'sciencecenter.ai', external: true }]
     }
@@ -117,7 +117,7 @@
     var pins = PLACES.map(function (p) {
       return (
         '<g class="ovl-pin ovl-pin--' + p.status.type + '" data-place="' + p.id + '" tabindex="0" role="button" ' +
-          'aria-label="' + p.name + ' — ' + p.status.text + '" aria-pressed="false">' +
+          'aria-label="' + p.name + ', ' + p.status.text + '" aria-pressed="false">' +
           '<circle class="hit" cx="' + p.x + '" cy="' + p.y + '" r="26"></circle>' +
           '<circle class="halo" cx="' + p.x + '" cy="' + p.y + '" r="14"></circle>' +
           '<circle class="dot" cx="' + p.x + '" cy="' + p.y + '" r="6.5"></circle>' +
@@ -158,7 +158,7 @@
   mount.className = 'ovl';
   mount.innerHTML =
     '<div class="ovl-map">' + svgMarkup() +
-      '<p class="ovl-fine">A diagram, not a survey — Tampa Bay is considerably wetter in person. Hand-drawn SVG, vanilla JS, zero libraries. View source; that’s the point.</p>' +
+      '<p class="ovl-fine">A diagram, not a survey (Tampa Bay is considerably wetter in person). Hand-drawn SVG, vanilla JS, zero libraries. View source; that’s the point.</p>' +
     '</div>' +
     '<aside class="ovl-side" aria-live="polite"></aside>' +
     '<div class="ovl-chips" role="group" aria-label="Pick a place"></div>';
