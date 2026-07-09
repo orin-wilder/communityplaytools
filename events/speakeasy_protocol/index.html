@@ -41,17 +41,21 @@
 <body>
 
 <!-- =====================================================================
-  CONFIG — the only block you must edit before launch
-  FORM_ENDPOINT: create a free form at https://formspree.io (or Tally/Getform)
-                 and paste its POST URL. Both email signups and buy-clicks
-                 land there, distinguished by the "step" field.
+  CONFIG
+  SUPABASE_URL/KEY: the CPT Supabase project. Every funnel event
+                 (page_view, cta_hero, email_signup, buy_click) inserts a
+                 row into public.speakeasy_events, with the email attached
+                 on the two form steps. The key is the publishable (anon)
+                 key: insert-only by RLS policy — it cannot read rows back.
+                 Clear SUPABASE_URL to run in dry-run mode (nothing logged).
   META_PIXEL_ID: from Meta Events Manager. Leave "" to run without a pixel
-                 (you can still measure via link clicks + form counts, but
-                 the pixel makes Ads Manager report cost-per-lead directly).
+                 (Supabase still counts everything, but the pixel makes
+                 Ads Manager report cost-per-lead directly).
 ====================================================================== -->
 <script>
   const CONFIG = {
-    FORM_ENDPOINT: "PASTE_FORMSPREE_ENDPOINT_HERE",
+    SUPABASE_URL: "https://nzcogxjcihgtevjiuipf.supabase.co",
+    SUPABASE_KEY: "sb_publishable_QSItD0zcm6RsrKFsFTTRfw_RKNghv2p",
     META_PIXEL_ID: "",
     PRICE: 35,
     CITY: "St. Petersburg"
@@ -118,8 +122,34 @@
 </footer>
 
 <script>
-/* ---- Funnel logic + tracking. Events: page_view, cta_hero, email_signup, buy_click ---- */
+/* ---- Funnel logic + tracking. Events: page_view, cta_hero, email_signup, buy_click ----
+   Every event inserts a row into Supabase (public.speakeasy_events); a per-tab
+   session_id ties a visitor's page_view to their signup for funnel-rate math. */
+function sessionId() {
+  try {
+    let sid = sessionStorage.getItem('sp_sid');
+    if (!sid) { sid = crypto.randomUUID(); sessionStorage.setItem('sp_sid', sid); }
+    return sid;
+  } catch(e) { return null; }
+}
+
+async function log(event, email) {
+  if (!CONFIG.SUPABASE_URL) return true; // dry-run mode
+  try {
+    const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/speakeasy_events', {
+      method:'POST',
+      headers:{ apikey: CONFIG.SUPABASE_KEY, Authorization: 'Bearer ' + CONFIG.SUPABASE_KEY,
+                'Content-Type':'application/json', Prefer:'return=minimal' },
+      body: JSON.stringify({ event, email: email || null, price: CONFIG.PRICE,
+                             utm: location.search || '(none)', session_id: sessionId(),
+                             referrer: document.referrer || null })
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
 function track(evt) {
+  if (evt === 'cta_hero') log('cta_hero'); // form steps are logged via send()
   if (window.fbq) {
     if (evt === 'email_signup') fbq('track', 'Lead');
     else if (evt === 'buy_click') fbq('track', 'InitiateCheckout', {value: CONFIG.PRICE, currency:'USD'});
@@ -128,16 +158,10 @@ function track(evt) {
 }
 
 async function send(step, email) {
-  if (!CONFIG.FORM_ENDPOINT || CONFIG.FORM_ENDPOINT.startsWith('PASTE')) return true; // dry-run mode
-  try {
-    const r = await fetch(CONFIG.FORM_ENDPOINT, {
-      method:'POST', headers:{'Content-Type':'application/json', 'Accept':'application/json'},
-      body: JSON.stringify({ step, email, price: CONFIG.PRICE, ts:new Date().toISOString(),
-                             utm: location.search || '(none)' })
-    });
-    return r.ok;
-  } catch(e) { return false; }
+  return log(step, email);
 }
+
+log('page_view');
 
 let capturedEmail = '';
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
