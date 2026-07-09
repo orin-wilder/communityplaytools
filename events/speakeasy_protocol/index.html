@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow"><!-- remove noindex only if you want organic traffic muddying the paid-test data -->
+<title>Speakeasy Protocol — St. Petersburg</title>
+<meta name="description" content="A puzzle hidden across St. Petersburg. It ends at a door that only opens to a passphrase.">
+<style>
+  :root { --bg:#0d0b10; --panel:#17131d; --ink:#e8e2d6; --dim:#8d8496; --accent:#c9a24b; --line:#2a2333; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--ink); font-family:Georgia,'Times New Roman',serif; line-height:1.7; }
+  section { max-width:640px; margin:0 auto; padding:72px 24px; }
+  .kicker { color:var(--accent); font-size:.8rem; letter-spacing:.35em; text-transform:uppercase; margin-bottom:20px; }
+  h1 { font-size:clamp(1.9rem, 5vw, 2.8rem); font-weight:normal; line-height:1.25; margin-bottom:24px; }
+  h2 { font-size:1.3rem; font-weight:normal; margin-bottom:16px; color:var(--accent); }
+  p  { color:var(--ink); margin-bottom:16px; font-size:1.05rem; }
+  .dim { color:var(--dim); font-size:.9rem; }
+  .hero { min-height:88vh; display:flex; flex-direction:column; justify-content:center; }
+  .rule { border:none; border-top:1px solid var(--line); max-width:640px; margin:0 auto; }
+  .btn { display:inline-block; background:var(--accent); color:var(--bg); border:none; border-radius:4px;
+         padding:14px 28px; font-family:inherit; font-size:.95rem; letter-spacing:.15em;
+         text-transform:uppercase; cursor:pointer; text-decoration:none; }
+  .btn:hover { filter:brightness(1.08); }
+  .ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  form.signup { display:flex; gap:8px; flex-wrap:wrap; margin:24px 0 8px; }
+  input[type=email] { flex:1; min-width:220px; background:var(--panel); border:1px solid var(--line); border-radius:4px;
+          color:var(--ink); padding:14px; font-family:inherit; font-size:1rem; letter-spacing:.05em; }
+  input:focus { outline:1px solid var(--accent); }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:36px 28px; }
+  .price { font-size:2.4rem; color:var(--accent); margin:12px 0 4px; }
+  .hidden { display:none; }
+  ul.plain { list-style:none; }
+  ul.plain li { padding-left:1.4em; position:relative; margin-bottom:10px; }
+  ul.plain li::before { content:"—"; position:absolute; left:0; color:var(--accent); }
+  footer { text-align:center; color:var(--dim); font-size:.75rem; letter-spacing:.1em; padding:48px 24px; }
+  .note { font-size:.8rem; color:var(--dim); margin-top:14px; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+  CONFIG — the only block you must edit before launch
+  FORM_ENDPOINT: create a free form at https://formspree.io (or Tally/Getform)
+                 and paste its POST URL. Both email signups and buy-clicks
+                 land there, distinguished by the "step" field.
+  META_PIXEL_ID: from Meta Events Manager. Leave "" to run without a pixel
+                 (you can still measure via link clicks + form counts, but
+                 the pixel makes Ads Manager report cost-per-lead directly).
+====================================================================== -->
+<script>
+  const CONFIG = {
+    FORM_ENDPOINT: "PASTE_FORMSPREE_ENDPOINT_HERE",
+    META_PIXEL_ID: "",
+    PRICE: 35,
+    CITY: "St. Petersburg"
+  };
+</script>
+
+<section class="hero">
+  <div class="kicker">St. Petersburg · Fall 2026</div>
+  <h1>Some doors don't have addresses.</h1>
+  <p>A puzzle is going to be hidden across this city — a card in a shop window, a cipher where you least expect one. It ends at a door. The door wants a passphrase. The passphrase wants finding.</p>
+  <p class="dim">Solve it, and the night behind the door belongs to the few who found it.</p>
+  <p style="margin-top:24px"><a class="btn" href="#how" onclick="track('cta_hero')">Find the door</a></p>
+</section>
+
+<hr class="rule">
+
+<section id="how">
+  <h2>What this is</h2>
+  <ul class="plain">
+    <li>A chain of puzzles laid across real places in St. Petersburg. No app. No experience needed.</li>
+    <li>Solve at your own pace over the hunt window — alone, or drag a friend into it.</li>
+    <li>The chain ends at a passphrase-only door: drinks optional, strangers worth meeting, and the answer to what this was all for.</li>
+    <li>Getting stuck is allowed. Hints exist. Missing it is the only mistake.</li>
+  </ul>
+</section>
+
+<hr class="rule">
+
+<section id="join">
+  <h2>The list hears first</h2>
+  <p>Dates, the first clue, and seats go to the list before anyone else. That's the whole deal.</p>
+  <form class="signup" id="signupForm">
+    <input type="email" id="email" required placeholder="your@email.com" autocomplete="email">
+    <button class="btn" type="submit">I'm in</button>
+  </form>
+  <p class="note">One or two emails, ever. No spam — that would be very off-brand for a secret.</p>
+  <p class="dim hidden" id="signupError">Something misfired. Try once more.</p>
+</section>
+
+<!-- Buy step: revealed after email signup -->
+<section id="buy" class="hidden">
+  <div class="card">
+    <div class="kicker">Step two</div>
+    <h2>Claim a seat behind the door</h2>
+    <div class="price">$35</div>
+    <p class="dim">per seat · limited room · hunt + finale included</p>
+    <p style="margin-top:16px"><button class="btn" id="reserveBtn">Reserve my seat — $35</button></p>
+    <p class="note">Tickets aren't on sale yet. Reserving puts you on the priority list at this price — no charge today. Seats are offered to this list first, in order.</p>
+  </div>
+</section>
+
+<!-- Waitlist confirmation: revealed after reserve click -->
+<section id="confirmed" class="hidden">
+  <div class="card">
+    <div class="kicker">You're on the list</div>
+    <h2>The door knows your name now.</h2>
+    <p>When the hunt window opens, you'll get first claim on a seat at $35 — before the public hears anything. Watch your inbox. Tell no one, or tell exactly one person.</p>
+  </div>
+</section>
+
+<footer>
+  Speakeasy Protocol · a Community Play Tools experiment · St. Petersburg, FL<br>
+  Tickets not yet on sale · joining the list creates no obligation and no charge
+</footer>
+
+<script>
+/* ---- Funnel logic + tracking. Events: page_view, cta_hero, email_signup, buy_click ---- */
+function track(evt) {
+  if (window.fbq) {
+    if (evt === 'email_signup') fbq('track', 'Lead');
+    else if (evt === 'buy_click') fbq('track', 'InitiateCheckout', {value: CONFIG.PRICE, currency:'USD'});
+    else fbq('trackCustom', evt);
+  }
+}
+
+async function send(step, email) {
+  if (!CONFIG.FORM_ENDPOINT || CONFIG.FORM_ENDPOINT.startsWith('PASTE')) return true; // dry-run mode
+  try {
+    const r = await fetch(CONFIG.FORM_ENDPOINT, {
+      method:'POST', headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+      body: JSON.stringify({ step, email, price: CONFIG.PRICE, ts:new Date().toISOString(),
+                             utm: location.search || '(none)' })
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+let capturedEmail = '';
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  capturedEmail = document.getElementById('email').value.trim();
+  const ok = await send('email_signup', capturedEmail);
+  document.getElementById('signupError').classList.toggle('hidden', ok);
+  if (!ok) return;
+  track('email_signup');
+  document.getElementById('buy').classList.remove('hidden');
+  document.getElementById('buy').scrollIntoView({behavior:'smooth'});
+});
+
+document.getElementById('reserveBtn').addEventListener('click', async () => {
+  await send('buy_click', capturedEmail);
+  track('buy_click');
+  document.getElementById('buy').classList.add('hidden');
+  document.getElementById('confirmed').classList.remove('hidden');
+  document.getElementById('confirmed').scrollIntoView({behavior:'smooth'});
+});
+
+/* Meta Pixel — loads only if META_PIXEL_ID is set */
+if (CONFIG.META_PIXEL_ID) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', CONFIG.META_PIXEL_ID);
+  fbq('track', 'PageView');
+}
+</script>
+</body>
+</html>
