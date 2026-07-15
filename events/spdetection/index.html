@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>St. Pete Detection Club — Case No. 001</title>
+  <meta name="description" content="A live downtown mystery hunt and brewery social for curious adults. Friday, July 31 in St. Petersburg, Florida.">
+  <meta name="theme-color" content="#17372f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="St. Pete Detection Club — Case No. 001">
+  <meta property="og:description" content="Meet people by solving something together. A live downtown mystery hunt followed by a brewery hangout.">
+  <meta property="og:image" content="https://www.communityplaytools.com/events/spdetection/assets/social-card.png">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="St. Pete Detection Club — Case No. 001, July 31">
+  <meta property="og:url" content="https://www.communityplaytools.com/events/spdetection/">
+  <link rel="canonical" href="https://www.communityplaytools.com/events/spdetection/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #17251f;
+      --forest: #17372f;
+      --forest-deep: #0d251f;
+      --paper: #f3eddf;
+      --paper-deep: #e5dbc5;
+      --gold: #b18a3c;
+      --gold-light: #d3b86f;
+      --wine: #7b2c38;
+      --muted: #6f746c;
+      --line: rgba(23, 55, 47, .2);
+      --shadow: 0 20px 60px rgba(6, 28, 23, .18);
+      --serif: "Source Serif 4", Georgia, serif;
+      --display: "Playfair Display", Georgia, serif;
+      --mono: "Courier Prime", "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      opacity: .12;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.13'/%3E%3C/svg%3E");
+    }
+    .wrap { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+
+    .topbar {
+      color: var(--paper);
+      background: var(--forest-deep);
+      border-bottom: 1px solid rgba(211, 184, 111, .3);
+      font: 700 12px/1.2 var(--mono);
+      letter-spacing: .13em;
+      text-align: center;
+      text-transform: uppercase;
+      padding: 11px 16px 10px;
+    }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 22px 0;
+    }
+    .mark { width: min(410px, 70vw); }
+    .masthead-link {
+      color: var(--forest);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: .12em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 5px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: var(--paper);
+      background:
+        radial-gradient(circle at 15% 5%, rgba(211, 184, 111, .11), transparent 35%),
+        linear-gradient(135deg, var(--forest) 0%, var(--forest-deep) 72%);
+      border-top: 1px solid rgba(211, 184, 111, .35);
+      border-bottom: 8px solid var(--gold);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: clamp(42px, 7vw, 90px);
+      min-height: 680px;
+      padding: 72px 0 78px;
+    }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 18px;
+      color: var(--gold-light);
+      font: 700 13px/1.3 var(--mono);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 42px; height: 1px; background: currentColor; }
+    h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.06; }
+    h1 { margin: 0; font-size: clamp(47px, 6.6vw, 80px); letter-spacing: -.025em; }
+    .dek {
+      max-width: 620px;
+      margin: 24px 0 0;
+      color: #e2dccd;
+      font-size: clamp(20px, 2vw, 25px);
+      line-height: 1.45;
+    }
+    .event-stamp {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      justify-content: start;
+      gap: 0;
+      margin: 34px 0;
+      border-top: 1px solid rgba(211, 184, 111, .45);
+      border-bottom: 1px solid rgba(211, 184, 111, .45);
+    }
+    .event-stamp div { padding: 14px 20px 13px 0; margin-right: 20px; }
+    .event-stamp div + div { border-left: 1px solid rgba(211, 184, 111, .3); padding-left: 20px; }
+    .event-stamp span { display: block; color: var(--gold-light); font: 700 10px/1.2 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+    .event-stamp strong { display: block; margin-top: 5px; font-size: 17px; font-weight: 600; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 15px 24px;
+      border: 1px solid var(--gold);
+      color: var(--forest-deep);
+      background: var(--gold-light);
+      box-shadow: 5px 5px 0 var(--wine);
+      font: 700 14px/1 var(--mono);
+      letter-spacing: .08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    .button:hover, .button:focus-visible { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--wine); background: #dfc67f; }
+    .button.secondary { color: var(--paper); background: transparent; box-shadow: none; border-color: rgba(243, 237, 223, .55); }
+    .button.secondary:hover, .button.secondary:focus-visible { color: var(--forest-deep); background: var(--paper); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 16px; }
+    .micro { margin: 20px 0 0; color: #b9c2bc; font: 400 12px/1.55 var(--mono); }
+
+    .case-photo { position: relative; }
+    .case-photo::before {
+      content: "CASE NO. 001";
+      position: absolute;
+      z-index: 2;
+      top: -20px;
+      right: -16px;
+      padding: 9px 14px 7px;
+      color: var(--paper);
+      background: var(--wine);
+      border: 1px solid rgba(243, 237, 223, .45);
+      transform: rotate(4deg);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: .12em;
+    }
+    .case-photo img { width: 100%; aspect-ratio: 1; object-fit: cover; border: 12px solid var(--paper); box-shadow: 18px 24px 0 rgba(0, 0, 0, .18), var(--shadow); transform: rotate(-2deg); }
+    .case-photo figcaption { position: absolute; z-index: 2; left: 26px; bottom: -28px; color: var(--ink); background: var(--paper); padding: 10px 14px 8px; border-bottom: 3px solid var(--gold); font: 700 11px/1.25 var(--mono); letter-spacing: .08em; transform: rotate(1deg); }
+
+    section { padding: 96px 0; }
+    .section-label { margin: 0 0 12px; color: var(--wine); font: 700 12px/1.2 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+    .section-title { max-width: 780px; margin: 0; color: var(--forest); font-size: clamp(37px, 4.5vw, 57px); }
+    .section-intro { max-width: 680px; margin: 20px 0 0; color: #4e5a53; font-size: 20px; }
+
+    .promise { padding: 74px 0; background: #e8dfcd; border-bottom: 1px solid var(--line); }
+    .promise-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 72px; align-items: center; }
+    .promise blockquote { margin: 0; color: var(--forest); font: 600 clamp(30px, 4vw, 47px)/1.15 var(--display); }
+    .promise blockquote::before { content: "“"; color: var(--gold); }
+    .promise-copy { border-left: 1px solid var(--gold); padding-left: 34px; }
+    .promise-copy p { margin: 0 0 16px; }
+    .promise-copy p:last-child { margin-bottom: 0; }
+
+    .timeline { margin-top: 52px; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--forest); }
+    .step { position: relative; padding: 32px 28px 0 0; }
+    .step::before { content: ""; position: absolute; top: -8px; left: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 3px solid var(--paper); box-shadow: 0 0 0 1px var(--forest); }
+    .step .time { color: var(--wine); font: 700 13px/1 var(--mono); letter-spacing: .1em; }
+    .step h3 { margin: 12px 0 8px; color: var(--forest); font-size: 25px; }
+    .step p { margin: 0; color: #57625c; font-size: 16px; }
+
+    .briefing { color: var(--paper); background: var(--forest); }
+    .briefing .section-label { color: var(--gold-light); }
+    .briefing .section-title { color: var(--paper); }
+    .briefing-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 80px; align-items: start; }
+    .briefing-copy > p { color: #d4d9d3; font-size: 20px; }
+    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; }
+    .fact { padding: 18px; border: 1px solid rgba(211, 184, 111, .28); background: rgba(0, 0, 0, .1); }
+    .fact strong { display: block; color: var(--gold-light); font: 700 11px/1.2 var(--mono); letter-spacing: .13em; text-transform: uppercase; }
+    .fact span { display: block; margin-top: 8px; color: var(--paper); font-size: 17px; }
+    .redacted-note { padding: 34px; color: var(--ink); background: var(--paper); box-shadow: 12px 12px 0 rgba(0, 0, 0, .18); transform: rotate(1deg); }
+    .redacted-note .stamp { display: inline-block; margin-bottom: 22px; padding: 7px 10px 5px; color: var(--wine); border: 2px solid var(--wine); font: 700 12px/1 var(--mono); letter-spacing: .16em; transform: rotate(-3deg); }
+    .redacted-note h3 { margin: 0 0 14px; color: var(--forest); font-size: 31px; }
+    .redacted-note p { margin: 0 0 13px; font-size: 17px; }
+    .redacted { color: transparent; background: var(--ink); padding: 0 4px; user-select: none; }
+
+    .tickets-head { display: flex; justify-content: space-between; gap: 32px; align-items: end; }
+    .capacity { flex: 0 0 auto; padding: 11px 14px 9px; color: var(--wine); border: 2px solid var(--wine); font: 700 12px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; transform: rotate(-2deg); }
+    .ticket-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+    .ticket { position: relative; display: flex; flex-direction: column; padding: 30px; border: 1px solid var(--line); background: #eee6d7; box-shadow: 0 14px 35px rgba(23, 55, 47, .08); }
+    .ticket.featured { border: 2px solid var(--gold); background: #f8f3e8; transform: translateY(-8px); }
+    .ticket-tag { align-self: flex-start; margin-bottom: 24px; padding: 7px 9px 5px; color: var(--paper); background: var(--forest); font: 700 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .ticket.featured .ticket-tag { background: var(--wine); }
+    .ticket h3 { margin: 0; color: var(--forest); font-size: 30px; }
+    .price { margin: 14px 0 6px; color: var(--forest); font: 600 52px/1 var(--display); }
+    .price small { font: 400 16px/1 var(--serif); }
+    .ticket > p { color: #56605a; font-size: 16px; }
+    .ticket ul { margin: 12px 0 28px; padding: 0; list-style: none; font-size: 15px; }
+    .ticket li { position: relative; margin: 10px 0; padding-left: 22px; }
+    .ticket li::before { content: "◆"; position: absolute; left: 0; top: 2px; color: var(--gold); font-size: 10px; }
+    .ticket .button { width: 100%; margin-top: auto; }
+    .ticket-note { max-width: 800px; margin: 28px auto 0; color: #59645d; text-align: center; font-size: 15px; }
+    .purchase-status { display: none; max-width: 780px; margin: 24px auto 0; padding: 16px 20px; color: var(--forest); background: #e1d5bd; border-left: 4px solid var(--wine); font-size: 16px; text-align: left; }
+    .purchase-status.visible { display: block; }
+
+    .included { background: #e8dfcd; }
+    .included-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; }
+    .checklist { margin: 30px 0 0; padding: 0; list-style: none; }
+    .checklist li { position: relative; margin: 16px 0; padding: 0 0 16px 34px; border-bottom: 1px solid var(--line); }
+    .checklist li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--wine); font: 700 18px/1 var(--mono); }
+    .not-included li::before { content: "—"; }
+
+    .faq-list { margin-top: 42px; border-top: 1px solid var(--line); }
+    details { border-bottom: 1px solid var(--line); }
+    summary { position: relative; cursor: pointer; list-style: none; padding: 24px 48px 24px 0; color: var(--forest); font: 600 22px/1.3 var(--display); }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; position: absolute; right: 8px; top: 24px; color: var(--wine); font: 700 25px/1 var(--mono); }
+    details[open] summary::after { content: "–"; }
+    details p { max-width: 820px; margin: -4px 0 24px; color: #536058; }
+
+    .final-cta { padding: 88px 0; color: var(--paper); text-align: center; background: var(--wine); border-top: 8px solid var(--gold); }
+    .final-cta h2 { max-width: 800px; margin: 0 auto; font-size: clamp(39px, 5vw, 60px); }
+    .final-cta p { max-width: 620px; margin: 20px auto 30px; color: #f0dfe0; }
+    .final-cta .button { background: var(--paper); }
+    footer { color: #bdc7c1; background: var(--forest-deep); padding: 34px 0; font: 400 12px/1.6 var(--mono); }
+    .footer-inner { display: flex; justify-content: space-between; gap: 30px; }
+    footer a { color: var(--gold-light); }
+
+    .mobile-cta { display: none; }
+
+    @media (max-width: 900px) {
+      .hero-grid, .promise-grid, .briefing-grid, .included-grid { grid-template-columns: 1fr; }
+      .hero-grid { padding: 58px 0 86px; }
+      .case-photo { width: min(580px, 92%); margin: 10px auto 0; }
+      .promise-grid, .briefing-grid, .included-grid { gap: 42px; }
+      .timeline { grid-template-columns: 1fr 1fr; border-top: 0; gap: 26px; }
+      .step { border-top: 2px solid var(--forest); }
+      .ticket-grid { grid-template-columns: 1fr; max-width: 620px; margin-inline: auto; }
+      .ticket.featured { transform: none; }
+    }
+
+    @media (max-width: 620px) {
+      body { font-size: 17px; padding-bottom: 72px; }
+      .wrap { width: min(100% - 28px, 1160px); }
+      .topbar { font-size: 10px; }
+      .masthead { padding: 15px 0; }
+      .mark { width: 255px; }
+      .masthead-link { display: none; }
+      .hero-grid { min-height: auto; gap: 56px; }
+      .event-stamp { grid-template-columns: 1fr; width: 100%; }
+      .event-stamp div { padding: 12px 0; margin: 0; }
+      .event-stamp div + div { border-left: 0; border-top: 1px solid rgba(211, 184, 111, .25); padding-left: 0; }
+      .hero-actions { flex-direction: column; }
+      .hero-actions .button { width: 100%; }
+      .case-photo img { border-width: 7px; }
+      .case-photo::before { right: -5px; }
+      section { padding: 72px 0; }
+      .timeline { grid-template-columns: 1fr; }
+      .facts { grid-template-columns: 1fr; }
+      .tickets-head { display: block; }
+      .capacity { display: inline-block; margin-top: 24px; }
+      .footer-inner { display: block; }
+      .mobile-cta { position: fixed; z-index: 15; display: block; left: 0; right: 0; bottom: 0; padding: 10px 14px; background: rgba(13, 37, 31, .96); border-top: 1px solid var(--gold); }
+      .mobile-cta .button { width: 100%; min-height: 48px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="topbar">Founding Hunt · Twenty seats only · Friday, July 31</div>
+
+  <header class="wrap masthead">
+    <img class="mark" src="assets/spdc-wordmark.svg" alt="The St. Petersburg Detection Club">
+    <a class="masthead-link" href="https://www.communityplaytools.com/">A Community Play Tools event</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">A live social mystery in downtown St. Pete</p>
+          <h1>A case has surfaced. Your team has one evening to close it.</h1>
+          <p class="dek">Join a small crew, follow the evidence through downtown, then return to the brewery to compare theories and meet the other investigators.</p>
+          <div class="event-stamp" aria-label="Event details">
+            <div><span>When</span><strong>Fri, July 31 · 5:30 PM</strong></div>
+            <div><span>Where</span><strong>Voodoo Brewing Co.</strong></div>
+            <div><span>Who</span><strong>Curious adults · 21+</strong></div>
+          </div>
+          <div class="hero-actions">
+            <a class="button js-register" data-tier="hero" data-price="29" href="#tickets">Claim a founding seat — $29</a>
+            <a class="button secondary" href="#how-it-works">See how the night works</a>
+          </div>
+          <p class="micro">Approximately 1–1.5 miles of walking · Drinks and food purchased separately · No puzzle expertise required</p>
+        </div>
+
+        <figure class="case-photo">
+          <img src="assets/founding-folio.png" alt="An open St. Pete Detection Club case folio with documents and a downtown map">
+          <figcaption>Evidence folio · Founding file</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="promise">
+      <div class="wrap promise-grid">
+        <blockquote>Meet people by solving something together—not by walking into another awkward mixer.</blockquote>
+        <div class="promise-copy">
+          <p>You may arrive solo, with a friend, or as a couple. We’ll place you into a team of three to six and give you a reason to talk that isn’t small talk.</p>
+          <p>The mystery creates the momentum. The brewery hangout gives the connections somewhere to continue.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works">
+      <div class="wrap">
+        <p class="section-label">Field schedule</p>
+        <h2 class="section-title">One case. Four phases. An open-ended social finish.</h2>
+        <div class="timeline">
+          <article class="step">
+            <span class="time">5:30–5:50</span>
+            <h3>Check in</h3>
+            <p>Meet at Voodoo Brewing Co. As people arrive, we form balanced teams and make introductions.</p>
+          </article>
+          <article class="step">
+            <span class="time">6:00</span>
+            <h3>Open the file</h3>
+            <p>Each team receives one physical case folio, a short briefing, and its first direction.</p>
+          </article>
+          <article class="step">
+            <span class="time">6:00–7:45</span>
+            <h3>Work the case</h3>
+            <p>Walk downtown, examine evidence, complete playful field challenges, and build your theory.</p>
+          </article>
+          <article class="step">
+            <span class="time">7:00 onward</span>
+            <h3>Return & compare</h3>
+            <p>Rejoin everyone upstairs at Voodoo. Verdicts close at 8:15; the official finding lands around 8:30.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="briefing">
+      <div class="wrap briefing-grid">
+        <div class="briefing-copy">
+          <p class="section-label">The assignment</p>
+          <h2 class="section-title">This is a social adventure with a mystery at its center.</h2>
+          <p>You’ll investigate a fictional case woven through real downtown spaces. Expect observation, deduction, team choices, a few photographs, and optional requests for help from headquarters. The investigation rewards curiosity and conversation—not trivia mastery or escape-room speed.</p>
+          <div class="facts">
+            <div class="fact"><strong>Team size</strong><span>3–6 investigators</span></div>
+            <div class="fact"><strong>Field time</strong><span>60–90 minutes</span></div>
+            <div class="fact"><strong>Distance</strong><span>About 1–1.5 miles</span></div>
+            <div class="fact"><strong>Capacity</strong><span>20 total guests</span></div>
+          </div>
+        </div>
+        <aside class="redacted-note" aria-label="Confidential case note">
+          <span class="stamp">Confidential</span>
+          <h3>Case No. 001</h3>
+          <p>A file thought settled has returned to circulation.</p>
+          <p>The original finding may have protected the wrong person—or concealed the right reason.</p>
+          <p>Names remain <span class="redacted">redacted until arrival</span>. Your team’s task is to reconstruct what happened and submit a defensible verdict before the Club closes the record.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="tickets">
+      <div class="wrap">
+        <div class="tickets-head">
+          <div>
+            <p class="section-label">Founding hunt tickets</p>
+            <h2 class="section-title">Choose how you’re arriving. We’ll build the team.</h2>
+          </div>
+          <div class="capacity">20 seats · 12 needed to run</div>
+        </div>
+
+        <div class="ticket-grid">
+          <article class="ticket featured">
+            <span class="ticket-tag">First ten seats</span>
+            <h3>Founding Seat</h3>
+            <div class="price">$29 <small>/ person</small></div>
+            <p>The lowest price for the first people willing to help establish the Club.</p>
+            <ul>
+              <li>One complete event ticket</li>
+              <li>Solo guests welcome</li>
+              <li>Buy two for $58 while available</li>
+            </ul>
+            <a class="button js-register" data-tier="founding" data-price="29" href="#">Claim a founding seat</a>
+          </article>
+
+          <article class="ticket">
+            <span class="ticket-tag">Standard</span>
+            <h3>Solo Ticket</h3>
+            <div class="price">$39 <small>/ person</small></div>
+            <p>Come on your own. You’ll be welcomed, introduced, and placed with a small team.</p>
+            <ul>
+              <li>One complete event ticket</li>
+              <li>Thoughtful team placement</li>
+              <li>No built-in plus-one needed</li>
+            </ul>
+            <a class="button js-register" data-tier="solo" data-price="39" href="#">Choose solo ticket</a>
+          </article>
+
+          <article class="ticket">
+            <span class="ticket-tag">Two seats · limited</span>
+            <h3>Pair Ticket</h3>
+            <div class="price">$69 <small>/ two people</small></div>
+            <p>For couples or friends who want to arrive together and stay together during the hunt.</p>
+            <ul>
+              <li>Two complete event tickets</li>
+              <li>Your pair stays on one team</li>
+              <li>Both attendee names required</li>
+            </ul>
+            <a class="button js-register" data-tier="pair" data-price="69" href="#">Choose pair ticket</a>
+          </article>
+        </div>
+
+        <p class="ticket-note">Submitting the registration form does not reserve a seat. Your ticket is confirmed only after your Venmo payment is received and matched. Founding inventory is counted by paid seats, not purchases.</p>
+        <div class="purchase-status" id="purchase-status" role="status" aria-live="polite">
+          The registration link is being connected. For first access, email <a href="mailto:ryan@communityplaytools.com?subject=St.%20Pete%20Detection%20Club%20ticket">ryan@communityplaytools.com</a> with “Case No. 001” in the subject.
+        </div>
+      </div>
+    </section>
+
+    <section class="included">
+      <div class="wrap included-grid">
+        <div>
+          <p class="section-label">Your ticket includes</p>
+          <h2 class="section-title">A hosted evening, not just a set of clues.</h2>
+          <ul class="checklist">
+            <li>Host-led check-in, introductions, and team formation</li>
+            <li>A physical case folio shared by your team</li>
+            <li>A live downtown investigation and light host support</li>
+            <li>Reserved semi-private brewery space from 7–9 p.m.</li>
+            <li>The official finding and an open-ended social hangout</li>
+          </ul>
+        </div>
+        <div>
+          <p class="section-label">Plan for</p>
+          <h2 class="section-title">Comfortable shoes and your own tab.</h2>
+          <ul class="checklist not-included">
+            <li>Food and drinks are not included; order anything you like separately</li>
+            <li>The event is 21+ because the home base and social finish are at a brewery</li>
+            <li>Expect outdoor walking in summer weather; bring water and dress accordingly</li>
+            <li>Participation in marketing photos is optional and requested separately</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <p class="section-label">Questions from prospective investigators</p>
+        <h2 class="section-title">The practical briefing.</h2>
+        <div class="faq-list">
+          <details>
+            <summary>Is it genuinely comfortable to come alone?</summary>
+            <p>Yes. Solo guests are central to the design, not an afterthought. The host handles introductions and assigns small teams based on a short intake form, so you won’t be left to insert yourself into an established group.</p>
+          </details>
+          <details>
+            <summary>Do I need to be good at puzzles?</summary>
+            <p>No. The case blends observation, discussion, and deduction. Teams are intentionally balanced, and help is available if you get stuck. The goal is a good shared experience, not a leaderboard.</p>
+          </details>
+          <details>
+            <summary>How does the Pair Ticket work?</summary>
+            <p>It admits two people for $69 during the standard sales period. You’ll provide both names and stay together on one team, while still joining other guests. During the first-ten-seat founding period, two individual $29 seats cost $58 and are the better offer.</p>
+          </details>
+          <details>
+            <summary>Do I have to drink?</summary>
+            <p>No. Voodoo is the meeting and social venue, but alcohol is never required. Each guest runs their own tab and can order any available nonalcoholic option, food, or drink.</p>
+          </details>
+          <details>
+            <summary>What happens if the weather is bad or too few people register?</summary>
+            <p>The event needs twelve paid attendees. A final go/no-go decision will be made Wednesday, July 29. Tickets are nonrefundable unless the organizer cancels or postpones because of weather or insufficient sales; in that case, paid guests will be contacted and refunded or offered an explicit transfer choice.</p>
+          </details>
+          <details>
+            <summary>Where exactly do we meet?</summary>
+            <p>Voodoo Brewing Co., 220 4th St N, St. Petersburg, FL 33701. Check in at the main bar between 5:30 and 5:50 p.m. The group returns to a reserved upstairs area after the hunt.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="wrap">
+        <h2>Twenty seats. One founding case. A better reason to meet.</h2>
+        <p>Come curious. We’ll provide the team, the file, and a trail worth following.</p>
+        <a class="button js-register" data-tier="final" data-price="29" href="#tickets">Claim a founding seat — $29</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>© 2026 Community Play Tools · St. Petersburg, Florida</span>
+      <span>Questions? <a href="mailto:ryan@communityplaytools.com">ryan@communityplaytools.com</a></span>
+    </div>
+  </footer>
+
+  <div class="mobile-cta">
+    <a class="button js-register" data-tier="mobile" data-price="29" href="#tickets">Founding seat — $29</a>
+  </div>
+
+  <script>
+    const EVENT_CONFIG = {
+      registrationUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeR6TCaleFUuuZ1UZMZcOImDxgnlXK8B8NEalqbv9NuGJSsjg/viewform?usp=publish-editor",
+      supabaseUrl: "https://nzcogxjcihgtevjiuipf.supabase.co",
+      supabaseKey: "sb_publishable_QSItD0zcm6RsrKFsFTTRfw_RKNghv2p"
+    };
+
+    const sessionId = (() => {
+      const key = "spdc_session";
+      let value = sessionStorage.getItem(key);
+      if (!value) {
+        value = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
+        sessionStorage.setItem(key, value);
+      }
+      return value;
+    })();
+
+    function track(event, price = null) {
+      const payload = {
+        event,
+        price,
+        utm: location.search || "(none)",
+        session_id: sessionId,
+        referrer: document.referrer || null
+      };
+      fetch(`${EVENT_CONFIG.supabaseUrl}/rest/v1/speakeasy_events`, {
+        method: "POST",
+        keepalive: true,
+        headers: {
+          apikey: EVENT_CONFIG.supabaseKey,
+          Authorization: `Bearer ${EVENT_CONFIG.supabaseKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    }
+
+    document.querySelectorAll(".js-register").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const tier = link.dataset.tier || "unknown";
+        const price = Number(link.dataset.price) || null;
+        track(`spdc_ticket_${tier}`, price);
+
+        if (!EVENT_CONFIG.registrationUrl) {
+          if (link.getAttribute("href") === "#tickets") return;
+          event.preventDefault();
+          const message = document.querySelector("#purchase-status");
+          message.classList.add("visible");
+          message.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        event.preventDefault();
+        location.href = EVENT_CONFIG.registrationUrl;
+      });
+    });
+
+    track("spdc_page_view");
+  </script>
+</body>
+</html>
