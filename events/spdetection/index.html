@@ -128,6 +128,11 @@
       font-size: clamp(20px, 2vw, 25px);
       line-height: 1.45;
     }
+    .story-hook {
+      margin-top: 12px;
+      color: var(--gold-light);
+      font-size: clamp(16px, 1.5vw, 19px);
+    }
     .event-stamp {
       display: grid;
       grid-template-columns: repeat(3, auto);
@@ -318,13 +323,14 @@
           <p class="eyebrow">A live social mystery in downtown St. Pete</p>
           <h1>A case has surfaced. Your team has one evening to close it.</h1>
           <p class="dek">Join a small crew, follow the evidence through downtown, then return to the brewery to compare theories and meet the other investigators.</p>
+          <p class="dek story-hook">Investigate a fictional mystery set in 1924, featuring St. Pete's most eccentric mayor.</p>
           <div class="event-stamp" aria-label="Event details">
             <div><span>When</span><strong>Fri, July 31 · 5:30 PM</strong></div>
             <div><span>Where</span><strong>Voodoo Brewing Co.</strong></div>
             <div><span>Who</span><strong>Curious adults · 21+</strong></div>
           </div>
           <div class="hero-actions">
-            <a class="button js-register" data-tier="hero" data-price="29" href="#tickets">Claim a founding seat — $29</a>
+            <a class="button" href="#tickets">Claim a founding seat — $29</a>
             <a class="button secondary" href="#how-it-works">See how the night works</a>
           </div>
           <p class="micro">Approximately 1–1.5 miles of walking · Drinks and food purchased separately · No puzzle expertise required</p>
@@ -381,7 +387,7 @@
         <div class="briefing-copy">
           <p class="section-label">The assignment</p>
           <h2 class="section-title">This is a social adventure with a mystery at its center.</h2>
-          <p>You’ll investigate a fictional case woven through real downtown spaces. Expect observation, deduction, team choices, a few photographs, and optional requests for help from headquarters. The investigation rewards curiosity and conversation—not trivia mastery or escape-room speed.</p>
+          <p>You’ll investigate a fictional 1924 case featuring St. Pete’s most eccentric mayor, woven through real downtown spaces. Expect observation, deduction, team choices, a few photographs, and optional requests for help from headquarters. The investigation rewards curiosity and conversation—not trivia mastery or escape-room speed.</p>
           <div class="facts">
             <div class="fact"><strong>Team size</strong><span>3–6 investigators</span></div>
             <div class="fact"><strong>Field time</strong><span>60–90 minutes</span></div>
@@ -420,7 +426,7 @@
               <li>Solo guests welcome</li>
               <li>Buy two for $58 while available</li>
             </ul>
-            <a class="button js-register" data-tier="founding" data-price="29" href="#">Claim a founding seat</a>
+            <a class="button js-register" data-tier="founding" data-price="29" href="#">Choose founding seat</a>
           </article>
 
           <article class="ticket">
@@ -444,7 +450,6 @@
             <ul>
               <li>Two complete event tickets</li>
               <li>Your pair stays on one team</li>
-              <li>Both attendee names required</li>
             </ul>
             <a class="button js-register" data-tier="pair" data-price="69" href="#">Choose pair ticket</a>
           </article>
@@ -477,7 +482,7 @@
             <li>Food and drinks are not included; order anything you like separately</li>
             <li>The event is 21+ because the home base and social finish are at a brewery</li>
             <li>Expect outdoor walking in summer weather; bring water and dress accordingly</li>
-            <li>Participation in marketing photos is optional and requested separately</li>
+            <li>At least one phone is needed per group to complete the puzzles</li>
           </ul>
         </div>
       </div>
@@ -520,7 +525,7 @@
       <div class="wrap">
         <h2>Twenty seats. One founding case. A better reason to meet.</h2>
         <p>Come curious. We’ll provide the team, the file, and a trail worth following.</p>
-        <a class="button js-register" data-tier="final" data-price="29" href="#tickets">Claim a founding seat — $29</a>
+        <a class="button" href="#tickets">Claim a founding seat — $29</a>
       </div>
     </section>
   </main>
@@ -533,7 +538,7 @@
   </footer>
 
   <div class="mobile-cta">
-    <a class="button js-register" data-tier="mobile" data-price="29" href="#tickets">Founding seat — $29</a>
+    <a class="button" href="#tickets">Founding seat — $29</a>
   </div>
 
   <script>
