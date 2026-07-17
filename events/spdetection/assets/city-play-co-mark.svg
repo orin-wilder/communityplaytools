@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">City Play Co. logo</title>
+  <desc id="desc">A city skyline beneath a magnifying glass with a red game pawn at its center.</desc>
+  <rect width="512" height="512" rx="84" fill="#F3EDDF"/>
+
+  <g fill="#17372F">
+    <path d="M54 372V286h52v86H54Z"/>
+    <path d="M114 372V222h66v150h-66Z"/>
+    <path d="M188 372V270h48v102h-48Z"/>
+    <path d="M302 372V184h72v188h-72Z"/>
+    <path d="M382 372V246h54v126h-54Z"/>
+    <path d="M444 372V306h24v66h-24Z"/>
+    <path d="M42 372h438v24H42z"/>
+  </g>
+
+  <g fill="#F3EDDF" opacity=".92">
+    <path d="M132 248h12v18h-12zM152 248h12v18h-12zM132 282h12v18h-12zM152 282h12v18h-12z"/>
+    <path d="M326 212h14v20h-14zM350 212h14v20h-14zM326 250h14v20h-14zM350 250h14v20h-14z"/>
+    <path d="M400 272h12v18h-12zM400 306h12v18h-12z"/>
+  </g>
+
+  <g fill="none" stroke="#B18A3C" stroke-width="24" stroke-linecap="round">
+    <circle cx="252" cy="238" r="132"/>
+    <path d="M346 332 450 436"/>
+  </g>
+
+  <g fill="#A93643" stroke="#F3EDDF" stroke-width="8" stroke-linejoin="round">
+    <circle cx="252" cy="204" r="32"/>
+    <path d="M222 260c0-19 13-32 30-32s30 13 30 32c0 19-9 34-18 48h28l11 29H201l11-29h28c-9-14-18-29-18-48Z"/>
+    <path d="M191 337h122l9 28H182l9-28Z"/>
+  </g>
+</svg>

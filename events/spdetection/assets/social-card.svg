@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">City Play Co. presents St. Pete Detective Club</title>
+  <desc id="desc">Social card for Case No. 001 on July 31 at 8 p.m.</desc>
+  <rect width="1200" height="630" fill="#0D251F"/>
+  <rect x="28" y="28" width="1144" height="574" fill="none" stroke="#B18A3C" stroke-width="3"/>
+  <rect x="46" y="46" width="1108" height="538" fill="none" stroke="#B18A3C" stroke-width="1" opacity=".55"/>
+
+  <g transform="translate(70 84) scale(.68)">
+    <rect width="512" height="512" rx="84" fill="#F3EDDF"/>
+    <g fill="#17372F">
+      <path d="M54 372V286h52v86H54ZM114 372V222h66v150h-66ZM188 372V270h48v102h-48ZM302 372V184h72v188h-72ZM382 372V246h54v126h-54ZM444 372V306h24v66h-24ZM42 372h438v24H42z"/>
+    </g>
+    <g fill="none" stroke="#B18A3C" stroke-width="24" stroke-linecap="round">
+      <circle cx="252" cy="238" r="132"/>
+      <path d="M346 332 450 436"/>
+    </g>
+    <g fill="#A93643" stroke="#F3EDDF" stroke-width="8" stroke-linejoin="round">
+      <circle cx="252" cy="204" r="32"/>
+      <path d="M222 260c0-19 13-32 30-32s30 13 30 32c0 19-9 34-18 48h28l11 29H201l11-29h28c-9-14-18-29-18-48Z"/>
+      <path d="M191 337h122l9 28H182l9-28Z"/>
+    </g>
+  </g>
+
+  <text x="470" y="116" font-family="Courier New, monospace" font-size="24" font-weight="700" letter-spacing="5" fill="#D3B86F">CITY PLAY CO. PRESENTS</text>
+  <text x="466" y="226" font-family="Georgia, serif" font-size="76" font-weight="700" fill="#F3EDDF">ST. PETE</text>
+  <text x="466" y="316" font-family="Georgia, serif" font-size="62" font-weight="700" letter-spacing="-1" fill="#F3EDDF">DETECTIVE CLUB</text>
+  <line x1="470" y1="356" x2="1094" y2="356" stroke="#B18A3C" stroke-width="4"/>
+  <text x="470" y="416" font-family="Courier New, monospace" font-size="28" font-weight="700" letter-spacing="4" fill="#D3B86F">CASE NO. 001 · JULY 31 · 8 PM</text>
+  <text x="470" y="482" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#F3EDDF">FOLLOW THE CLUES. SOLVE THE CASE.</text>
+  <text x="470" y="532" font-family="Courier New, monospace" font-size="22" font-weight="700" letter-spacing="3" fill="#A93643">CITYPLAYCO.COM · @CITYPLAYCO</text>
+</svg>

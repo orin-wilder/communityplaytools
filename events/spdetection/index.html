@@ -3,18 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>St. Pete Detection Club — Case No. 001</title>
-  <meta name="description" content="A live downtown mystery hunt and brewery social for curious adults. Friday, July 31 in St. Petersburg, Florida.">
+  <title>St. Pete Detective Club — Case No. 001 | City Play Co.</title>
+  <meta name="description" content="Come play detective in downtown St. Pete. Join a small crew, follow the clues, solve the case, and return to the brewery for the reveal on Friday, July 31.">
   <meta name="theme-color" content="#17372f">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="St. Pete Detection Club — Case No. 001">
-  <meta property="og:description" content="Meet people by solving something together. A live downtown mystery hunt followed by a brewery hangout.">
-  <meta property="og:image" content="https://www.communityplaytools.com/events/spdetection/assets/social-card.png">
-  <meta property="og:image:width" content="1731">
-  <meta property="og:image:height" content="909">
-  <meta property="og:image:alt" content="St. Pete Detection Club — Case No. 001, July 31">
-  <meta property="og:url" content="https://www.communityplaytools.com/events/spdetection/">
-  <link rel="canonical" href="https://www.communityplaytools.com/events/spdetection/">
+  <meta property="og:title" content="St. Pete Detective Club — Case No. 001">
+  <meta property="og:description" content="Downtown is the game board. Join a crew, follow the clues, solve the case, and meet the other investigators.">
+  <meta property="og:image" content="https://cityplayco.com/assets/social-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="City Play Co. presents St. Pete Detective Club — Case No. 001, July 31 at 8 p.m.">
+  <meta property="og:url" content="https://cityplayco.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="St. Pete Detective Club — Case No. 001">
+  <meta name="twitter:description" content="Come play detective in downtown St. Pete on Friday, July 31.">
+  <meta name="twitter:image" content="https://cityplayco.com/assets/social-card.png">
+  <link rel="canonical" href="https://cityplayco.com/">
+  <link rel="icon" href="assets/city-play-co-mark.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/city-play-co-profile.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
@@ -78,7 +84,7 @@
       gap: 28px;
       padding: 22px 0;
     }
-    .mark { width: min(410px, 70vw); }
+    .mark { width: min(360px, 70vw); }
     .masthead-link {
       color: var(--forest);
       font: 700 12px/1 var(--mono);
@@ -89,6 +95,7 @@
       border-bottom: 1px solid var(--gold);
       padding-bottom: 5px;
     }
+    .masthead-link:hover, .masthead-link:focus-visible { color: var(--wine); }
 
     .hero {
       position: relative;
@@ -240,6 +247,20 @@
     .purchase-status { display: none; max-width: 780px; margin: 24px auto 0; padding: 16px 20px; color: var(--forest); background: #e1d5bd; border-left: 4px solid var(--wine); font-size: 16px; text-align: left; }
     .purchase-status.visible { display: block; }
 
+    .community { color: var(--paper); background: var(--forest-deep); border-top: 1px solid rgba(211, 184, 111, .28); }
+    .community-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 72px; align-items: center; }
+    .community .section-label { color: var(--gold-light); }
+    .community .section-title { color: var(--paper); }
+    .community p { color: #cdd5d0; }
+    .social-card { padding: 30px; border: 1px solid rgba(211, 184, 111, .34); background: rgba(255,255,255,.04); }
+    .social-card strong { display: block; color: var(--paper); font: 600 30px/1.1 var(--display); }
+    .social-card p { margin: 12px 0 22px; }
+    .signup { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-top: 28px; }
+    .signup label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .signup input { min-width: 0; min-height: 54px; padding: 13px 16px; color: var(--ink); background: var(--paper); border: 1px solid var(--gold); border-radius: 0; font: 400 17px/1.2 var(--serif); }
+    .signup input:focus { outline: 3px solid rgba(211, 184, 111, .45); outline-offset: 2px; }
+    .signup-status { min-height: 1.5em; margin: 12px 0 0; color: var(--gold-light) !important; font: 400 13px/1.5 var(--mono); }
+
     .included { background: #e8dfcd; }
     .included-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; }
     .checklist { margin: 30px 0 0; padding: 0; list-style: none; }
@@ -266,10 +287,10 @@
     .mobile-cta { display: none; }
 
     @media (max-width: 900px) {
-      .hero-grid, .promise-grid, .briefing-grid, .included-grid { grid-template-columns: 1fr; }
+      .hero-grid, .promise-grid, .briefing-grid, .included-grid, .community-grid { grid-template-columns: 1fr; }
       .hero-grid { padding: 58px 0 86px; }
       .case-photo { width: min(580px, 92%); margin: 10px auto 0; }
-      .promise-grid, .briefing-grid, .included-grid { gap: 42px; }
+      .promise-grid, .briefing-grid, .included-grid, .community-grid { gap: 42px; }
       .timeline { grid-template-columns: 1fr 1fr; border-top: 0; gap: 26px; }
       .step { border-top: 2px solid var(--forest); }
       .ticket-grid { grid-template-columns: 1fr; max-width: 620px; margin-inline: auto; }
@@ -297,6 +318,8 @@
       .tickets-head { display: block; }
       .capacity { display: inline-block; margin-top: 24px; }
       .footer-inner { display: block; }
+      .signup { grid-template-columns: 1fr; }
+      .signup .button { width: 100%; }
       .mobile-cta { position: fixed; z-index: 15; display: block; left: 0; right: 0; bottom: 0; padding: 10px 14px; background: rgba(13, 37, 31, .96); border-top: 1px solid var(--gold); }
       .mobile-cta .button { width: 100%; min-height: 48px; }
     }
@@ -309,46 +332,46 @@
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
-  <div class="topbar">Founding Hunt · Twenty seats only · Friday, July 31</div>
+  <div class="topbar">Twenty-five seats only · Friday, July 31 · Game starts at 8</div>
 
   <header class="wrap masthead">
-    <img class="mark" src="assets/spdc-wordmark.svg" alt="The St. Petersburg Detection Club">
-    <a class="masthead-link" href="https://www.communityplaytools.com/">A Community Play Tools event</a>
+    <img class="mark" src="assets/city-play-co-wordmark.svg" alt="City Play Co. — Game night in your city">
+    <a class="masthead-link" href="https://www.instagram.com/cityplayco/" target="_blank" rel="noopener">Follow @cityplayco</a>
   </header>
 
   <main>
     <section class="hero">
       <div class="wrap hero-grid">
         <div>
-          <p class="eyebrow">A live social mystery in downtown St. Pete</p>
-          <h1>A case has surfaced. Your team has one evening to close it.</h1>
-          <p class="dek">Join a small crew, follow the evidence through downtown, then return to the brewery to compare theories and meet the other investigators.</p>
-          <p class="dek story-hook">Investigate a fictional mystery set in 1924, featuring St. Pete's most eccentric mayor.</p>
+          <p class="eyebrow">City Play Co. presents Case No. 001</p>
+          <h1>Come play detective in downtown St. Pete.</h1>
+          <p class="dek">Join a small crew, follow the clues through the city, solve the case, and return to the brewery for the reveal.</p>
+          <p class="dek story-hook">A fictional 1924 mystery starring St. Pete's most eccentric mayor.</p>
           <div class="event-stamp" aria-label="Event details">
-            <div><span>When</span><strong>Fri, July 31 · 5:30 PM</strong></div>
+            <div><span>When</span><strong>Fri, July 31 · 8 PM</strong></div>
             <div><span>Where</span><strong>Voodoo Brewing Co.</strong></div>
             <div><span>Who</span><strong>Curious adults · 21+</strong></div>
           </div>
           <div class="hero-actions">
-            <a class="button" href="#tickets">Claim a founding seat — $29</a>
-            <a class="button secondary" href="#how-it-works">See how the night works</a>
+            <a class="button" href="#tickets">Choose your ticket — from $29</a>
+            <a class="button secondary" href="#how-it-works">See how the game works</a>
           </div>
-          <p class="micro">Approximately 1–1.5 miles of walking · Drinks and food purchased separately · No puzzle expertise required</p>
+          <p class="micro">Optional drinks and food from 7 · Game at 8 · Reveal around 10 · Approximately 1–1.5 miles of walking</p>
         </div>
 
         <figure class="case-photo">
-          <img src="assets/founding-folio.png" alt="An open St. Pete Detection Club case folio with documents and a downtown map">
-          <figcaption>Evidence folio · Founding file</figcaption>
+          <img src="assets/founding-folio.png" alt="An open St. Pete Detective Club case folio with documents and a downtown map">
+          <figcaption>Evidence folio · Case No. 001</figcaption>
         </figure>
       </div>
     </section>
 
     <section class="promise">
       <div class="wrap promise-grid">
-        <blockquote>Meet people by solving something together—not by walking into another awkward mixer.</blockquote>
+        <blockquote>Game night left the living room and took over the city.</blockquote>
         <div class="promise-copy">
-          <p>You may arrive solo, with a friend, or as a couple. We’ll place you into a team of three to six and give you a reason to talk that isn’t small talk.</p>
-          <p>The mystery creates the momentum. The brewery hangout gives the connections somewhere to continue.</p>
+          <p>Come solo, with a friend, or as a couple. We’ll place you into a crew of three to six and give you a reason to talk that isn’t small talk.</p>
+          <p>The mystery gets everyone moving. The brewery gives new connections somewhere to continue.</p>
         </div>
       </div>
     </section>
@@ -356,27 +379,27 @@
     <section id="how-it-works">
       <div class="wrap">
         <p class="section-label">Field schedule</p>
-        <h2 class="section-title">One case. Four phases. An open-ended social finish.</h2>
+        <h2 class="section-title">Drinks first. Then downtown becomes the game board.</h2>
         <div class="timeline">
           <article class="step">
-            <span class="time">5:30–5:50</span>
-            <h3>Check in</h3>
-            <p>Meet at Voodoo Brewing Co. As people arrive, we form balanced teams and make introductions.</p>
+            <span class="time">From 7:00</span>
+            <h3>Meet at Voodoo</h3>
+            <p>Arrive early if you like. Order food or a drink, meet the other players, and settle in before the briefing.</p>
           </article>
           <article class="step">
-            <span class="time">6:00</span>
+            <span class="time">8:00</span>
             <h3>Open the file</h3>
             <p>Each team receives one physical case folio, a short briefing, and its first direction.</p>
           </article>
           <article class="step">
-            <span class="time">6:00–7:45</span>
+            <span class="time">8:10–9:40</span>
             <h3>Work the case</h3>
             <p>Walk downtown, examine evidence, complete playful field challenges, and build your theory.</p>
           </article>
           <article class="step">
-            <span class="time">7:00 onward</span>
-            <h3>Return & compare</h3>
-            <p>Rejoin everyone upstairs at Voodoo. Verdicts close at 8:15; the official finding lands around 8:30.</p>
+            <span class="time">Around 10:00</span>
+            <h3>Return & reveal</h3>
+            <p>Rejoin everyone at Voodoo, submit your verdict, compare theories, and hear the official finding.</p>
           </article>
         </div>
       </div>
@@ -386,13 +409,13 @@
       <div class="wrap briefing-grid">
         <div class="briefing-copy">
           <p class="section-label">The assignment</p>
-          <h2 class="section-title">This is a social adventure with a mystery at its center.</h2>
-          <p>You’ll investigate a fictional 1924 case featuring St. Pete’s most eccentric mayor, woven through real downtown spaces. Expect observation, deduction, team choices, a few photographs, and optional requests for help from headquarters. The investigation rewards curiosity and conversation—not trivia mastery or escape-room speed.</p>
+          <h2 class="section-title">Follow the clues. Build your theory. Make your case.</h2>
+          <p>You’ll investigate a fictional 1924 case featuring St. Pete’s most eccentric mayor, woven through real downtown places. Expect observation, deduction, team choices, a few photographs, and help when you need it. Curiosity and conversation matter more than trivia knowledge or escape-room speed.</p>
           <div class="facts">
             <div class="fact"><strong>Team size</strong><span>3–6 investigators</span></div>
             <div class="fact"><strong>Field time</strong><span>60–90 minutes</span></div>
             <div class="fact"><strong>Distance</strong><span>About 1–1.5 miles</span></div>
-            <div class="fact"><strong>Capacity</strong><span>20 total guests</span></div>
+            <div class="fact"><strong>Capacity</strong><span>25 total guests</span></div>
           </div>
         </div>
         <aside class="redacted-note" aria-label="Confidential case note">
@@ -409,24 +432,24 @@
       <div class="wrap">
         <div class="tickets-head">
           <div>
-            <p class="section-label">Founding hunt tickets</p>
+            <p class="section-label">Tickets</p>
             <h2 class="section-title">Choose how you’re arriving. We’ll build the team.</h2>
           </div>
-          <div class="capacity">20 seats · 12 needed to run</div>
+          <div class="capacity">25 seats · 12 needed to run</div>
         </div>
 
         <div class="ticket-grid">
           <article class="ticket featured">
             <span class="ticket-tag">First ten seats</span>
-            <h3>Founding Seat</h3>
+            <h3>Early Ticket</h3>
             <div class="price">$29 <small>/ person</small></div>
-            <p>The lowest price for the first people willing to help establish the Club.</p>
+            <p>The first ten seats get the lowest price. It is the same complete hosted experience.</p>
             <ul>
               <li>One complete event ticket</li>
               <li>Solo guests welcome</li>
               <li>Buy two for $58 while available</li>
             </ul>
-            <a class="button js-register" data-tier="founding" data-price="29" href="#">Choose founding seat</a>
+            <a class="button js-register" data-tier="early" data-price="29" href="#">Get early ticket</a>
           </article>
 
           <article class="ticket">
@@ -455,9 +478,9 @@
           </article>
         </div>
 
-        <p class="ticket-note">Submitting the registration form does not reserve a seat. Your ticket is confirmed only after your Venmo payment is received and matched. Founding inventory is counted by paid seats, not purchases.</p>
+        <p class="ticket-note">Standard pricing begins after the first ten paid seats. For now, checkout uses a short registration form followed by Venmo. Submitting the form does not reserve a seat. Your ticket is confirmed only after payment is received and matched. Inventory is counted by paid seats, not form submissions.</p>
         <div class="purchase-status" id="purchase-status" role="status" aria-live="polite">
-          The registration link is being connected. For first access, email <a href="mailto:ryan@communityplaytools.com?subject=St.%20Pete%20Detection%20Club%20ticket">ryan@communityplaytools.com</a> with “Case No. 001” in the subject.
+          Ticket checkout is being connected. For help, email <a href="mailto:ryan@communityplaytools.com?subject=St.%20Pete%20Detective%20Club%20ticket">ryan@communityplaytools.com</a> with “Case No. 001” in the subject.
         </div>
       </div>
     </section>
@@ -471,7 +494,7 @@
             <li>Host-led check-in, introductions, and team formation</li>
             <li>A physical case folio shared by your team</li>
             <li>A live downtown investigation and light host support</li>
-            <li>Reserved semi-private brewery space from 7–9 p.m.</li>
+            <li>A brewery home base before and after the game</li>
             <li>The official finding and an open-ended social hangout</li>
           </ul>
         </div>
@@ -503,7 +526,7 @@
           </details>
           <details>
             <summary>How does the Pair Ticket work?</summary>
-            <p>It admits two people for $69 during the standard sales period. You’ll provide both names and stay together on one team, while still joining other guests. During the first-ten-seat founding period, two individual $29 seats cost $58 and are the better offer.</p>
+            <p>It admits two people for $69 during the standard sales period. You’ll provide both names and stay together on one team, while still joining other guests. While Early Tickets remain, two individual $29 tickets cost $58 and are the better offer.</p>
           </details>
           <details>
             <summary>Do I have to drink?</summary>
@@ -515,35 +538,61 @@
           </details>
           <details>
             <summary>Where exactly do we meet?</summary>
-            <p>Voodoo Brewing Co., 220 4th St N, St. Petersburg, FL 33701. Check in at the main bar between 5:30 and 5:50 p.m. The group returns to a reserved upstairs area after the hunt.</p>
+            <p>Voodoo Brewing Co., 220 4th St N, St. Petersburg, FL 33701. The optional pre-game hangout opens at 7 p.m. The briefing and game begin at 8 p.m.</p>
           </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="community" id="join">
+      <div class="wrap community-grid">
+        <div>
+          <p class="section-label">More games are coming</p>
+          <h2 class="section-title">Can’t make this case? Get invited to the next one.</h2>
+          <p>Join the City Play Co. list for new cases, first ticket access, and occasional clues. The email connection is being finished now; Instagram is already live.</p>
+          <form class="signup" id="signup-form" novalidate>
+            <label for="signup-email">Email address</label>
+            <input id="signup-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+            <button class="button" type="submit">Join the list</button>
+          </form>
+          <p class="signup-status" id="signup-status" role="status" aria-live="polite">Signup connection coming soon. Follow Instagram for launch updates today.</p>
+        </div>
+        <div class="social-card">
+          <strong>See what we’re building next.</strong>
+          <p>Follow field tests, new game announcements, and Case No. 001 updates.</p>
+          <a class="button" href="https://www.instagram.com/cityplayco/" target="_blank" rel="noopener">Follow @cityplayco</a>
         </div>
       </div>
     </section>
 
     <section class="final-cta">
       <div class="wrap">
-        <h2>Twenty seats. One founding case. A better reason to meet.</h2>
-        <p>Come curious. We’ll provide the team, the file, and a trail worth following.</p>
-        <a class="button" href="#tickets">Claim a founding seat — $29</a>
+        <h2>Twenty-five seats. One citywide case. Come play.</h2>
+        <p>We’ll provide the crew, the file, and a trail worth following.</p>
+        <a class="button" href="#tickets">Choose your ticket — from $29</a>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="wrap footer-inner">
-      <span>© 2026 Community Play Tools · St. Petersburg, Florida</span>
-      <span>Questions? <a href="mailto:ryan@communityplaytools.com">ryan@communityplaytools.com</a></span>
+      <span>© 2026 City Play Co. · A brand of Community Play Tools, LLC</span>
+      <span><a href="https://www.instagram.com/cityplayco/" target="_blank" rel="noopener">@cityplayco</a> · Questions? <a href="mailto:ryan@communityplaytools.com">ryan@communityplaytools.com</a></span>
     </div>
   </footer>
 
   <div class="mobile-cta">
-    <a class="button" href="#tickets">Founding seat — $29</a>
+    <a class="button" href="#tickets">Tickets from $29</a>
   </div>
 
   <script>
     const EVENT_CONFIG = {
-      registrationUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeR6TCaleFUuuZ1UZMZcOImDxgnlXK8B8NEalqbv9NuGJSsjg/viewform?usp=publish-editor",
+      registrationUrls: {
+        early: "https://docs.google.com/forms/d/e/1FAIpQLSeR6TCaleFUuuZ1UZMZcOImDxgnlXK8B8NEalqbv9NuGJSsjg/viewform?usp=publish-editor",
+        solo: "https://docs.google.com/forms/d/e/1FAIpQLSeR6TCaleFUuuZ1UZMZcOImDxgnlXK8B8NEalqbv9NuGJSsjg/viewform?usp=publish-editor",
+        pair: "https://docs.google.com/forms/d/e/1FAIpQLSeR6TCaleFUuuZ1UZMZcOImDxgnlXK8B8NEalqbv9NuGJSsjg/viewform?usp=publish-editor"
+      },
+      mailingListEndpoint: "",
       supabaseUrl: "https://nzcogxjcihgtevjiuipf.supabase.co",
       supabaseKey: "sb_publishable_QSItD0zcm6RsrKFsFTTRfw_RKNghv2p"
     };
@@ -583,9 +632,10 @@
       link.addEventListener("click", (event) => {
         const tier = link.dataset.tier || "unknown";
         const price = Number(link.dataset.price) || null;
+        const registrationUrl = EVENT_CONFIG.registrationUrls[tier] || "";
         track(`spdc_ticket_${tier}`, price);
 
-        if (!EVENT_CONFIG.registrationUrl) {
+        if (!registrationUrl) {
           if (link.getAttribute("href") === "#tickets") return;
           event.preventDefault();
           const message = document.querySelector("#purchase-status");
@@ -595,11 +645,43 @@
         }
 
         event.preventDefault();
-        location.href = EVENT_CONFIG.registrationUrl;
+        location.href = registrationUrl;
       });
     });
 
-    track("spdc_page_view");
+    document.querySelector("#signup-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const email = form.elements.email.value.trim();
+      const status = document.querySelector("#signup-status");
+
+      if (!form.checkValidity()) {
+        status.textContent = "Enter a valid email address, or follow @cityplayco on Instagram.";
+        form.reportValidity();
+        return;
+      }
+
+      track("cityplayco_mailing_list_intent");
+      if (!EVENT_CONFIG.mailingListEndpoint) {
+        status.innerHTML = `The email connection is almost ready. For now, follow <a href="https://www.instagram.com/cityplayco/" target="_blank" rel="noopener">@cityplayco</a> so you don’t miss the next game.`;
+        return;
+      }
+
+      try {
+        const response = await fetch(EVENT_CONFIG.mailingListEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, source: "cityplayco.com" })
+        });
+        if (!response.ok) throw new Error("Signup failed");
+        form.reset();
+        status.textContent = "You’re on the list. Watch your inbox for the next game.";
+      } catch {
+        status.textContent = "Email signup is temporarily unavailable. Follow @cityplayco on Instagram for updates.";
+      }
+    });
+
+    track("cityplayco_page_view");
   </script>
 </body>
 </html>

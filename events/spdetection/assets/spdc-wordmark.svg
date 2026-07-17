@@ -6,6 +6,6 @@
   <text x="104" y="125" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="44" fill="#1D3A2F">SP</text>
   <text x="104" y="151" text-anchor="middle" font-family="Courier Prime, monospace" font-size="20" font-weight="700" letter-spacing="5" fill="#1D3A2F">DC</text>
   <text x="198" y="99" font-family="Playfair Display, Georgia, serif" font-size="37" fill="#1D3A2F">THE ST. PETERSBURG</text>
-  <text x="198" y="146" font-family="Playfair Display, Georgia, serif" font-size="37" fill="#1D3A2F">DETECTION CLUB</text>
+  <text x="198" y="146" font-family="Playfair Display, Georgia, serif" font-size="37" fill="#1D3A2F">DETECTIVE CLUB</text>
   <line x1="198" y1="168" x2="668" y2="168" stroke="#B08D3E" stroke-width="3"/>
 </svg>
