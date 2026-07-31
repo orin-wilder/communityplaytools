@@ -53,6 +53,11 @@
       nav.querySelectorAll('.nav-links a').forEach(function (a) {
         a.addEventListener('click', function () { closeMenu(false); });
       });
+      document.addEventListener('click', function (event) {
+        if (document.body.classList.contains('nav-open') && !nav.contains(event.target)) {
+          closeMenu(false);
+        }
+      });
       document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape' && document.body.classList.contains('nav-open')) {
           closeMenu(true);
