@@ -1,7 +1,7 @@
 /* ============================================================
    The St. Pete Overlay — a clickable, hand-drawn map of the
-   places Community Play Tools has shipped in, is watching, or
-   plain loves. Vanilla JS + inline SVG, no libraries.
+   places Community Play Tools has built around, designed for,
+   is watching, or plain loves. Vanilla JS + inline SVG.
 
    Usage: <div data-stpete-overlay></div>
           <script src="assets/js/stpete-overlay.js" defer></script>
@@ -17,30 +17,30 @@
   if (!mount) return;
 
   // ---- The places ------------------------------------------
-  // status: shipped (coral) | pilot (ember) | idea/watching (pine) | rising (mint)
+  // status: shipped (coral) | idea/watching (pine) | rising (mint)
   var PLACES = [
     {
       id: 'williams-park',
       name: 'Williams Park',
       x: 742, y: 342, label: { x: 722, y: 351, anchor: 'end' },
-      status: { type: 'shipped', text: 'CPT shipped here' },
+      status: { type: 'idea', text: 'Designed concept' },
       body: [
         'Downtown’s original town square, mid-renovation, right next to the library and the Sunday market.',
-        'CPT built the St. Petersburg Downtown Partnership’s engagement suite for this park: a 30-second sentiment check-in and a live activity counter, so the redesign decisions ride on data the community actually enjoyed giving.'
+        'CPT designed and pitched an engagement suite for this park, including a 30-second sentiment check-in and an activity counter. The prospect’s budget was withdrawn, so the suite remained a prototype rather than a commissioned deployment.'
       ],
       links: [
-        { href: 'williams-park.html', label: 'Try the counter' },
-        { href: 'did-sentiment.html', label: 'Take the check-in' }
+        { href: 'williams-park.html', label: 'Try the counter prototype' },
+        { href: 'did-sentiment.html', label: 'Try the check-in prototype' }
       ]
     },
     {
       id: 'north-shore',
       name: 'North Shore Park',
       x: 783, y: 202, label: { x: 767, y: 196, anchor: 'end' },
-      status: { type: 'pilot', text: 'Signal Fire territory' },
+      status: { type: 'idea', text: 'Product concept location' },
       body: [
         'The bay-front strip of courts, pools, and picnic shelters where a dozen pickup games happen every week that nobody outside them ever hears about.',
-        'This is the exact problem Signal Fire’s totems exist for. The beach court here is the model for its founding boards: scan, see what’s on, walk in welcome.'
+        'This is the kind of place Signal Fire’s totems were designed for. The beach court is the model used in its product story: scan, see what’s on, walk in welcome.'
       ],
       links: [{ href: 'signal-fire.html', label: 'How Signal Fire works' }]
     },
@@ -73,7 +73,7 @@
       status: { type: 'idea', text: 'A sketch, free to steal' },
       body: [
         'The walkable stretch of Central west of downtown: vintage shops and restaurants with a strong small-business identity and no shared civic voice yet.',
-        'The same quiz mechanic CPT built for a local gelato counter points naturally at a whole district of storefronts, and “which shop should I wander into?” is a solvable problem.'
+        'The same quiz mechanic CPT explored in Flavor Finder points naturally at a whole district of storefronts, and “which shop should I wander into?” is a solvable problem.'
       ],
       links: [{ href: 'idea-mashup.html#place=grand-central&mechanic=quiz', label: 'Remix this idea' }]
     },

@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Williams Park — Help Shape Our Town Square</title>
-  <meta name="description" content="Help the St. Petersburg Downtown Partnership collect park activity data and share your vision for Williams Park." />
+  <title>Williams Park Engagement Prototype | Community Play Tools</title>
+  <meta name="robots" content="noindex,follow">
+  <meta name="description" content="Prototype engagement interface designed as part of the Williams Park suite.">
   <meta name="theme-color" content="#1a5c3a" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,29 +30,7 @@
   <script type="text/babel">
     const { useState, useEffect, useCallback, useRef } = React;
 
-    /* ───────── SUPABASE ───────── */
-    const SB_URL = "https://nzcogxjcihgtevjiuipf.supabase.co";
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56Y29neGpjaWhndGV2aml1aXBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTIxMzcsImV4cCI6MjA4NjQyODEzN30.hGREfoM3QWXWVKndGBmy3TGbHO7o1tt-eNH3NWbtOZU";
-    const PROJECT = "williams-park";
-
-    async function sbInsert(table, data) {
-      const res = await fetch(`${SB_URL}/rest/v1/${table}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: SB_KEY,
-          Authorization: `Bearer ${SB_KEY}`,
-          Prefer: "return=representation",
-        },
-        body: JSON.stringify(Array.isArray(data) ? data : [data]),
-      });
-      if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
-      return res.json();
-    }
-
-    // Table schema and setup SQL for survey_responses live in
-    // _reference/williams-park-schema.sql (not shipped here on purpose).
-
+    /* Public prototype: session data remains in browser memory. */
     /* ───────── CONFIG ───────── */
     const ACTIVITIES = [
       { id: "walking", label: "Walking", icon: "🚶" },
@@ -140,7 +119,7 @@
               fontFamily: "'DM Serif Display', Georgia, serif",
               fontSize: 22, fontWeight: 400, color: "#1a5c3a",
               margin: "0 0 12px", lineHeight: 1.3,
-            }}>Help us make this park better with data</h2>
+            }}>Prototype: a playful way to count park activity</h2>
             <p style={{
               fontSize: 15, color: "#555", lineHeight: 1.6, margin: "0 0 8px",
             }}>
@@ -149,7 +128,7 @@
             <p style={{
               fontSize: 14, color: "#888", lineHeight: 1.5, margin: "0 0 24px",
             }}>
-              Every tap helps the Downtown Partnership understand how the park is used today — so the renovation gets it right.
+              This demonstration shows how lightweight counting could turn park activity into useful planning input.
             </p>
 
             <div style={{
@@ -201,7 +180,7 @@
               fontSize: 12.5, color: "#888", lineHeight: 1.5,
               margin: "2px 0 8px 14px", animation: "fadeIn 0.2s ease",
             }}>
-              Tap activity buttons to count what you see. Answer 3 quick questions about the park. Hit Submit when you're done — your data goes straight to the Downtown Partnership.
+              Tap activity buttons to count what you see, answer three quick questions, and try the submission flow. This public prototype does not send or retain your entries.
             </p>
           )}
         </div>
@@ -360,7 +339,7 @@
               <span style={{
                 fontFamily: "'DM Serif Display', Georgia, serif",
                 fontSize: 11.5, letterSpacing: "0.12em", textTransform: "uppercase", opacity: 0.75,
-              }}>St. Petersburg Downtown Partnership</span>
+              }}>Proposed for St. Petersburg Downtown Partnership</span>
             </div>
             <h1 style={{
               fontFamily: "'DM Serif Display', Georgia, serif",
@@ -500,7 +479,7 @@
               You counted <strong style={{ color: "#1a5c3a" }}>{total} people</strong> over {fmtDur(elapsed)}.
             </p>
             <p style={{ fontSize: 13.5, color: "#888", lineHeight: 1.5, margin: 0 }}>
-              Your data helps the Downtown Partnership understand how the park is used today — so the renovation gets it right.
+              This prototype keeps your entries in the browser only and demonstrates the proposed participant experience.
             </p>
           </div>
 
@@ -642,42 +621,9 @@
         if (!certified || submitting) return;
         setSubmitting(true);
         setError(null);
-        try {
-          const [sess] = await sbInsert("sessions", {
-            project: PROJECT,
-            started_at: new Date(sessionStart).toISOString(),
-            ended_at: new Date().toISOString(),
-            duration_ms: elapsed,
-            meta: surveyAnswers,
-            certified: true,
-          });
-
-          const countRows = entries.map(e => ({
-            project: PROJECT,
-            session_id: sess.id,
-            activity: e.activityId,
-            label: e.label,
-            comment: e.comment || "",
-            counted_at: e.counted_at,
-          }));
-          if (countRows.length > 0) await sbInsert("counts", countRows);
-
-          const surveyRows = Object.entries(surveyAnswers).map(([q, r]) => ({
-            project: PROJECT,
-            session_id: sess.id,
-            question: q,
-            response: r,
-            responded_at: new Date().toISOString(),
-          }));
-          if (surveyRows.length > 0) await sbInsert("survey_responses", surveyRows);
-
-          setPhase("thankyou");
-        } catch (err) {
-          console.error(err);
-          setError("Couldn't submit — check your connection and try again.");
-        } finally {
-          setSubmitting(false);
-        }
+        await new Promise(resolve => setTimeout(resolve, 350));
+        setPhase("thankyou");
+        setSubmitting(false);
       };
 
       const reset = () => {
