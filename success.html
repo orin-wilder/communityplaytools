@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Message received — Community Play Tools</title>
   <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#103F38">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260731">
   <style>
     .thanks { min-height: 82vh; display: grid; place-items: center; text-align: center; }
     .thanks .badge { width: 76px; height: 76px; border-radius: 50%; background: rgba(255,94,58,0.14); color: var(--coral); display: grid; place-items: center; font-size: 2rem; margin: 0 auto 26px; }
@@ -17,14 +18,14 @@
 </head>
 <body>
   <div data-include="partials/nav.html"></div>
-  <main class="thanks">
+  <main class="thanks" id="main-content">
     <div class="container narrow">
       <div class="badge" aria-hidden="true">✓</div>
       <h1>Message received.</h1>
-      <p class="lead" style="margin:16px auto 30px;max-width:48ch;">Thanks for reaching out — we read every message and will get back to you within 48 hours. In the meantime, take a look around.</p>
-      <div class="hero-cta" style="justify-content:center;">
-        <a href="work.html" class="btn btn-primary">See our work <span class="arrow" aria-hidden="true">→</span></a>
-        <a href="tools.html" class="btn btn-ghost">Explore the tools</a>
+      <p class="lead" style="margin:16px auto 30px;max-width:48ch;">Thanks for reaching out. I read every message and will get back to you within 48 hours. In the meantime, take a look around.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="work.html" class="btn btn-primary">See selected work <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="builds.html" class="btn btn-ghost">Explore builds</a>
       </div>
     </div>
   </main>

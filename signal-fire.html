@@ -3,19 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signal Fire — Community Play Tools</title>
-  <meta name="description" content="Signal Fire is a permission structure for strangers to become participants. Durable QR-coded totems at the places you already walk past turn a solo visit into a community gathering — no app required. A Community Play Tools product, live in St. Petersburg.">
+  <title>Signal Fire Product Build | Ryan Stock</title>
+  <meta name="description" content="Signal Fire is a shipped place-based participation product designed and built by Ryan Stock. Product case study and July 2026 status.">
+  <link rel="canonical" href="https://www.communityplaytools.com/signal-fire">
   <meta property="og:title" content="Signal Fire — a permission structure for strangers to become participants">
   <meta property="og:description" content="Scan a marker at the beach court, the garden, the park — see what's happening, and walk in knowing you're welcome. A Community Play Tools product.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.communityplaytools.com/signal-fire">
+  <meta property="og:image" content="https://www.communityplaytools.com/assets/images/ryan-stock-social.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Ryan Stock, Senior Program and Innovation Leader">
   <meta name="theme-color" content="#DA5520">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260731">
   <style>
     /* Signal Fire wears its own "Civic Beacon" ember within the CPT shell */
-    .sf { --coral: #DA5520; --coral-deep: #BD4318; }
+    .sf { --coral: #B63F28; --coral-deep: #8F2E1C; }
 
     .sf-hero { position: relative; overflow: hidden; padding: clamp(64px, 9vw, 116px) 0 clamp(48px, 6vw, 88px); }
     .sf-hero .hero-grid-bg { -webkit-mask-image: radial-gradient(ellipse 70% 65% at 78% 28%, #000 0%, transparent 70%); mask-image: radial-gradient(ellipse 70% 65% at 78% 28%, #000 0%, transparent 70%); }
@@ -77,11 +84,13 @@
     .stack .s { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 18px 20px; }
     .stack .s .k { font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); }
     .stack .s .v { font-weight: 600; color: var(--ink); margin-top: 3px; }
+    .status-stats { grid-template-columns: repeat(3, 1fr); }
 
     @media (max-width: 940px) {
       .sf-hero-grid, .insight, .beacon { grid-template-columns: 1fr; gap: 32px; }
       .sf-visual { order: -1; }
       .layers, .surfaces, .audience, .affordances, .cuts, .stack { grid-template-columns: 1fr; }
+      .status-stats { grid-template-columns: 1fr; }
       .surface { grid-template-columns: 1fr; text-align: center; gap: 16px; }
       .surface .glyph { width: 72px; height: 72px; font-size: 1.9rem; }
     }
@@ -90,19 +99,19 @@
 <body>
   <div data-include="partials/nav.html"></div>
 
-  <div class="sf">
+  <main class="sf" id="main-content">
     <!-- Hero -->
     <header class="sf-hero">
       <div class="hero-grid-bg" aria-hidden="true"></div>
       <div class="container">
         <div class="sf-hero-grid">
           <div class="reveal">
-            <span class="hero-tag"><span class="dot" aria-hidden="true"></span> Flagship product · Live in St. Petersburg</span>
+            <span class="hero-tag"><span class="dot" aria-hidden="true"></span> Shipped product · status updated July 2026</span>
             <h1>Signal&nbsp;<span class="em">Fire</span></h1>
             <p class="hero-sub" style="font-size:1.35rem;">A permission structure for strangers to become participants. The signal that you're welcome — placed in the real world, before anyone opens an app.</p>
             <div class="hero-cta">
               <a href="https://signalfire.live" target="_blank" rel="noopener" class="btn btn-primary">Visit signalfire.live <span class="arrow" aria-hidden="true">→</span></a>
-              <a href="https://signalfire.live/host-with-us" target="_blank" rel="noopener" class="btn btn-ghost">Host with us</a>
+              <a href="builds.html#signal-fire" class="btn btn-ghost">Read the current status</a>
             </div>
           </div>
           <div class="sf-visual reveal">
@@ -143,7 +152,7 @@
             <p class="big-q" style="margin-top:18px;">Most people don't skip an unfamiliar gathering because they lack interest. They skip it because <span class="em">nothing tells them they're welcome.</span></p>
           </div>
           <div>
-            <p>Signal Fire provides that signal physically, before anyone opens an app. The product lives next to a chain-link fence at a beach court, on a stake at a community garden, on a post at a park.</p>
+            <p>Signal Fire provides that signal physically, before anyone opens an app. The product was designed around durable markers at places such as courts, gardens, and parks.</p>
             <p>It has to earn its place in that environment before it earns a place on a screen. Scan the marker, see what's happening here, and walk in already knowing you belong — no prior relationship required.</p>
           </div>
         </div>
@@ -297,15 +306,14 @@
       </div>
     </section>
 
-    <!-- Pilot stats -->
+    <!-- Dated product status -->
     <section class="section-tight bg-pine">
       <div class="container">
-        <div class="section-head center"><span class="eyebrow" style="justify-content:center;">The St. Pete pilot</span><h2 style="color:var(--paper);">Proving it on the ground.</h2></div>
-        <div class="stats reveal">
-          <div class="stat"><div class="num">~<span data-count="6">0</span></div><div class="label">Founding totems placed across St. Petersburg</div></div>
-          <div class="stat"><div class="num"><span data-count="6">0</span> wks</div><div class="label">Of live field data on scan, check-in &amp; return</div></div>
-          <div class="stat"><div class="num"><span data-count="0">0</span></div><div class="label">Apps a stranger needs to take part</div></div>
-          <div class="stat"><div class="num">100<span class="unit">%</span></div><div class="label">Host-verified — curated, never scraped</div></div>
+        <div class="section-head center"><span class="eyebrow" style="justify-content:center;">July 2026 status</span><h2 style="color:var(--paper);">A shipped product and a deliberate stop.</h2><p>Ryan designed, built, and deployed Signal Fire. After evaluating the business model against the time and resources required, he chose not to keep pursuing it as an active operating business.</p></div>
+        <div class="stats reveal status-stats">
+          <div class="stat"><div class="num">Built</div><div class="label">Rails and Expo product designed and deployed end to end</div></div>
+          <div class="stat"><div class="num"><span data-count="0">0</span></div><div class="label">Apps required for a stranger to view a place board</div></div>
+          <div class="stat"><div class="num">Clear</div><div class="label">Product judgment about where not to keep investing</div></div>
         </div>
       </div>
     </section>
@@ -332,16 +340,16 @@
     <section class="section-tight bg-ink">
       <div class="container">
         <div class="cta-band reveal">
-          <h2 style="color:var(--paper);">Light a fire in your community.</h2>
-          <p style="color:rgba(245,241,237,0.78);">Want totems at your park, court, or garden — or a place-based network for your city? Visit Signal Fire, sign up to host, or talk to Community Play Tools about bringing it to your community.</p>
+          <h2 style="color:var(--paper);">The useful result is more than the code.</h2>
+          <p style="color:rgba(245,241,237,0.78);">Signal Fire demonstrates place-based product thinking, full-stack delivery, and the discipline to stop when the operating model does not support continued investment.</p>
           <div class="hero-cta">
             <a href="https://signalfire.live" target="_blank" rel="noopener" class="btn btn-primary">Visit signalfire.live <span class="arrow" aria-hidden="true">→</span></a>
-            <a href="contact.html" class="btn btn-ghost">Talk to CPT</a>
+            <a href="builds.html#signal-fire" class="btn btn-ghost">Back to Builds</a>
           </div>
         </div>
       </div>
     </section>
-  </div>
+  </main>
 
   <div data-include="partials/footer.html"></div>
   <script src="assets/js/main.js"></script>

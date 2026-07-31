@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DID Sentiment Tracker — Williams Park</title>
-  <meta name="description" content="Quick 30-second check-in to help shape Williams Park. Powered by Community Play Tools and SPDP." />
+  <title>DID Sentiment Tracker Prototype | Williams Park</title>
+  <meta name="robots" content="noindex,follow">
+  <meta name="description" content="Prototype one-tap sentiment tracker designed for the Williams Park engagement suite.">
   <meta name="theme-color" content="#0a1628" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -54,35 +55,19 @@
     const { useState, useEffect, useCallback, useMemo } = React;
     const { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } = Recharts;
 
-    /* ═══════════════════════════════════════════════
-       SUPABASE CONFIG
-       ═══════════════════════════════════════════════ */
-    const SB_URL = "https://nzcogxjcihgtevjiuipf.supabase.co";
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56Y29neGpjaWhndGV2aml1aXBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTIxMzcsImV4cCI6MjA4NjQyODEzN30.hGREfoM3QWXWVKndGBmy3TGbHO7o1tt-eNH3NWbtOZU";
+    /* Public prototype: responses remain in browser memory. */
     const PROJECT = "did-sentiment";
 
-    const sbHeaders = {
-      "Content-Type": "application/json",
-      apikey: SB_KEY,
-      Authorization: `Bearer ${SB_KEY}`,
-    };
-
     async function sbInsert(table, data) {
-      const res = await fetch(`${SB_URL}/rest/v1/${table}`, {
-        method: "POST",
-        headers: { ...sbHeaders, Prefer: "return=representation" },
-        body: JSON.stringify(Array.isArray(data) ? data : [data]),
-      });
-      if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
-      return res.json();
+      const rows = Array.isArray(data) ? data : [data];
+      return rows.map((row, index) => ({
+        ...row,
+        id: row.id || `${table}-${Date.now()}-${index}`,
+      }));
     }
 
     async function sbSelect(table, query = "") {
-      const res = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {
-        headers: sbHeaders,
-      });
-      if (!res.ok) throw new Error(`Supabase ${res.status}`);
-      return res.json();
+      return [];
     }
 
     /* ═══════════════════════════════════════════════
@@ -240,7 +225,7 @@
           <div style={s.surveyWrap}>
             <div style={{ textAlign: "center", marginBottom: 32, animation: "fadeIn 0.4s ease" }}>
               <div style={s.logoMark}>CPT</div>
-              <h1 style={s.surveyTitle}>Williams Park Check-In</h1>
+              <h1 style={s.surveyTitle}>Williams Park Check-In Prototype</h1>
               <p style={s.dim15}>Help shape your park · 30 seconds</p>
             </div>
             <p style={{ fontSize: 17, fontWeight: 600, textAlign: "center", marginBottom: 16 }}>Where are you right now?</p>
@@ -320,8 +305,8 @@
           <div style={{ textAlign: "center", padding: "48px 0" }}>
             <div style={{ fontSize: 56, marginBottom: 16 }}>🌴</div>
             <h2 style={{ fontSize: 28, fontWeight: 700, margin: "0 0 12px" }}>Thank you!</h2>
-            <p style={{ fontSize: 16, color: P.textDim, margin: "0 0 8px", lineHeight: 1.5 }}>Your feedback helps make Williams Park better for everyone.</p>
-            <p style={{ fontSize: 13, color: P.textDim, margin: "0 0 28px", opacity: 0.6 }}>Powered by Community Play Tools × SPDP</p>
+            <p style={{ fontSize: 16, color: P.textDim, margin: "0 0 8px", lineHeight: 1.5 }}>This demonstration keeps your feedback in this browser session only.</p>
+            <p style={{ fontSize: 13, color: P.textDim, margin: "0 0 28px", opacity: 0.6 }}>Designed by Community Play Tools as a proposed Williams Park engagement concept</p>
             <button onClick={reset} style={s.submitBtn}>Submit Another</button>
           </div>
         </div>
@@ -515,7 +500,7 @@
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20, flexWrap: "wrap", gap: 16 }}>
             <div>
               <h1 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 4px" }}>Williams Park · DID Sentiment</h1>
-              <p style={{ fontSize: 14, color: P.textDim, margin: 0 }}>{data.total} responses · SPDP Downtown Improvement District</p>
+              <p style={{ fontSize: 14, color: P.textDim, margin: 0 }}>{data.total} prototype responses · proposed Downtown Improvement District view</p>
             </div>
             <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
               {["7d","30d","90d"].map(r => (
@@ -751,7 +736,7 @@
 
           {/* Footer */}
           <footer style={{ textAlign: "center", padding: "24px 20px", fontSize: 12, color: P.textDim, opacity: 0.5 }}>
-            Community Play Tools × SPDP · Williams Park Renovation Project
+            Community Play Tools · Williams Park engagement prototype
           </footer>
         </div>
       );

@@ -6,3 +6,8 @@ _reference/
 Thumbs.db
 desktop.ini
 *.tmp
+
+# Generated deploy artifact
+_site/
+__pycache__/
+*.pyc

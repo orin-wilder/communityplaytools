@@ -34,21 +34,57 @@
     window.addEventListener('scroll', onScroll, { passive: true });
 
     var toggle = nav.querySelector('.nav-toggle');
+    var menu = nav.querySelector('.nav-links');
+    var closeMenu = function (returnFocus) {
+      document.body.classList.remove('nav-open');
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+        if (returnFocus) toggle.focus();
+      }
+    };
     if (toggle) {
       toggle.addEventListener('click', function () {
         document.body.classList.toggle('nav-open');
         var open = document.body.classList.contains('nav-open');
         toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       });
       nav.querySelectorAll('.nav-links a').forEach(function (a) {
-        a.addEventListener('click', function () { document.body.classList.remove('nav-open'); });
+        a.addEventListener('click', function () { closeMenu(false); });
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && document.body.classList.contains('nav-open')) {
+          closeMenu(true);
+          return;
+        }
+        if (event.key !== 'Tab' || !document.body.classList.contains('nav-open') || !menu) return;
+        var focusable = Array.prototype.slice.call(menu.querySelectorAll('a[href]'));
+        focusable.push(toggle);
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 900) closeMenu(false);
       });
     }
 
     // Active link based on current page
-    var here = location.pathname.split('/').pop() || 'index.html';
+    var pathParts = location.pathname.replace(/\/+$/, '').split('/');
+    var here = pathParts.pop() || 'index';
+    here = here.replace(/\.html$/, '');
+    if (here === 'tools') here = 'builds';
     nav.querySelectorAll('.nav-links a').forEach(function (a) {
-      var href = (a.getAttribute('href') || '').split('/').pop();
+      var hrefUrl = new URL(a.getAttribute('href') || '', location.href);
+      var hrefParts = hrefUrl.pathname.replace(/\/+$/, '').split('/');
+      var href = (hrefParts.pop() || 'index').replace(/\.html$/, '');
       if (href === here) a.classList.add('active');
     });
   }

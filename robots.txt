@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /_reference/
+Disallow: /scripts/
+
+Sitemap: https://www.communityplaytools.com/sitemap.xml

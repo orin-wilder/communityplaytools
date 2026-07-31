@@ -1,49 +1,68 @@
-# Community Play Tools
+# Ryan Stock · Community Play Tools
 
-The website for **Community Play Tools (CPT)** — a civic-tech studio in St. Petersburg, FL. We help cities, nonprofits, and developers turn complex community work into measurable progress, and make taking part feel like *play, not homework*.
+Ryan Stock’s candidate-first professional portfolio, with Community Play Tools retained as a secondary consulting practice.
 
-Built with plain HTML, CSS, and JavaScript — no framework — with one shared design system and a tiny include for the nav/footer.
+The site uses plain HTML, CSS, and JavaScript. Shared navigation and footer partials remain the authoring source, then a small build step inlines them into the deployable HTML so crawlers, social tools, keyboard users, and readers receive complete markup immediately.
 
-## Structure
+## Primary routes
 
-```
-index.html         Home
-work.html          Engagement case studies
-tools.html         Civic-tech tools showcase
-signal-fire.html   Signal Fire — flagship product deep-dive
-stpete-overlay.html  The St. Pete Overlay — clickable SVG city map
-approach.html      Philosophy, how we work, who we serve
-about.html         The firm, Ryan Stock, team, testimonials
-contact.html       Request-a-proposal form (Netlify) + FAQ
-success.html       Form confirmation
-404.html           Not-found page
-links.html         Linktree-style share page
-assets/css/        styles.css — the "Civic Play" design system
-assets/js/         main.js — includes, nav, scroll reveal, counters; stpete-overlay.js — overlay map logic
-partials/          nav.html, footer.html (shared, injected via JS)
+```text
+/                 Candidate-first homepage
+/leadership       Canonical leadership portfolio for job applications
+/work             Enterprise, civic, and product case studies
+/builds           Shipped products and honestly labeled prototypes
+/about            Ryan’s integrated career story and credentials
+/contact          Hiring and secondary consulting paths
+/signal-fire      Signal Fire product case study
+/resume           Canonical public résumé PDF
 ```
 
-Interactive tool pages (`cmapp.html`, `meeting-stone.html`, `ga-host.html`, etc.) are self-contained apps and are linked from the Tools page.
+Legacy `/tools` and `/approach` URLs redirect to their current destinations.
 
-## Local preview
+## Source structure
 
-The shared nav/footer are injected at runtime via `fetch`, so the site must be served over HTTP (not opened from the filesystem):
-
-```bash
-python -m http.server 8000
-# then open http://localhost:8000
+```text
+assets/css/        Civic Play design system
+assets/js/         Shared behavior and self-contained tool support
+assets/images/     Public site and product imagery
+assets/resume/     Public DOCX and PDF résumé artifacts
+partials/          Shared navigation and footer authoring partials
+scripts/           Local build, audit, résumé, and social-image utilities
+_reference/        Internal planning and source notes, never published
 ```
 
-Or with the Netlify CLI: `netlify dev`.
+Specialized prototypes remain self-contained. Their `noindex` metadata controls search discovery, not access or privacy. The legacy poll administrator is excluded from the public build and blocked by Netlify redirects.
 
-## Deploy
+## Build and local preview
 
-Static site — publish the repository root. The contact form uses Netlify Forms (`data-netlify`), so it works automatically on Netlify with no extra configuration.
+```powershell
+python scripts/build_site.py
+python -m http.server 8000 --directory _site
+```
+
+Then open `http://127.0.0.1:8000/`.
+
+The generated `_site/` directory is the exact public artifact. It contains inlined shared partials and extensionless primary routes, while excluding internal notes, source scripts, administrative pages, and stale event-sales material.
+
+## Validation
+
+```powershell
+python scripts/audit_site.py
+```
+
+Browser QA should cover the six primary pages at desktop, tablet, and mobile widths, plus keyboard navigation, hover contrast, reduced motion, form markup, redirects, and the résumé download.
+
+## Deployment
+
+Netlify reads `netlify.toml`, runs the build, and publishes `_site/`. The contact form uses Netlify Forms and must remain present in the built `contact/index.html`.
+
+No external analytics service is included.
 
 ## Design system
 
-- **Type:** Fraunces (display) + Inter (body)
-- **Color:** warm paper + ink base, deep pine as the civic primary, coral as the energetic "play" accent
-- **Motion:** scroll-reveal and animated counters, with `prefers-reduced-motion` support
+- Fraunces display typography and Inter body typography
+- Warm paper, deep pine, accessible coral, and mint
+- Editorial civic authority with restrained playfulness
+- Strong focus states and reduced-motion support
 
-The Signal Fire page wears its own *Civic Beacon* ember accent, scoped to that page.
+Community Play Tools’ product thesis remains: civic engagement should feel like play, not homework.
