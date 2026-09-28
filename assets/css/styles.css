@@ -1043,3 +1043,32 @@ section { padding: clamp(64px, 9vw, 120px) 0; }
   .lab-grid.two { grid-template-columns: 1fr; }
   .ask-list li { padding-left: 50px; }
 }
+
+/* ---- /card landing (QR destination from business card) ---- */
+.card-landing { padding: clamp(40px, 7vw, 88px) 0; }
+.card-panel {
+  max-width: 640px; margin: 0 auto; padding: clamp(24px, 5vw, 44px);
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-md);
+}
+.card-id { display: flex; align-items: center; gap: 22px; }
+.card-id img { width: 104px; height: 104px; object-fit: cover; object-position: 50% 20%; border-radius: 50%; box-shadow: var(--shadow-sm); flex: 0 0 auto; }
+.card-id h1 { margin: 8px 0 4px; font-size: clamp(2rem, 6vw, 2.8rem); }
+.card-title { color: var(--ink); font-weight: 600; }
+.card-place { color: var(--ink-mute); font-size: .95rem; }
+.card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 30px; }
+.card-actions .btn { justify-content: center; width: 100%; min-width: 0; white-space: normal; text-align: center; }
+.card-actions .btn-primary, .card-actions .btn-dark { grid-column: 1 / -1; }
+.card-note { margin-top: 26px; font-size: 1.05rem; }
+.card-links { list-style: none; margin-top: 22px; border-top: 1px solid var(--line); }
+.card-links a {
+  display: grid; grid-template-columns: 1fr auto; column-gap: 12px; align-items: center;
+  padding: 16px 4px; border-bottom: 1px solid var(--line); color: var(--ink);
+}
+.card-links a strong { grid-column: 1; }
+.card-links a span:not(.arrow) { grid-column: 1; color: var(--ink-mute); font-size: .92rem; }
+.card-links a .arrow { grid-column: 2; grid-row: 1 / span 2; color: var(--coral); transition: transform .25s var(--ease); }
+.card-links a:hover .arrow { transform: translateX(4px); }
+@media (max-width: 520px) {
+  .card-id { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .card-actions { grid-template-columns: 1fr; }
+}

@@ -10,6 +10,7 @@ The site uses plain HTML, CSS, and JavaScript. Shared navigation and footer part
 /                    Local-first homepage (St. Pete business audience)
 /downtown-discovery  Current flagship project (working title; teaser only before 1MC)
 /hire                Hiring landing page — link this in job applications
+/card                Business-card QR destination (noindex); vCard at /assets/ryan-stock.vcf
 /leadership       Leadership portfolio (linked from /hire, not the nav)
 /work             Enterprise, civic, and product case studies
 /builds           Shipped products and honestly labeled prototypes
