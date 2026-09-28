@@ -1,18 +1,20 @@
 # Ryan Stock · Community Play Tools
 
-Ryan Stock’s candidate-first professional portfolio, with Community Play Tools retained as a secondary consulting practice.
+Ryan Stock · Community Play Tools — a local-first site for the St. Pete business community, with a separate hiring hub (/hire) for job applications.
 
 The site uses plain HTML, CSS, and JavaScript. Shared navigation and footer partials remain the authoring source, then a small build step inlines them into the deployable HTML so crawlers, social tools, keyboard users, and readers receive complete markup immediately.
 
 ## Primary routes
 
 ```text
-/                 Candidate-first homepage
-/leadership       Canonical leadership portfolio for job applications
+/                    Local-first homepage (St. Pete business audience)
+/downtown-discovery  Current flagship project (working title; teaser only before 1MC)
+/hire                Hiring landing page — link this in job applications
+/leadership       Leadership portfolio (linked from /hire, not the nav)
 /work             Enterprise, civic, and product case studies
 /builds           Shipped products and honestly labeled prototypes
 /about            Ryan’s integrated career story and credentials
-/contact          Hiring and secondary consulting paths
+/contact          Coffee-first contact + Netlify form (#consulting anchor kept for legacy redirects)
 /signal-fire      Signal Fire product case study
 /resume           Canonical public résumé PDF
 ```

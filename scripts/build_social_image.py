@@ -1,9 +1,9 @@
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "assets" / "images" / "ryan-stock-social.png"
-HEADSHOT = ROOT / "assets" / "images" / "ryan-stock-headshot.jpg"
+HEADSHOT = ROOT / "assets" / "images" / "ryan-headshot.jpg"
 
 W, H = 1200, 630
 PAPER = "#F5F1ED"
@@ -15,8 +15,8 @@ MUTED = "#4A443D"
 canvas = Image.new("RGB", (W, H), PAPER)
 draw = ImageDraw.Draw(canvas)
 
-headshot = Image.open(HEADSHOT).convert("RGB")
-crop = headshot.crop((150, 0, 1050, 1200)).resize((470, 630), Image.Resampling.LANCZOS)
+headshot = ImageOps.exif_transpose(Image.open(HEADSHOT)).convert("RGB")
+crop = ImageOps.fit(headshot, (470, 630), method=Image.Resampling.LANCZOS, centering=(0.5, 0.35))
 canvas.paste(crop, (730, 0))
 draw.rectangle((712, 0, 744, H), fill=PINE)
 draw.ellipse((82, 76, 142, 136), fill=PINE)

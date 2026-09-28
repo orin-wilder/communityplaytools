@@ -17,6 +17,8 @@ OUT = ROOT / "_site"
 
 ROUTES = {
     "index.html": "index.html",
+    "downtown-discovery.html": "downtown-discovery/index.html",
+    "hire.html": "hire/index.html",
     "leadership.html": "leadership/index.html",
     "work.html": "work/index.html",
     "builds.html": "builds/index.html",
@@ -53,6 +55,8 @@ PUBLIC_STANDALONE = [
 
 PRIMARY_LINKS = {
     "index.html": "/",
+    "downtown-discovery.html": "/downtown-discovery",
+    "hire.html": "/hire",
     "leadership.html": "/leadership",
     "work.html": "/work",
     "builds.html": "/builds",

@@ -9,6 +9,9 @@
 /about.html         /about                  301
 /contact.html       /contact                301
 /signal-fire.html   /signal-fire            301
+/hire.html          /hire                   301
+/downtown-discovery.html /downtown-discovery 301
+/hiring             /hire                   301
 /success.html       /success                301
 /events/spdetection /builds#detective-club  301
 /events/spdetection/* /builds#detective-club 301

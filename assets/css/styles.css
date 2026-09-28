@@ -1001,3 +1001,45 @@ section { padding: clamp(64px, 9vw, 120px) 0; }
   .ovl { grid-template-columns: 1fr; gap: 20px; }
   .ovl-map .lbl { font-size: 17px; }
 }
+
+/* ---- Local-first homepage + Downtown Discovery (2026-09) --- */
+.dd-winners { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.dd-winners .route-card {
+  min-height: 0; padding: 22px 26px;
+  background: rgba(245,241,237,.06); border-color: rgba(245,241,237,.16); box-shadow: none;
+}
+.dd-winners .route-card .route-num { color: var(--mint); }
+.dd-winners .route-card h3 { margin: 8px 0 6px; font-size: 1.3rem; color: var(--paper); }
+.dd-winners .route-card p { font-size: .96rem; color: rgba(245,241,237,.8); }
+.lab-grid.two { grid-template-columns: repeat(2, 1fr); }
+.split-feature > div > p + p { margin-top: 14px; }
+.proof-context a { color: var(--mint); font-weight: 600; }
+.proof-context a:hover { color: var(--paper); }
+.ask-list { list-style: none; display: grid; gap: 14px; margin-top: 24px; }
+.ask-list li {
+  position: relative; padding: 18px 22px 18px 54px;
+  border: 1px solid var(--line); border-radius: var(--r-md); background: var(--card);
+  color: var(--ink-soft);
+}
+.ask-list li strong { display: block; color: var(--ink); font-size: 1.08rem; margin-bottom: 2px; }
+.ask-list li::before {
+  content: counter(ask); counter-increment: ask;
+  position: absolute; left: 18px; top: 18px;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--coral); color: #fff; font-weight: 700; font-size: .8rem;
+}
+.ask-list { counter-reset: ask; }
+.layer-stack { display: grid; gap: 10px; }
+.layer-stack div {
+  padding: 18px 22px; border-radius: var(--r-md);
+  border: 1px solid var(--line); background: var(--card);
+}
+.layer-stack div:nth-child(1) { background: var(--pine); border-color: var(--pine); }
+.layer-stack div:nth-child(1) b, .layer-stack div:nth-child(1) span { color: var(--paper); }
+.layer-stack b { display: block; font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.layer-stack span { font-size: .93rem; color: var(--ink-mute); }
+@media (max-width: 720px) {
+  .lab-grid.two { grid-template-columns: 1fr; }
+  .ask-list li { padding-left: 50px; }
+}

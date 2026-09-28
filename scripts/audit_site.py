@@ -8,6 +8,8 @@ SOURCE = Path(__file__).resolve().parents[1]
 ROOT = SOURCE / "_site"
 MAIN = [
     "index.html",
+    "downtown-discovery/index.html",
+    "hire/index.html",
     "leadership/index.html",
     "work/index.html",
     "builds/index.html",
