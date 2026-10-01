@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>North Shore Exercise Zone · Groups that meet here</title>
+  <meta name="description" content="Free grassroots groups that meet at the North Shore Exercise Zone in St. Petersburg, FL. Come join in.">
+  <!-- Demo pilot page: kept out of search results. noindex is not access control. -->
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://www.communityplaytools.com/northshore">
+  <meta name="theme-color" content="#403F99">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Atkinson Hyperlegible Next first; the original Atkinson Hyperlegible is a backup if the Next family fails to load. -->
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Design tokens (from the North Shore Exercise Zone design system mockup) ===== */
+    :root {
+      /* Brand palette — sampled from the City of St. Petersburg flag. Accents only. */
+      --brand-orange: #F58220; --brand-red: #EE3339; --brand-green: #00AD5F; --brand-indigo: #403F99;
+      --indigo-50: #EEEEF7; --indigo-100: #DCDCEF; --indigo-600: #403F99; --indigo-700: #34337F; --indigo-800: #29286A;
+      --orange-50: #FEF0E3; --red-50: #FDE9EA; --green-50: #E2F6EC;
+      --white: #FFFFFF; --gray-50: #F6F7F8; --gray-100: #EFF1F3; --gray-200: #E3E6E9; --gray-300: #CDD2D7;
+      --gray-600: #535A63; --gray-700: #3B4148; --gray-900: #1D2126;
+      --text-strong: var(--gray-900); --text-body: var(--gray-700); --text-muted: var(--gray-600);
+      --border-card: var(--gray-200); --border-input: var(--gray-300);
+      --action-primary: var(--indigo-600); --action-primary-hover: var(--indigo-700); --action-primary-press: var(--indigo-800);
+      --action-secondary-bg: var(--indigo-50); --action-secondary-hover: var(--indigo-100);
+      --focus-ring: var(--brand-orange);
+      --status-error: #C4161C; --status-success: #007A43;
+
+      --font-sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --fs-display: 32px; --fs-title: 23px; --fs-lead: 19px; --fs-body: 18px; --fs-small: 16px; --fs-micro: 14px;
+
+      --page-gutter: 20px; --page-max: 480px; --card-gap: 16px; --card-pad: 20px;
+      --tap-min: 52px;
+      --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-pill: 999px;
+      --border-w: 1.5px; --accent-bar: 8px; --stripe-h: 7px;
+      --shadow-card: 0 1px 2px rgba(29,33,38,.06), 0 2px 8px rgba(29,33,38,.04);
+      --shadow-sheet: 0 -8px 32px rgba(29,33,38,.18);
+      --ease-out: cubic-bezier(.2,.7,.2,1); --dur-fast: 120ms; --dur-base: 200ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; background: var(--white); color: var(--text-body);
+      font: 400 var(--fs-body)/1.45 var(--font-sans);
+    }
+    body.sheet-open { overflow: hidden; }
+    .page { max-width: var(--page-max); margin: 0 auto; }
+    .sr-only {
+      position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+    .skip-link {
+      position: absolute; left: 12px; top: -100px; z-index: 50; padding: 12px 16px;
+      background: var(--white); color: var(--indigo-600); font-weight: 700; border-radius: var(--radius-sm);
+    }
+    .skip-link:focus { top: 12px; outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+    .icon { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ===== Header ===== */
+    .stripes { display: flex; flex-direction: column; height: calc(var(--stripe-h) * 4); }
+    .stripes span { flex: 1; }
+    .stripes span:nth-child(1) { background: var(--brand-orange); }
+    .stripes span:nth-child(2) { background: var(--brand-red); }
+    .stripes span:nth-child(3) { background: var(--brand-green); }
+    .stripes span:nth-child(4) { background: var(--brand-indigo); }
+    .board-header { padding: 28px var(--page-gutter) 8px; }
+    .board-header h1 {
+      margin: 0; font: 800 var(--fs-display)/1.15 var(--font-sans); letter-spacing: -0.01em;
+      color: var(--text-strong); text-wrap: balance;
+    }
+    .board-header p { margin: 10px 0 0; font: 400 var(--fs-lead)/1.3 var(--font-sans); color: var(--text-body); }
+
+    /* ===== Filter ===== */
+    .filter { padding: 16px var(--page-gutter) 0; }
+    .filter-group {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px;
+      background: var(--gray-100); border-radius: var(--radius-pill);
+    }
+    .filter-btn {
+      min-height: var(--tap-min); border: 0; border-radius: var(--radius-pill); background: transparent;
+      font: 700 var(--fs-small)/1.1 var(--font-sans); color: var(--text-body); cursor: pointer;
+      transition: background var(--dur-fast) var(--ease-out);
+    }
+    .filter-btn:hover { background: var(--white); }
+    .filter-btn[aria-pressed="true"] { background: var(--action-primary); color: var(--white); }
+    .filter-btn:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+    /* ===== Cards ===== */
+    .cards { padding: 20px var(--page-gutter) 0; display: flex; flex-direction: column; gap: var(--card-gap); }
+    .card {
+      background: var(--white); border: var(--border-w) solid var(--border-card); border-radius: var(--radius-md);
+      overflow: hidden; box-shadow: var(--shadow-card);
+    }
+    .card-bar { height: var(--accent-bar); background: var(--accent, var(--brand-indigo)); }
+    .card-body { padding: 18px var(--card-pad) var(--card-pad); display: flex; flex-direction: column; gap: 12px; }
+    .card h2 { margin: 0; font: 700 var(--fs-title)/1.3 var(--font-sans); color: var(--text-strong); text-wrap: balance; }
+    .card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0; }
+    .day-tag {
+      display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 10px; border-radius: var(--radius-pill);
+      background: var(--tint, var(--indigo-50)); color: var(--text-strong);
+      font: 700 var(--fs-small)/1.2 var(--font-sans); white-space: nowrap;
+    }
+    .day-tag::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent, var(--brand-indigo)); flex: none; }
+    .card-time { display: inline-flex; align-items: center; gap: 6px; font: 700 var(--fs-body)/1.2 var(--font-sans); color: var(--text-strong); }
+    .card-time .icon { width: 18px; height: 18px; color: var(--text-muted); }
+    .one-time { font: 500 var(--fs-micro)/1.2 var(--font-sans); color: var(--text-muted); letter-spacing: 0.02em; text-transform: uppercase; }
+    .card p.desc { margin: 0; color: var(--text-body); text-wrap: pretty; }
+    .card-links { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+
+    .empty {
+      margin: 0; padding: 24px var(--card-pad); border: var(--border-w) dashed var(--border-input);
+      border-radius: var(--radius-md); text-align: center; color: var(--text-body);
+    }
+    .empty p { margin: 0 0 12px; }
+
+    /* ===== Buttons & links ===== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: var(--tap-min);
+      padding: 0 22px; border-radius: var(--radius-pill); border: var(--border-w) solid transparent;
+      font: 700 var(--fs-body)/1.1 var(--font-sans); text-decoration: none; text-align: center; cursor: pointer;
+      transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+    .btn--full { display: flex; width: 100%; }
+    .btn--lg { min-height: 60px; font-size: var(--fs-lead); padding: 0 26px; }
+    .btn--lg .icon { width: 24px; height: 24px; }
+    .btn--primary { background: var(--action-primary); color: var(--white); }
+    .btn--primary:hover { background: var(--action-primary-hover); }
+    .btn--primary:active { background: var(--action-primary-press); }
+    .btn--secondary { background: var(--action-secondary-bg); color: var(--indigo-600); }
+    .btn--secondary:hover { background: var(--action-secondary-hover); }
+    .btn--outline { background: var(--white); color: var(--indigo-600); border-color: var(--indigo-600); }
+    .btn--outline:hover { background: var(--indigo-50); }
+    .btn--ghost { background: transparent; color: var(--indigo-600); }
+    .btn--ghost:hover { background: var(--indigo-50); }
+    .btn[disabled] { background: var(--gray-100); color: var(--gray-600); cursor: wait; transform: none; }
+
+    .link-quiet {
+      background: none; border: 0; padding: 0 12px; min-height: var(--tap-min); display: inline-flex; align-items: center; cursor: pointer;
+      color: var(--text-muted); font: 500 var(--fs-small)/1.3 var(--font-sans);
+      text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px;
+    }
+    .link-quiet:hover { color: var(--text-strong); }
+    .link-quiet:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
+
+    /* ===== Submit CTA & footer ===== */
+    .cta { padding: 36px var(--page-gutter) 40px; display: flex; flex-direction: column; gap: 12px; text-align: center; }
+    .cta p { margin: 0; font: 400 var(--fs-small)/1.35 var(--font-sans); color: var(--text-body); }
+    .board-footer {
+      padding: 28px var(--page-gutter) 36px; display: flex; flex-direction: column; align-items: center; gap: 14px;
+      border-top: 1px solid var(--border-card);
+    }
+    .powered { font: 400 var(--fs-micro)/1.3 var(--font-sans); color: var(--text-muted); }
+    .powered a { color: inherit; font-weight: 700; }
+    .powered a:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
+
+    /* ===== Slide-up sheets (native <dialog>) ===== */
+    dialog.sheet {
+      position: fixed; inset: auto 0 0 0; margin: 0 auto; padding: 0; border: 0;
+      width: 100%; max-width: var(--page-max); max-height: 92vh; max-height: 92dvh; overflow: auto;
+      background: var(--white); color: var(--text-body);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: var(--shadow-sheet);
+    }
+    dialog.sheet[open] { animation: sheet-up var(--dur-base) var(--ease-out); }
+    dialog.sheet::backdrop { background: rgba(29,33,38,.45); }
+    @keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) { dialog.sheet[open] { animation: none; } .btn, .filter-btn { transition: none; } }
+    .sheet-inner { padding: 12px var(--page-gutter) 28px; }
+    .sheet-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .sheet h2 { margin: 12px 0 0; font: 700 var(--fs-title)/1.3 var(--font-sans); color: var(--text-strong); }
+    .sheet h2:focus, [data-done-focus]:focus { outline: none; }
+    .sheet-close {
+      flex: none; width: var(--tap-min); height: var(--tap-min); margin-right: -10px; border: 0; border-radius: 50%;
+      background: transparent; color: var(--text-strong); display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .sheet-close:hover { background: var(--gray-100); }
+    .sheet-close:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+    .sheet-intro { margin: 8px 0 0; }
+    .sheet form { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
+    .sheet .actions { display: flex; flex-direction: column; gap: 8px; }
+    .form-alert {
+      margin: 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--red-50); color: var(--text-strong);
+      font: 700 var(--fs-small)/1.35 var(--font-sans);
+    }
+    .done { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; padding-top: 8px; }
+    .done-badge {
+      width: 56px; height: 56px; border-radius: 50%; background: var(--green-50); color: var(--status-success);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .done-badge .icon { width: 30px; height: 30px; stroke-width: 2.5; }
+    .done p { margin: 0; }
+    .done .btn { align-self: stretch; margin-top: 8px; }
+
+    /* ===== Form fields ===== */
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font: 700 var(--fs-small)/1.3 var(--font-sans); color: var(--text-strong); }
+    .field .opt { font-weight: 400; color: var(--text-muted); }
+    .field .hint { font: 400 var(--fs-micro)/1.35 var(--font-sans); color: var(--text-muted); }
+    .field input, .field textarea, .field select {
+      width: 100%; min-height: var(--tap-min); padding: 12px 14px; border: var(--border-w) solid var(--border-input);
+      border-radius: var(--radius-sm); background: var(--white); color: var(--text-strong);
+      font: 400 var(--fs-body)/1.45 var(--font-sans);
+    }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .field input::placeholder, .field textarea::placeholder { color: #7A818A; }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      outline: none; border-color: var(--indigo-600); box-shadow: 0 0 0 3px var(--indigo-100);
+    }
+    .field [aria-invalid="true"] { border-color: var(--status-error); }
+    .field .error { font: 700 var(--fs-micro)/1.35 var(--font-sans); color: var(--status-error); }
+    .field .error:empty { display: none; }
+    .review-note {
+      margin: 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--gray-50);
+      font: 400 var(--fs-small)/1.4 var(--font-sans); color: var(--text-body);
+    }
+    .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#groups">Skip to groups</a>
+  <div class="page">
+    <header>
+      <div class="stripes" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div class="board-header">
+        <h1>North Shore Exercise Zone</h1>
+        <p>Groups that meet here. Come join in.</p>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <div class="filter">
+        <div class="filter-group" role="group" aria-label="Show groups">
+          <button type="button" class="filter-btn" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="filter-btn" data-filter="today" aria-pressed="false">Today</button>
+          <button type="button" class="filter-btn" data-filter="week" aria-pressed="false">This week</button>
+        </div>
+      </div>
+      <p class="sr-only" id="results-status" role="status" aria-live="polite"></p>
+
+      <section id="groups" class="cards" aria-label="Groups" tabindex="-1">
+        <noscript><p class="empty">Turn on JavaScript to see the groups that meet here.</p></noscript>
+      </section>
+
+      <section class="cta" aria-labelledby="cta-label">
+        <p id="cta-label">Run a free group that meets here?</p>
+        <button type="button" class="btn btn--primary btn--lg btn--full" data-open="submit-sheet">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          <span>Submit your group or event here</span>
+        </button>
+      </section>
+    </main>
+
+    <footer class="board-footer">
+      <button type="button" class="link-quiet" data-open="report-sheet">Report an issue</button>
+      <span class="powered">Powered by <a href="/">Community Play Tools</a></span>
+    </footer>
+  </div>
+
+  <!-- ===== Submit sheet =====
+       Static form markup so Netlify Forms detects it at deploy time.
+       Submissions land in the Netlify dashboard under "northshore-submit". -->
+  <dialog class="sheet" id="submit-sheet" aria-labelledby="submit-title">
+    <div class="sheet-inner">
+      <div class="sheet-top">
+        <h2 id="submit-title" tabindex="-1">Add your group</h2>
+        <button type="button" class="sheet-close" data-close aria-label="Close">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div data-form-panel>
+        <p class="sheet-intro">Free groups and events that meet at the North Shore Exercise Zone.</p>
+        <form name="northshore-submit" method="POST" action="/northshore" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+          <input type="hidden" name="form-name" value="northshore-submit">
+          <p class="hp" aria-hidden="true"><label>Leave this empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+          <div class="field">
+            <label for="s-name">Group or event name</label>
+            <input id="s-name" name="group-name" type="text" maxlength="80" required aria-describedby="s-name-err">
+            <span class="error" id="s-name-err"></span>
+          </div>
+          <div class="field">
+            <label for="s-when">Day and time, or date</label>
+            <span class="hint" id="s-when-hint">For example: Tuesdays 6–7 pm, or Sat, Nov 8, 9 am</span>
+            <input id="s-when" name="day-and-time" type="text" maxlength="100" required aria-describedby="s-when-hint s-when-err">
+            <span class="error" id="s-when-err"></span>
+          </div>
+          <div class="field">
+            <label for="s-desc">Short description</label>
+            <span class="hint" id="s-desc-hint">One or two lines. Up to 200 characters.</span>
+            <textarea id="s-desc" name="description" maxlength="200" required aria-describedby="s-desc-hint s-desc-err"></textarea>
+            <span class="error" id="s-desc-err"></span>
+          </div>
+          <div class="field">
+            <label for="s-link">Website or social link <span class="opt">(optional)</span></label>
+            <input id="s-link" name="link" type="url" inputmode="url" placeholder="https://" maxlength="300" aria-describedby="s-link-err">
+            <span class="error" id="s-link-err"></span>
+          </div>
+          <div class="field">
+            <label for="s-contact">Your name</label>
+            <span class="hint" id="s-contact-hint">Not shown publicly.</span>
+            <input id="s-contact" name="contact-name" type="text" autocomplete="name" maxlength="80" required aria-describedby="s-contact-hint s-contact-err">
+            <span class="error" id="s-contact-err"></span>
+          </div>
+          <div class="field">
+            <label for="s-email">Your email</label>
+            <span class="hint" id="s-email-hint">Only used if we have a question. Not shown publicly.</span>
+            <input id="s-email" name="email" type="email" autocomplete="email" maxlength="120" required aria-describedby="s-email-hint s-email-err">
+            <span class="error" id="s-email-err"></span>
+          </div>
+
+          <p class="review-note">Submissions are reviewed before they appear on the board.</p>
+          <p class="form-alert" role="alert" hidden></p>
+          <div class="actions">
+            <button type="submit" class="btn btn--primary btn--lg btn--full">Send for review</button>
+            <button type="button" class="btn btn--ghost btn--full" data-close>Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="done" data-done-panel hidden>
+        <span class="done-badge" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <p tabindex="-1" data-done-focus><strong>Thanks, got it.</strong></p>
+        <p>We'll check the details and add your group to the board once it's reviewed.</p>
+        <button type="button" class="btn btn--outline" data-close>Back to the board</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ===== Report sheet =====
+       Submissions land in the Netlify dashboard under "northshore-report". -->
+  <dialog class="sheet" id="report-sheet" aria-labelledby="report-title">
+    <div class="sheet-inner">
+      <div class="sheet-top">
+        <h2 id="report-title" tabindex="-1">Report an issue</h2>
+        <button type="button" class="sheet-close" data-close aria-label="Close">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div data-form-panel>
+        <form name="northshore-report" method="POST" action="/northshore" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+          <input type="hidden" name="form-name" value="northshore-report">
+          <p class="hp" aria-hidden="true"><label>Leave this empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+          <div class="field">
+            <label for="r-issue">What's wrong?</label>
+            <span class="hint" id="r-issue-hint">Wrong time, broken link, group no longer meets…</span>
+            <textarea id="r-issue" name="issue" maxlength="1000" required aria-describedby="r-issue-hint r-issue-err"></textarea>
+            <span class="error" id="r-issue-err"></span>
+          </div>
+          <div class="field">
+            <label for="r-group">Which group? <span class="opt">(optional)</span></label>
+            <select id="r-group" name="group">
+              <option value="">Not about a specific group</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="r-email">Your email <span class="opt">(optional)</span></label>
+            <span class="hint" id="r-email-hint">Only if you'd like a reply. Not shown publicly.</span>
+            <input id="r-email" name="email" type="email" autocomplete="email" maxlength="120" aria-describedby="r-email-hint r-email-err">
+            <span class="error" id="r-email-err"></span>
+          </div>
+
+          <p class="form-alert" role="alert" hidden></p>
+          <div class="actions">
+            <button type="submit" class="btn btn--primary btn--full">Send report</button>
+            <button type="button" class="btn btn--ghost btn--full" data-close>Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="done" data-done-panel hidden>
+        <span class="done-badge" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <p tabindex="-1" data-done-focus><strong>Thanks for letting us know.</strong></p>
+        <p>We'll take a look and fix it.</p>
+        <button type="button" class="btn btn--outline" data-close>Back to the board</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+  /* =====================================================================
+     GROUPS — the approval gate. Only groups listed here appear on the board.
+     To add an approved submission, copy an entry and edit it.
+
+     Fields:
+       id          short unique id (letters/numbers/dashes)
+       name        group name
+       accent      "orange" | "red" | "green" | "indigo"
+       days        recurring groups: any of "Sun","Mon","Tue","Wed","Thu","Fri","Sat"
+       date        one-time events instead of days: "YYYY-MM-DD" (St. Pete local date).
+                   One-time events show through the end of that day, then hide automatically.
+       label       optional: overrides the day/date tag text (e.g. "1st Saturdays")
+       time        display text, e.g. "6:30–7:30 am"
+       description one or two lines
+       links       [{ label, href }] — full https:// links; each opens in a new tab
+     ===================================================================== */
+
+  // UNCONFIRMED SAMPLES — verify name, schedule, description and links with each group before launch.
+  const GROUPS = [
+    {
+      id: "sunrise-crew",
+      name: "Sunrise Crew",
+      accent: "orange",
+      days: ["Mon", "Fri"],
+      time: "6:30–7:30 am",
+      description: "A bright and early HIIT workout with friends. Join for coffee after, at a rotating location.",
+      links: [{ label: "Instagram", href: "https://www.instagram.com/sunrisecrewstpete/" }]
+    },
+    {
+      id: "pinellas-run-club-2026-10-01",
+      name: "Pinellas Run Club",
+      accent: "red",
+      date: "2026-10-01",
+      time: "6:30 pm",
+      description: "All ages | All paces | YOUR space",
+      links: [
+        { label: "Linktree", href: "https://linktr.ee/pinellasrunclub" },
+        { label: "Instagram", href: "https://www.instagram.com/pinellasrunclub/" }
+      ]
+    },
+    {
+      id: "st-pete-acro-yoga",
+      name: "St Pete Acro Yoga",
+      accent: "green",
+      days: ["Sun"],
+      time: "2–6 pm",
+      description: "We change the world by lifting others! Follow us and watch our community grow.",
+      links: [{ label: "Instagram", href: "https://www.instagram.com/stpeteacroyoga/" }]
+    }
+  ];
+  /* ===================== end of GROUPS — no edits needed below ===================== */
+
+  (function () {
+    "use strict";
+
+    var TZ = "America/New_York";
+    var DAY_KEYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var DAY_NAMES = ["Sundays", "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays"];
+    var ACCENTS = {
+      orange: ["var(--brand-orange)", "var(--orange-50)"],
+      red: ["var(--brand-red)", "var(--red-50)"],
+      green: ["var(--brand-green)", "var(--green-50)"],
+      indigo: ["var(--brand-indigo)", "var(--indigo-50)"]
+    };
+    var SVG_NS = "http://www.w3.org/2000/svg";
+
+    /* ---------- Dates (always St. Pete local time) ---------- */
+    function todayLocal() {
+      var parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", weekday: "short"
+      }).formatToParts(new Date());
+      var p = {};
+      parts.forEach(function (x) { p[x.type] = x.value; });
+      return { iso: p.year + "-" + p.month + "-" + p.day, weekday: DAY_KEYS.indexOf(p.weekday) };
+    }
+    function isoToUTC(iso) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+      return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : NaN;
+    }
+    function daysBetween(fromIso, toIso) { return Math.round((isoToUTC(toIso) - isoToUTC(fromIso)) / 86400000); }
+    function formatDate(iso) {
+      return new Intl.DateTimeFormat("en-US", { timeZone: "UTC", weekday: "short", month: "short", day: "numeric" })
+        .format(new Date(isoToUTC(iso)));
+    }
+    function dayLabel(g) {
+      if (g.label) return g.label;
+      if (g.date) return formatDate(g.date);
+      var idx = (g.days || []).map(function (d) { return DAY_KEYS.indexOf(d); }).filter(function (i) { return i >= 0; });
+      if (idx.length === 7) return "Every day";
+      if (idx.length === 1) return DAY_NAMES[idx[0]];
+      var keys = idx.map(function (i) { return DAY_KEYS[i]; });
+      if (keys.length === 2) return keys.join(" & ");
+      return keys.slice(0, -1).join(", ") + " & " + keys[keys.length - 1];
+    }
+
+    var TODAY = todayLocal();
+
+    function isPast(g) { return !!g.date && daysBetween(TODAY.iso, g.date) < 0; }
+    function matches(g, filter) {
+      if (filter === "all") return true;
+      if (g.date) {
+        var diff = daysBetween(TODAY.iso, g.date);
+        return filter === "today" ? diff === 0 : diff >= 0 && diff <= 6;
+      }
+      if (filter === "week") return true; // recurring weekly groups meet every week
+      return (g.days || []).indexOf(DAY_KEYS[TODAY.weekday]) >= 0;
+    }
+    function safeHref(href) { return /^https:\/\//i.test(href || "") ? href : null; }
+
+    /* ---------- Rendering (DOM APIs only; no HTML strings) ---------- */
+    function el(tag, cls, text) {
+      var n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text != null) n.textContent = text;
+      return n;
+    }
+    function icon(paths) {
+      var svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("class", "icon");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("aria-hidden", "true");
+      paths.forEach(function (spec) {
+        var n = document.createElementNS(SVG_NS, spec[0]);
+        Object.keys(spec[1]).forEach(function (k) { n.setAttribute(k, spec[1][k]); });
+        svg.appendChild(n);
+      });
+      return svg;
+    }
+    var CLOCK = [["circle", { cx: 12, cy: 12, r: 10 }], ["polyline", { points: "12 6 12 12 16 14" }]];
+    var ARROW = [["path", { d: "M7 7h10v10" }], ["path", { d: "M7 17 17 7" }]];
+
+    function card(g) {
+      var a = ACCENTS[g.accent] || ACCENTS.indigo;
+      var art = el("article", "card");
+      art.style.setProperty("--accent", a[0]);
+      art.style.setProperty("--tint", a[1]);
+      var bar = el("div", "card-bar"); bar.setAttribute("aria-hidden", "true");
+      art.appendChild(bar);
+
+      var body = el("div", "card-body");
+      body.appendChild(el("h2", null, g.name));
+
+      var meta = el("p", "card-meta");
+      meta.appendChild(el("span", "day-tag", dayLabel(g)));
+      if (g.time) {
+        var t = el("span", "card-time");
+        t.appendChild(icon(CLOCK));
+        t.appendChild(document.createTextNode(g.time));
+        meta.appendChild(t);
+      }
+      if (g.date) meta.appendChild(el("span", "one-time", "One-time"));
+      body.appendChild(meta);
+
+      if (g.description) body.appendChild(el("p", "desc", g.description));
+
+      var links = (g.links || []).filter(function (l) { return safeHref(l.href); });
+      if (links.length) {
+        var wrap = el("div", "card-links");
+        links.forEach(function (l) {
+          var link = el("a", "btn btn--secondary btn--full");
+          link.href = safeHref(l.href);
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.appendChild(el("span", null, l.label));
+          link.appendChild(el("span", "sr-only", " for " + g.name + " (opens in a new tab)"));
+          link.appendChild(icon(ARROW));
+          wrap.appendChild(link);
+        });
+        body.appendChild(wrap);
+      }
+      art.appendChild(body);
+      return art;
+    }
+
+    var list = document.getElementById("groups");
+    var status = document.getElementById("results-status");
+    var current = GROUPS.filter(function (g) { return !isPast(g); });
+    var buttons = Array.prototype.slice.call(document.querySelectorAll(".filter-btn"));
+
+    function render(filter, announce) {
+      var shown = current.filter(function (g) { return matches(g, filter); });
+      list.textContent = "";
+      if (!shown.length) {
+        var empty = el("div", "empty");
+        empty.appendChild(el("p", null, filter === "today"
+          ? "No groups listed for today."
+          : "No groups listed yet. Check back soon."));
+        if (filter !== "all" && current.length) {
+          var all = el("button", "btn btn--secondary", "Show all groups");
+          all.type = "button";
+          all.addEventListener("click", function () { setFilter("all", true); list.focus(); });
+          empty.appendChild(all);
+        }
+        list.appendChild(empty);
+      } else {
+        shown.forEach(function (g) { list.appendChild(card(g)); });
+      }
+      if (announce) {
+        var n = shown.length;
+        var scope = filter === "today" ? " today" : filter === "week" ? " this week" : "";
+        status.textContent = n === 0 ? "No groups" + scope + "." : n + (n === 1 ? " group" : " groups") + scope + ".";
+      }
+    }
+    function setFilter(f, announce) {
+      buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.filter === f)); });
+      render(f, announce);
+    }
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () { setFilter(b.dataset.filter, true); });
+    });
+    setFilter("all", false);
+
+    // Report form's group picker lists the groups currently on the board.
+    var groupSelect = document.getElementById("r-group");
+    current.forEach(function (g) {
+      var o = document.createElement("option");
+      o.value = g.name + (g.date ? " (" + g.date + ")" : "");
+      o.textContent = g.name;
+      groupSelect.appendChild(o);
+    });
+
+    /* ---------- Sheets ---------- */
+    var opener = null;
+    var supportsDialog = typeof HTMLDialogElement === "function";
+
+    function resetSheet(d) {
+      var form = d.querySelector("form");
+      form.reset();
+      Array.prototype.forEach.call(form.querySelectorAll("[aria-invalid]"), function (f) { f.removeAttribute("aria-invalid"); });
+      Array.prototype.forEach.call(form.querySelectorAll(".error"), function (e) { e.textContent = ""; });
+      var alert = form.querySelector(".form-alert"); alert.hidden = true; alert.textContent = "";
+      d.querySelector("[data-form-panel]").hidden = false;
+      d.querySelector("[data-done-panel]").hidden = true;
+    }
+    function openSheet(id, trigger) {
+      var d = document.getElementById(id);
+      if (!supportsDialog || !d.showModal) { // very old browsers: fall back to a plain inline form
+        d.setAttribute("open", ""); d.scrollIntoView(); return;
+      }
+      opener = trigger || document.activeElement;
+      resetSheet(d);
+      d.showModal();
+      document.body.classList.add("sheet-open");
+      d.scrollTop = 0;
+      d.querySelector("h2").focus();
+    }
+    function closeSheet(d) { if (d.open) d.close(); }
+
+    Array.prototype.forEach.call(document.querySelectorAll("[data-open]"), function (b) {
+      b.addEventListener("click", function () { openSheet(b.getAttribute("data-open"), b); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("dialog.sheet"), function (d) {
+      d.addEventListener("close", function () {
+        document.body.classList.remove("sheet-open");
+        if (opener && document.contains(opener)) opener.focus();
+        opener = null;
+      });
+      // Tap on the dimmed backdrop closes the sheet.
+      d.addEventListener("click", function (e) { if (e.target === d) closeSheet(d); });
+      Array.prototype.forEach.call(d.querySelectorAll("[data-close]"), function (b) {
+        b.addEventListener("click", function () { closeSheet(d); });
+      });
+    });
+
+    /* ---------- Validation ---------- */
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var RULES = {
+      "s-name": function (v) { return v ? "" : "Add your group or event name."; },
+      "s-when": function (v) { return v ? "" : "Add a day and time, or a date."; },
+      "s-desc": function (v) { return v ? "" : "Add a short description."; },
+      "s-link": function (v) { return !v || /^https?:\/\/\S+\.\S+/i.test(v) ? "" : "Enter a full link starting with https://"; },
+      "s-contact": function (v) { return v ? "" : "Add your name."; },
+      "s-email": function (v) { return !v ? "Add your email." : EMAIL_RE.test(v) ? "" : "Enter an email like name@example.com."; },
+      "r-issue": function (v) { return v ? "" : "Tell us what's wrong."; },
+      "r-email": function (v) { return !v || EMAIL_RE.test(v) ? "" : "Enter an email like name@example.com, or leave it blank."; }
+    };
+    function check(field) {
+      var rule = RULES[field.id];
+      if (!rule) return true;
+      var msg = rule(field.value.trim());
+      var err = document.getElementById(field.id + "-err");
+      if (msg) { field.setAttribute("aria-invalid", "true"); err.textContent = msg; }
+      else { field.removeAttribute("aria-invalid"); err.textContent = ""; }
+      return !msg;
+    }
+
+    /* ---------- Submission (Netlify Forms via fetch) ---------- */
+    // On localhost there is no Netlify form handler, so submissions are simulated
+    // (nothing is sent) to let the confirmation flow be demoed locally.
+    var LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol === "file:";
+
+    Array.prototype.forEach.call(document.querySelectorAll("dialog.sheet form"), function (form) {
+      var d = form.closest("dialog");
+      var alert = form.querySelector(".form-alert");
+      var submit = form.querySelector('button[type="submit"]');
+
+      Array.prototype.forEach.call(form.querySelectorAll("input, textarea"), function (f) {
+        f.addEventListener("blur", function () { if (f.value.trim() || f.getAttribute("aria-invalid")) check(f); });
+        f.addEventListener("input", function () { if (f.getAttribute("aria-invalid")) check(f); });
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        alert.hidden = true;
+        var firstBad = null;
+        Array.prototype.forEach.call(form.querySelectorAll("input[id], textarea[id]"), function (f) {
+          if (!check(f) && !firstBad) firstBad = f;
+        });
+        if (firstBad) { firstBad.focus(); return; }
+
+        var label = submit.textContent;
+        submit.disabled = true; submit.textContent = "Sending…";
+
+        var done = function () {
+          d.querySelector("[data-form-panel]").hidden = true;
+          d.querySelector("[data-done-panel]").hidden = false;
+          d.scrollTop = 0;
+          d.querySelector("[data-done-focus]").focus();
+        };
+        var fail = function () {
+          alert.textContent = "Sorry, that didn't send. Check your connection and try again.";
+          alert.hidden = false;
+        };
+        var finish = function () { submit.disabled = false; submit.textContent = label; };
+
+        if (LOCAL) {
+          console.info("[northshore] Local preview: form \"" + form.getAttribute("name") + "\" not sent.",
+            Object.fromEntries(new FormData(form)));
+          setTimeout(function () { finish(); done(); }, 400);
+          return;
+        }
+        fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(new FormData(form)).toString()
+        }).then(function (res) {
+          finish();
+          if (res.ok) done(); else fail();
+        }).catch(function () { finish(); fail(); });
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

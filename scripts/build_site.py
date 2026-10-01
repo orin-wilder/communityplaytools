@@ -20,6 +20,7 @@ ROUTES = {
     "downtown-discovery.html": "downtown-discovery/index.html",
     "hire.html": "hire/index.html",
     "card.html": "card/index.html",
+    "northshore.html": "northshore/index.html",  # North Shore Exercise Zone demo (noindex)
     "leadership.html": "leadership/index.html",
     "work.html": "work/index.html",
     "builds.html": "builds/index.html",
