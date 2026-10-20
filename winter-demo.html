@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Winter Village Pocket Guide · Demo</title>
+<!-- Private sales demo for Tampa Downtown Partnership (Oct 2026). Not in nav or sitemap.
+     noindex keeps it out of search; the password screen below is a light client-side gate for a sales demo,
+     not real access control (nothing is stored, no backend). -->
+<meta name="robots" content="noindex, nofollow">
+<!-- Fonts match wintervillagetampa.com: Averia Serif Libre (headings), Lato (body), Manrope (buttons/labels). Falls back to system fonts offline. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Averia+Serif+Libre:wght@400;700&family=Lato:wght@400;700;900&family=Manrope:wght@600;800">
+<!-- Community Play Tools · concept demo for Tampa Downtown Partnership · Oct 2026.
+     Sample shops and stories are placeholders. Concept colors only; the real build uses TDP's Winter Village brand guide. -->
+<style>
+:root{
+  --ink:#10243a; --ink2:#2b4763; --muted:#5b7389; --ice:#f4f9fc; --card:#ffffff; --line:#dbe7ef;
+  --sky:#4fb8e3; --deep:#1d4f6b; --frost:#3aa9a3; --gold:#e8b23a; --go:#1fa564; --go2:#14864f; --red:#d9534f;
+  --r:18px;
+  --serif:"Averia Serif Libre",Georgia,"Times New Roman",serif;
+  --sans:Lato,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --ui:Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--sans);color:var(--ink);background:#dfe9f0;-webkit-font-smoothing:antialiased}
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.phone{position:relative;width:390px;max-width:100%;height:844px;max-height:calc(100vh - 48px);background:var(--ice);border-radius:44px;overflow:hidden;
+  box-shadow:0 0 0 10px #0d1b2a,0 30px 60px rgba(13,27,42,.35);display:flex;flex-direction:column}
+@media (max-width:480px){.stage{padding:0}.phone{width:100%;height:100vh;max-height:none;border-radius:0;box-shadow:none}}
+.demo-flag{background:#0d1b2a;color:#9fd4ec;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:8px 10px 6px;font-weight:600}
+header.app{background:linear-gradient(160deg,var(--deep),var(--ink));color:#fff;padding:14px 18px 16px}
+header.app .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9fd4ec;font-weight:700}
+header.app h1{font-family:var(--serif);font-size:23px;margin:2px 0 0;font-weight:700;letter-spacing:-.01em}
+header.app .fam{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:#d6e8f2}
+.av{display:inline-flex;gap:2px;font-size:18px}
+.code{margin-left:auto;background:rgba(255,255,255,.12);padding:4px 9px;border-radius:999px;font-weight:700;font-size:12px;letter-spacing:.05em}
+main{flex:1;overflow-y:auto;padding:16px 16px 90px}
+nav.tabs{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px 14px}
+nav.tabs button{background:none;border:0;font-size:11.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;font-weight:600}
+nav.tabs button .i{font-size:20px;line-height:1}
+nav.tabs button.on{color:var(--deep)}
+nav.tabs button.on .i{transform:translateY(-1px)}
+h2{font-family:var(--serif);font-size:20px;margin:4px 0 4px;font-weight:700;letter-spacing:-.01em;color:#071233}
+p.sub{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.4}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.row{display:flex;align-items:center;gap:12px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px 16px;font-weight:800;font-size:16px;cursor:pointer;background:var(--deep);color:#fff}
+.btn.alt{background:#e7f1f7;color:var(--deep)}
+.btn.go{background:var(--go)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.small{font-size:12.5px;color:var(--muted)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:#e7f1f7;color:var(--deep)}
+.pill.live{background:#ffe9b8;color:#7a5200}
+/* onboarding */
+.counter{display:flex;align-items:center;justify-content:center;gap:22px;margin:18px 0 8px}
+.counter button{width:52px;height:52px;border-radius:50%;border:2px solid var(--line);background:#fff;font-size:26px;font-weight:700;color:var(--deep);cursor:pointer}
+.counter .n{font-family:var(--serif);font-size:44px;font-weight:700;min-width:40px;text-align:center}
+.avrow{display:flex;justify-content:center;gap:8px;font-size:30px;min-height:44px;margin-bottom:6px}
+/* progress */
+.prog{height:10px;border-radius:999px;background:#e3edf3;overflow:hidden;margin:8px 0 4px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--frost),var(--sky));border-radius:999px;transition:width .5s}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.badge{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px dashed #c4d6e2;background:#fff;cursor:pointer;position:relative;transition:transform .15s}
+.badge.got{border:3px solid var(--frost);background:radial-gradient(circle at 35% 30%,#ffffff,#e4f5f8)}
+.badge.lock{filter:grayscale(1);opacity:.45}
+.badge:active{transform:scale(.95)}
+.blabel{font-size:10.5px;text-align:center;color:var(--ink2);margin-top:4px;line-height:1.2;font-weight:600}
+.cell{display:flex;flex-direction:column}
+/* shop card */
+.sheet{position:absolute;inset:0;background:rgba(13,27,42,.55);display:flex;align-items:flex-end;z-index:20;animation:fade .2s}
+.sheet .panel{background:#fff;width:100%;border-radius:26px 26px 0 0;padding:18px 18px 26px;max-height:88%;overflow-y:auto;animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.grab{width:40px;height:5px;border-radius:9px;background:#d5e1ea;margin:0 auto 12px}
+.shopart{width:84px;height:84px;border-radius:50%;margin:4px auto 10px;display:flex;align-items:center;justify-content:center;font-size:44px;background:radial-gradient(circle at 35% 30%,#fff,#dff1f6);border:3px solid var(--frost)}
+.q{font-weight:700;margin:14px 0 8px}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;font:inherit;font-size:15px;cursor:pointer}
+.opt:hover{border-color:var(--sky)}
+.stamp{animation:stamp .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes stamp{0%{transform:scale(2.2) rotate(-12deg);opacity:0}100%{transform:none;opacity:1}}
+.fact{background:#eef8f6;border-radius:12px;padding:12px;font-size:14px;line-height:1.4;margin-top:10px}
+/* weekend list */
+.wk{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.wk:last-child{border-bottom:0}
+.wk .b{width:46px;height:46px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px dashed #c4d6e2;background:#fff}
+.wk .b.got{border:3px solid var(--gold);background:radial-gradient(circle at 35% 30%,#fffdf5,#fbefc8)}
+.wk .t{font-family:var(--serif);font-weight:700;font-size:15px}
+.wk .d{font-size:12.5px;color:var(--muted)}
+/* today */
+.ev{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.ev:last-child{border-bottom:0}
+.ev .tm{width:68px;flex:none;font-weight:700;color:var(--deep)}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sw{width:50px;height:30px;border-radius:999px;background:#cfdde7;position:relative;border:0;cursor:pointer;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw.on{background:var(--frost)}
+.sw.on::after{left:23px}
+.busy{display:none;margin-left:6px;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:#fde6d8;color:#8a3b12;vertical-align:1px}
+.calm .busy{display:inline-block}
+.demo-flag,header.app .k,.code,nav.tabs button,.btn,.pill,.busy,.counter button,.survey .scale button,.demo-tools button,.blabel{font-family:var(--ui)}
+.btn{font-weight:800}
+/* green pass */
+.pass{position:absolute;inset:0;z-index:30;background:linear-gradient(170deg,var(--go),var(--go2));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;animation:fade .2s}
+.pass .flake{font-size:64px;animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pass .clock{font-family:var(--ui);font-size:44px;font-weight:800;letter-spacing:.02em;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.pass .give{background:rgba(255,255,255,.16);border-radius:16px;padding:14px 18px;margin:16px 0;width:100%;text-align:left;font-size:17px;line-height:1.5}
+.pass .give b{font-size:22px}
+.pass .btn{background:#fff;color:var(--go2)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.75}}
+.survey .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0 12px}
+.survey .scale button{border:2px solid var(--line);background:#fff;border-radius:10px;padding:10px 0;font-weight:800;cursor:pointer}
+.survey .scale button.on{border-color:var(--frost);background:#e8f7f5}
+textarea{width:100%;border:2px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:14px;min-height:64px;resize:none}
+.demo-tools{display:flex;gap:8px;margin-top:6px}
+.demo-tools button{flex:1;border:1px dashed #9fb6c6;background:transparent;color:var(--muted);border-radius:10px;padding:8px;font-size:12px;cursor:pointer}
+.toast{font-family:var(--ui);position:absolute;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:13.5px;font-weight:600;z-index:40;animation:fade .2s;white-space:nowrap}
+/* password gate */
+.gate{position:absolute;inset:0;z-index:50;background:linear-gradient(160deg,var(--deep),var(--ink));color:#fff;display:flex;flex-direction:column;justify-content:center;padding:32px 28px;text-align:center}
+.gate .k{font-family:var(--ui);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9fd4ec;font-weight:800}
+.gate h1{font-family:var(--serif);font-weight:700;font-size:28px;margin:8px 0 6px}
+.gate p{color:#d6e8f2;font-size:14.5px;line-height:1.45;margin:0 0 22px}
+.gate input{width:100%;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;border-radius:14px;padding:14px 16px;font:inherit;font-size:17px;text-align:center;letter-spacing:.08em;outline:none}
+.gate input:focus{border-color:var(--sky)}
+.gate .btn{margin-top:12px;background:#fff;color:var(--deep)}
+.gate .err{min-height:20px;margin-top:10px;font-size:13.5px;color:#ffd2c2}
+.gate .fine{position:absolute;left:0;right:0;bottom:22px;font-size:11.5px;color:#9fb6c6}
+.shake{animation:shake .35s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+</style>
+</head>
+<body>
+<div class="stage">
+ <div class="phone" id="phone">
+  <div class="demo-flag">Concept demo · sample content</div>
+  <div id="app" style="flex:1;display:flex;flex-direction:column;min-height:0;position:relative"></div>
+ </div>
+</div>
+<script>
+// ---------- sample data (placeholders; real stories come from TDP's full-season vendors) ----------
+const SHOPS=[
+ {id:'candle',icon:'🕯️',name:'The Candle Shop',story:'Started at a kitchen table with one soy candle as a teacher\'s gift. Every scent here is poured by hand in small batches.',q:'Which scent would you bring home?',opts:['Pine & Cocoa','Orange Peel','Sea Breeze'],fact:'Small-batch candles can take up to two weeks to cure before they\'re ready to burn.'},
+ {id:'ornament',icon:'🎄',name:'The Ornament Studio',story:'Every ornament is painted by one artist who grew up three blocks from the river.',q:'What would you paint on an ornament?',opts:['Our family pet','The Riverwalk','A snowy palm tree'],fact:'Some of the hand-painted designs here take more than an hour each.'},
+ {id:'knit',icon:'🧣',name:'The Knit Goods Shop',story:'Two sisters knit every scarf and hat here. Teaching their grandmother\'s stitch is part of every sale.',q:'Who would you knit a scarf for?',opts:['Someone up north','My teacher','Me!'],fact:'A hand-knit scarf can take about 8–10 hours to make.'},
+ {id:'toy',icon:'🧸',name:'The Toy Workshop',story:'Wooden toys sanded and finished by a dad who builds a new design every season.',q:'Pick a toy to name:',opts:['A pelican','A streetcar','A manatee'],fact:'Each toy is sanded by hand three times so it\'s smooth for little hands.'},
+ {id:'pottery',icon:'🏺',name:'The Pottery Stall',story:'Mugs and bowls thrown on a wheel in a garage studio in Tampa Heights.',q:'What goes in your mug?',opts:['Hot cocoa','Tea','Marshmallows only'],fact:'Clay shrinks about 10% as it dries and is fired in the kiln.'},
+ {id:'jewelry',icon:'💎',name:'The Jewelry Bench',story:'Earrings and charms made from glass and recycled metal by a first-time shop owner.',q:'Which charm is most you?',opts:['Snowflake','Sun','Star'],fact:'Recycled silver can be melted and reused again and again without losing quality.'},
+ {id:'print',icon:'🖼️',name:'The Print Shop',story:'Hand-pulled screen prints of downtown landmarks, made one color at a time.',q:'Which landmark should be printed next?',opts:['The river','The minarets','The rink'],fact:'A print with four colors means four separate passes through the screen.'},
+ {id:'sweets',icon:'🍬',name:'The Sweets Shop',story:'Family candy recipes, stretched and wrapped right in front of you.',q:'Favorite winter flavor?',opts:['Peppermint','Cinnamon','Key lime'],fact:'Pulling candy by hand traps tiny air bubbles, which is what makes it shine.'}
+];
+const WEEKENDS=[
+ {icon:'❄️',t:'Opening Weekend',d:'Nov 21–22 · Sun: character visit 1–4 PM'},
+ {icon:'🛍️',t:'Shop Small Weekend',d:'Nov 28–29 · young entrepreneurs 1–4 PM'},
+ {icon:'🎅',t:'Santa Fest Weekend',d:'Dec 5–6 · parade, tree lighting & movie',live:true},
+ {icon:'🎵',t:'Game Day & Music Weekend',d:'Dec 12–13 · watch party or live band'},
+ {icon:'🎩',t:'Magic Weekend',d:'Dec 19–20 · magic & hypnosis shows'},
+ {icon:'🎶',t:'Carolers Weekend',d:'Dec 26–27 · caroling quartet'},
+ {icon:'✨',t:'Finale Weekend',d:'Jan 2–3 · Golden Snowflake Hunt'}
+];
+const TODAY=[
+ ['1:00 PM','Santa Fest parade on Madison St.',1],['1–5 PM','Holiday crafts & games in the park',0],['All day','Shops of Winter Village',0],
+ ['6:00 PM','Tree lighting: seven trees',1],['After dark','Free holiday movie on the lawn',0]
+];
+const AV=['🦊','🐧','🦌','🐻','⭐','🐬'];
+// ---------- state (in-memory for the demo; production saves to the server under the Family Code) ----------
+const S={kids:2,started:false,tab:'passport',got:new Set(),wk:new Set([0]),claimedCore:false,claimedVip:new Set([0]),calm:false,code:'SNOW-'+(400+Math.floor(Math.random()*500))};
+const $=s=>document.querySelector(s);
+const app=$('#app');
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;app.appendChild(t);setTimeout(()=>t.remove(),1800)}
+function header(){return `<header class="app"><div class="k">Winter Village · Pocket Guide</div><h1>${S.started?'Sticker Passport':'Welcome to Winter Village!'}</h1>
+ ${S.started?`<div class="fam"><span class="av">${AV.slice(0,S.kids).join('')}</span><span>${S.kids} collector${S.kids>1?'s':''}</span><span class="code" title="Family Code saves your passport">${S.code}</span></div>`:''}</header>`}
+function render(){
+ if(!S.started){app.innerHTML=header()+onboard();return}
+ const body={today,passport,weekend,booth}[S.tab]();
+ app.innerHTML=header()+`<main class="${S.calm?'calm':''}">${body}</main>`+tabs();
+}
+function onboard(){return `<main><div class="card" style="text-align:center">
+ <h2>Who's collecting today?</h2><p class="sub">One phone covers the whole family. Every collector gets their own stickers at the Info Booth.</p>
+ <div class="avrow">${AV.slice(0,S.kids).join('')}</div>
+ <div class="counter"><button aria-label="fewer" onclick="S.kids=Math.max(1,S.kids-1);render()">−</button><span class="n">${S.kids}</span><button aria-label="more" onclick="S.kids=Math.min(6,S.kids+1);render()">+</button></div>
+ <p class="small">No names needed. Up to 6 collectors.</p></div>
+ <button class="btn" onclick="S.started=true;render()">Start exploring</button>
+ <p class="small" style="text-align:center;margin-top:12px">No app to download. No account. A Family Code keeps your passport safe.</p></main>`}
+function tabs(){const T=[['today','📅','Today'],['passport','🗺️','Passport'],['weekend','⭐','Weekends'],['booth','🎁','Booth']];
+ return `<nav class="tabs">${T.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';render()"><span class="i">${i}</span>${l}</button>`).join('')}</nav>`}
+function today(){return `<h2>Today · Sat, Dec 5</h2><p class="sub">Santa Fest Weekend. Here's what's on, at your pace.</p>
+ <div class="card toggle"><div><b>Calm Mode</b><div class="small">Flags the busiest moments and suggests quieter times to visit the shops.</div></div><button class="sw ${S.calm?'on':''}" aria-label="Calm Mode" onclick="S.calm=!S.calm;render()"></button></div>
+ <div class="card">${TODAY.map(([t,e,loud])=>`<div class="ev ${loud?'loud':''}"><span class="tm">${t}</span><span>${e}${loud?'<span class="busy">Busiest</span>':''}</span></div>`).join('')}
+ ${S.calm?`<div class="fact">🌿 Quieter right now: the shops along the river side. Crowds usually peak around the parade and the tree lighting.</div>`:''}</div>
+ <div class="card row"><span style="font-size:28px">⭐</span><div><b>This weekend's badge is live</b><div class="small">Scan the Weekend QR at the Info Booth.</div></div></div>`}
+function passport(){const n=S.got.size,need=6;
+ return `<h2>Meet the Makers</h2><p class="sub">Scan the QR on the outside of each shop. Collect any <b>6 of 8</b> for your Core Sticker Sheet.</p>
+ <div class="card"><div class="row" style="justify-content:space-between"><b>${n} of 8 shops</b><span class="pill">${n>=need?'Sheet unlocked! 🎉':(need-n)+' to go'}</span></div>
+ <div class="prog"><i style="width:${Math.min(100,n/need*100)}%"></i></div><div class="small">No purchase needed. If a shop is busy or closed, skip it.</div></div>
+ <div class="grid">${SHOPS.map(s=>`<div class="cell"><div class="badge ${S.got.has(s.id)?'got':'lock'}" onclick="openShop('${s.id}')">${s.icon}</div><div class="blabel">${s.name.replace('The ','')}</div></div>`).join('')}</div>
+ <div class="card" style="margin-top:14px"><div class="row"><span style="font-size:26px">🎪</span><div><b>Pop-Up Maker Bonus</b><div class="small">Find the movable plaque at this week's featured pop-up booth.</div></div></div></div>
+ <div class="demo-tools"><button onclick="SHOPS.slice(0,6).forEach(s=>S.got.add(s.id));render()">Demo: jump to 6 of 8</button><button onclick="resetDemo()">Demo: reset</button></div>`}
+function openShop(id){const s=SHOPS.find(x=>x.id===id);const got=S.got.has(id);
+ const el=document.createElement('div');el.className='sheet';el.onclick=e=>{if(e.target===el)el.remove()};
+ el.innerHTML=`<div class="panel"><div class="grab"></div>
+  ${got?'':`<div class="small" style="text-align:center;margin-bottom:6px">📷 Demo: this opens when you scan the QR on the shop's outside wall</div>`}
+  <div class="shopart ${got?'':'lock'}" style="${got?'':'filter:grayscale(1);opacity:.5'}">${s.icon}</div>
+  <h2 style="text-align:center">${s.name}</h2><p class="small" style="text-align:center;margin:0 0 10px">Sample maker story</p>
+  <p style="font-size:15px;line-height:1.45;margin:0">${s.story}</p>
+  <div id="qa">${got?`<div class="fact">✅ Collected! ${s.fact}</div>`:`<div class="q">${s.q}</div>${s.opts.map(o=>`<button class="opt" onclick="answer('${id}')">${o}</button>`).join('')}<div class="small">Every answer counts. There are no wrong answers.</div>`}</div>
+  <button class="btn alt" style="margin-top:12px" onclick="this.closest('.sheet').remove()">Back to passport</button></div>`;
+ app.appendChild(el)}
+function answer(id){const s=SHOPS.find(x=>x.id===id);S.got.add(id);
+ $('#qa').innerHTML=`<div class="shopart stamp" style="width:64px;height:64px;font-size:32px;margin-top:14px">${s.icon}</div><div class="fact">🎉 Badge collected for every collector! ${s.fact}</div>`;
+ document.querySelector('.sheet .shopart:not(.stamp)')?.setAttribute('style','');
+ setTimeout(()=>{const sh=document.querySelector('.sheet');sh&&sh.remove();render();if(S.got.size===6)toast('6 of 8! Your Core Sticker Sheet is ready 🎁')},1600)}
+function weekend(){return `<h2>7 Weekends, 7 Badges</h2><p class="sub">Each weekend has its own badge, tied to what's on in the park. Claim a holographic VIP sticker the same day.</p>
+ <div class="card">${WEEKENDS.map((w,i)=>`<div class="wk"><div class="b ${S.wk.has(i)?'got':''}">${S.wk.has(i)?w.icon:'🔒'}</div><div style="flex:1"><div class="t">${w.t} ${w.live?'<span class="pill live">This weekend</span>':''}</div><div class="d">${w.d}</div></div></div>`).join('')}</div>
+ ${S.wk.has(2)?'':`<button class="btn" onclick="S.wk.add(2);toast('Santa Fest Weekend badge unlocked ⭐');render()">📷 Demo: scan the Weekend QR</button>`}
+ <p class="small" style="margin-top:10px">Badge art is original to Winter Village. No licensed characters.</p>`}
+function booth(){const n=S.got.size,core=n>=6&&!S.claimedCore,vipOpen=[...S.wk].filter(i=>!S.claimedVip.has(i));
+ const items=[];if(core)items.push(`${S.kids} × Core Sticker Sheet`);if(vipOpen.length)items.push(`${S.kids} × VIP Holo Sticker`);
+ return `<h2>Pick up at the Info Booth</h2><p class="sub">Show your screen to any Info Booth attendant. It takes about five seconds.</p>
+ <div class="card"><div class="row" style="justify-content:space-between"><b>Core Sticker Sheet</b><span class="pill">${S.claimedCore?'Picked up ✓':n>=6?'Ready':n+'/6 shops'}</span></div>
+ <div class="row" style="justify-content:space-between;margin-top:10px"><b>VIP Holographic Sticker</b><span class="pill">${vipOpen.length?'Ready':'Collect a weekend badge'}</span></div></div>
+ <button class="btn go" ${items.length?'':'disabled'} onclick="showPass()">Show my pickup pass</button>
+ <p class="small" style="margin-top:10px">No phone? Ask the booth for a paper passport.</p>`}
+function showPass(){const n=S.got.size,core=n>=6&&!S.claimedCore,vipOpen=[...S.wk].filter(i=>!S.claimedVip.has(i));
+ const el=document.createElement('div');el.className='pass';
+ el.innerHTML=`<div class="flake">❄️</div><div style="font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:13px">Valid pickup pass</div>
+ <div class="clock pulse" id="clk"></div><div style="font-size:14px;opacity:.9">${S.code} · ${AV.slice(0,S.kids).join(' ')}</div>
+ <div class="give">Hand out:<br>${core?`<b>${S.kids} ×</b> Core Sticker Sheet<br>`:''}${vipOpen.length?`<b>${S.kids} ×</b> VIP Holographic Sticker`:''}</div>
+ <button class="btn" onclick="given()">Booth: mark as given</button><div style="font-size:12px;margin-top:10px;opacity:.85">The live clock shows staff it isn't a screenshot.</div>`;
+ app.appendChild(el);tick();S._t=setInterval(tick,1000)}
+function tick(){const c=$('#clk');if(!c)return;c.textContent=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'})}
+function given(){clearInterval(S._t);if(S.got.size>=6)S.claimedCore=true;S.wk.forEach(i=>S.claimedVip.add(i));document.querySelector('.pass').remove();survey()}
+function survey(){const el=document.createElement('div');el.className='sheet';el.innerHTML=`<div class="panel survey"><div class="grab"></div>
+ <h2>Enjoy your stickers! 🎉</h2><p class="sub">Two optional questions (15 seconds). They help Winter Village support local makers.</p>
+ <div class="q">How many Winter Village shops did your family discover today?</div>
+ <div class="scale">${['0','1–2','3–4','5–6','7+'].map(v=>`<button onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v}</button>`).join('')}</div>
+ <div class="q">A shout-out for our local makers? <span class="small">(optional)</span></div><textarea placeholder="The candle shop was our favorite!"></textarea>
+ <button class="btn" style="margin-top:12px" onclick="this.closest('.sheet').remove();toast('Thank you! 💙');S.tab='weekend';render()">Send</button>
+ <button class="btn alt" style="margin-top:8px" onclick="this.closest('.sheet').remove();S.tab='weekend';render()">Skip</button></div>`;app.appendChild(el)}
+function resetDemo(){S.got.clear();S.wk=new Set([0]);S.claimedCore=false;S.claimedVip=new Set([0]);S.started=false;S.tab='passport';render()}
+// ---------- password gate (sales demo only; not real security) ----------
+const GATE_HASH='31ff6883bec0e82aedb5841e1a717ff8a4a038074b24522b2992b9aeb9de94c4'; // sha256 of the uppercase password
+const GATE_KEY='cpt-winter-demo-ok';
+async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function unlocked(){try{return sessionStorage.getItem(GATE_KEY)===GATE_HASH}catch(e){return false}}
+function showGate(){
+ const g=document.createElement('div');g.className='gate';g.id='gate';
+ g.innerHTML=`<div class="k">Community Play Tools · Concept demo</div><h1>Winter Village Pocket Guide</h1>
+ <p>A private preview prepared for Tampa Downtown Partnership. Enter the password to continue.</p>
+ <form id="gf" autocomplete="off"><input id="gp" type="password" inputmode="text" autocapitalize="characters" aria-label="Password" placeholder="Password" autofocus>
+ <button class="btn" type="submit">Open demo</button><div class="err" id="ge" role="alert"></div></form>
+ <div class="fine">Sample content · nothing you enter is saved</div>`;
+ document.getElementById('phone').appendChild(g);
+ document.getElementById('gf').addEventListener('submit',async e=>{e.preventDefault();
+  const v=document.getElementById('gp').value.trim().toUpperCase();
+  if(v&&await sha256(v)===GATE_HASH){try{sessionStorage.setItem(GATE_KEY,GATE_HASH)}catch(_){} g.remove();render()}
+  else{const f=document.getElementById('gf');f.classList.remove('shake');void f.offsetWidth;f.classList.add('shake');document.getElementById('ge').textContent='That password didn\'t work. Try again.'}});
+}
+if(unlocked())render();else showGate();
+</script>
+</body>
+</html>

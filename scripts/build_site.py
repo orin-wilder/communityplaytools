@@ -21,6 +21,7 @@ ROUTES = {
     "hire.html": "hire/index.html",
     "card.html": "card/index.html",
     "northshore.html": "northshore/index.html",  # North Shore Exercise Zone demo (noindex)
+    "winter-demo.html": "winter-demo/index.html",  # TDP Winter Village Pocket Guide sales demo (noindex, password screen)
     "leadership.html": "leadership/index.html",
     "work.html": "work/index.html",
     "builds.html": "builds/index.html",
