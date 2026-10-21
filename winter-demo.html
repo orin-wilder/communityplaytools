@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Averia+Serif+Libre:wght@400;700&family=Lato:wght@400;700;900&family=Manrope:wght@600;800">
-<!-- Community Play Tools · concept demo for Tampa Downtown Partnership · Oct 2026.
+<!-- Community Play Tools · concept demo for Tampa Downtown Partnership · Oct 2026 (rev. Oct 21: all-vendor scan pool).
      Sample shops and stories are placeholders. Concept colors only; the real build uses TDP's Winter Village brand guide. -->
 <style>
 :root{
@@ -38,7 +38,7 @@ header.app .fam{display:flex;align-items:center;gap:8px;margin-top:10px;font-siz
 .av{display:inline-flex;gap:2px;font-size:18px}
 .code{margin-left:auto;background:rgba(255,255,255,.12);padding:4px 9px;border-radius:999px;font-weight:700;font-size:12px;letter-spacing:.05em}
 main{flex:1;overflow-y:auto;padding:16px 16px 90px}
-nav.tabs{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px 14px}
+nav.tabs{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px 14px}
 nav.tabs button{background:none;border:0;font-size:11.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;font-weight:600}
 nav.tabs button .i{font-size:20px;line-height:1}
 nav.tabs button.on{color:var(--deep)}
@@ -102,6 +102,22 @@ p.sub{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.4}
 .calm .busy{display:inline-block}
 .demo-flag,header.app .k,.code,nav.tabs button,.btn,.pill,.busy,.counter button,.survey .scale button,.demo-tools button,.blabel{font-family:var(--ui)}
 .btn{font-weight:800}
+/* all-vendor pool */
+.badge.tpl{border:3px double #8fb3c8;background:radial-gradient(circle at 35% 30%,#ffffff,#eef4f8);flex-direction:column;gap:0;overflow:hidden}
+.badge.tpl.got{border:3px double var(--gold);background:radial-gradient(circle at 35% 30%,#fffdf5,#fbefc8)}
+.badge .rib{font-family:var(--ui);font-size:7.5px;font-weight:800;letter-spacing:.08em;color:var(--deep);background:#e7f1f7;border-radius:999px;padding:1px 5px;margin-top:1px;line-height:1.3}
+.badge.empty{border:2px dashed #c4d6e2;background:transparent;color:#a9bfcd;font-family:var(--ui);font-weight:800;font-size:16px;cursor:default}
+.sect{font-family:var(--ui);font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 2px 6px}
+.vrow{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.vrow:last-child{border-bottom:0}
+.vrow .badge{flex:none;cursor:pointer}
+.vn{font-family:var(--serif);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill.ok{background:#e3f5ec;color:#11683d}
+.soc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sbtn{border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:1px;font:inherit}
+.sbtn b{font-family:var(--ui);font-size:12.5px;color:var(--deep)}
+.sbtn span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.demo-tools{flex-wrap:wrap}
 /* green pass */
 .pass{position:absolute;inset:0;z-index:30;background:linear-gradient(170deg,var(--go),var(--go2));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;animation:fade .2s}
 .pass .flake{font-size:64px;animation:spin 6s linear infinite}
@@ -141,17 +157,35 @@ textarea{width:100%;border:2px solid var(--line);border-radius:12px;padding:10px
  </div>
 </div>
 <script>
-// ---------- sample data (placeholders; real stories come from TDP's full-season vendors) ----------
-const SHOPS=[
- {id:'candle',icon:'🕯️',name:'The Candle Shop',story:'Started at a kitchen table with one soy candle as a teacher\'s gift. Every scent here is poured by hand in small batches.',q:'Which scent would you bring home?',opts:['Pine & Cocoa','Orange Peel','Sea Breeze'],fact:'Small-batch candles can take up to two weeks to cure before they\'re ready to burn.'},
- {id:'ornament',icon:'🎄',name:'The Ornament Studio',story:'Every ornament is painted by one artist who grew up three blocks from the river.',q:'What would you paint on an ornament?',opts:['Our family pet','The Riverwalk','A snowy palm tree'],fact:'Some of the hand-painted designs here take more than an hour each.'},
- {id:'knit',icon:'🧣',name:'The Knit Goods Shop',story:'Two sisters knit every scarf and hat here. Teaching their grandmother\'s stitch is part of every sale.',q:'Who would you knit a scarf for?',opts:['Someone up north','My teacher','Me!'],fact:'A hand-knit scarf can take about 8–10 hours to make.'},
- {id:'toy',icon:'🧸',name:'The Toy Workshop',story:'Wooden toys sanded and finished by a dad who builds a new design every season.',q:'Pick a toy to name:',opts:['A pelican','A streetcar','A manatee'],fact:'Each toy is sanded by hand three times so it\'s smooth for little hands.'},
- {id:'pottery',icon:'🏺',name:'The Pottery Stall',story:'Mugs and bowls thrown on a wheel in a garage studio in Tampa Heights.',q:'What goes in your mug?',opts:['Hot cocoa','Tea','Marshmallows only'],fact:'Clay shrinks about 10% as it dries and is fired in the kiln.'},
- {id:'jewelry',icon:'💎',name:'The Jewelry Bench',story:'Earrings and charms made from glass and recycled metal by a first-time shop owner.',q:'Which charm is most you?',opts:['Snowflake','Sun','Star'],fact:'Recycled silver can be melted and reused again and again without losing quality.'},
- {id:'print',icon:'🖼️',name:'The Print Shop',story:'Hand-pulled screen prints of downtown landmarks, made one color at a time.',q:'Which landmark should be printed next?',opts:['The river','The minarets','The rink'],fact:'A print with four colors means four separate passes through the screen.'},
- {id:'sweets',icon:'🍬',name:'The Sweets Shop',story:'Family candy recipes, stretched and wrapped right in front of you.',q:'Favorite winter flavor?',opts:['Peppermint','Cinnamon','Key lime'],fact:'Pulling candy by hand traps tiny air bubbles, which is what makes it shine.'}
+// ================= SAMPLE DATA (placeholders) =================
+// In production this is one table, filled from TDP's vendor schedule:
+//   vendor id · name · type (season | popup) · dates · story · question · options · up to 2 social links
+// Codes are a separate lookup: code number -> vendor id. A vendor can have 2+ codes (lost-and-replaced cards keep working).
+const VENDORS=[
+ // Full-season shops: custom badge art, QR plaque on the outside of the shop
+ {id:'candle',type:'season',icon:'🕯️',name:'The Candle Shop',cat:'Candles',story:'Started at a kitchen table with one soy candle as a teacher\'s gift. Every scent here is poured by hand in small batches.',q:'Which scent would you bring home?',opts:['Pine & Cocoa','Orange Peel','Sea Breeze'],fact:'Small-batch candles can take up to two weeks to cure before they\'re ready to burn.',soc:[['Instagram','@candleshop.sample'],['Website','candleshop.example']]},
+ {id:'ornament',type:'season',icon:'🎄',name:'The Ornament Studio',cat:'Hand-painted ornaments',story:'Every ornament is painted by one artist who grew up three blocks from the river.',q:'What would you paint on an ornament?',opts:['Our family pet','The Riverwalk','A snowy palm tree'],fact:'Some of the hand-painted designs here take more than an hour each.',soc:[['Instagram','@ornamentstudio.sample']]},
+ {id:'knit',type:'season',icon:'🧣',name:'The Knit Goods Shop',cat:'Scarves & hats',story:'Two sisters knit every scarf and hat here. Teaching their grandmother\'s stitch is part of every sale.',q:'Who would you knit a scarf for?',opts:['Someone up north','My teacher','Me!'],fact:'A hand-knit scarf can take about 8–10 hours to make.',soc:[['Instagram','@knitgoods.sample'],['Facebook','Knit Goods (sample)']]},
+ {id:'toy',type:'season',icon:'🧸',name:'The Toy Workshop',cat:'Wooden toys',story:'Wooden toys sanded and finished by a dad who builds a new design every season.',q:'Pick a toy to name:',opts:['A pelican','A streetcar','A manatee'],fact:'Each toy is sanded by hand three times so it\'s smooth for little hands.',soc:[['Website','toyworkshop.example']]},
+ {id:'pottery',type:'season',icon:'🏺',name:'The Pottery Stall',cat:'Mugs & bowls',story:'Mugs and bowls thrown on a wheel in a garage studio in Tampa Heights.',q:'What goes in your mug?',opts:['Hot cocoa','Tea','Marshmallows only'],fact:'Clay shrinks about 10% as it dries and is fired in the kiln.',soc:[['Instagram','@potterystall.sample']]},
+ {id:'jewelry',type:'season',icon:'💎',name:'The Jewelry Bench',cat:'Jewelry',story:'Earrings and charms made from glass and recycled metal by a first-time shop owner.',q:'Which charm is most you?',opts:['Snowflake','Sun','Star'],fact:'Recycled silver can be melted and reused again and again without losing quality.',soc:[['Instagram','@jewelrybench.sample'],['Website','jewelrybench.example']]},
+ {id:'print',type:'season',icon:'🖼️',name:'The Print Shop',cat:'Screen prints',story:'Hand-pulled screen prints of downtown landmarks, made one color at a time.',q:'Which landmark should be printed next?',opts:['The river','The minarets','The rink'],fact:'A print with four colors means four separate passes through the screen.',soc:[['Instagram','@printshop.sample']]},
+ {id:'sweets',type:'season',icon:'🍬',name:'The Sweets Shop',cat:'Candy',story:'Family candy recipes, stretched and wrapped right in front of you.',q:'Favorite winter flavor?',opts:['Peppermint','Cinnamon','Key lime'],fact:'Pulling candy by hand traps tiny air bubbles, which is what makes it shine.',soc:[['Instagram','@sweetsshop.sample']]},
+ // Pop-ups: template badge (category icon in a Winter Village frame), numbered tabletop card
+ {id:'soap',type:'popup',icon:'🧼',name:'Gulf Breeze Soap Co.',cat:'Handmade soap',dates:['Dec 5','Dec 6'],story:'Small-batch soaps made with local honey and citrus.',q:'Which would you pick?',opts:['Orange blossom','Honey oat','Sea salt'],soc:[['Instagram','@gulfbreezesoap.sample']]},
+ {id:'cocoa',type:'popup',icon:'☕',name:'Cocoa Cart Kids',cat:'Young entrepreneurs',dates:['Nov 28','Nov 29','Dec 5'],story:'Two siblings, ages 11 and 13, running their own hot cocoa cart.',q:'Best cocoa topping?',opts:['Marshmallows','Whipped cream','Peppermint'],soc:[['Instagram','@cocoacartkids.sample']]},
+ {id:'plants',type:'popup',icon:'🪴',name:'Tiny Tropics Plants',cat:'Succulents',dates:['Dec 5','Dec 12'],story:'Tiny potted succulents in hand-painted pots.',q:'Name a plant:',opts:['Spike','Sunny','Mr. Prickles'],soc:[['Instagram','@tinytropics.sample'],['Website','tinytropics.example']]},
+ {id:'books',type:'popup',icon:'📚',name:'Riverside Story Books',cat:'Kids\' books',dates:['Dec 5','Dec 19'],story:'Local authors and picture books about Florida wildlife.',q:'Which animal story?',opts:['Manatee','Pelican','Sea turtle'],soc:[['Website','riversidebooks.example']]},
+ {id:'bows',type:'popup',icon:'🎀',name:'Bow & Ribbon Studio',cat:'Hair accessories',dates:['Dec 5','Dec 6','Dec 20'],story:'Hand-tied bows in every holiday color.',q:'Favorite color?',opts:['Red','Gold','Ice blue'],soc:[['Instagram','@bowribbon.sample']]},
+ {id:'art',type:'popup',icon:'🎨',name:'Bay Sketch Studio',cat:'Local art prints',dates:['Nov 28','Dec 12','Dec 13'],story:'Sketches of Tampa streets, drawn on location.',q:'Where should she sketch next?',opts:['The Riverwalk','Ybor City','The rink'],soc:[['Instagram','@baysketch.sample']]},
+ {id:'dog',type:'popup',icon:'🐾',name:'Pawsome Treats',cat:'Dog treats',dates:['Dec 19','Dec 20'],story:'Baked peanut-butter treats for good dogs.',q:'Your dream dog name?',opts:['Biscuit','Mango','Captain'],soc:[['Instagram','@pawsometreats.sample']]}
 ];
+// Code table: plaques 1–8, pop-up cards 21+, spare cards 90+. Two codes can point at one vendor.
+const CODES={1:'candle',2:'ornament',3:'knit',4:'toy',5:'pottery',6:'jewelry',7:'print',8:'sweets',
+ 21:'soap',22:'cocoa',23:'plants',24:'books',25:'bows',26:'art',27:'dog',
+ 90:'cocoa' /* replacement for a lost card; card 22 still works too */,91:null,92:null};
+const codesFor=id=>Object.keys(CODES).filter(k=>CODES[k]===id).map(Number);
+const NEED=8, TODAY_DATE='Dec 5';
 const WEEKENDS=[
  {icon:'❄️',t:'Opening Weekend',d:'Nov 21–22 · Sun: character visit 1–4 PM'},
  {icon:'🛍️',t:'Shop Small Weekend',d:'Nov 28–29 · young entrepreneurs 1–4 PM'},
@@ -162,20 +196,27 @@ const WEEKENDS=[
  {icon:'✨',t:'Finale Weekend',d:'Jan 2–3 · Golden Snowflake Hunt'}
 ];
 const TODAY=[
- ['1:00 PM','Santa Fest parade on Madison St.',1],['1–5 PM','Holiday crafts & games in the park',0],['All day','Shops of Winter Village',0],
+ ['1:00 PM','Santa Fest parade on Madison St.',1],['1–5 PM','Holiday crafts & games in the park',0],['All day','Shops of Winter Village + today\'s pop-ups',0],
  ['6:00 PM','Tree lighting: seven trees',1],['After dark','Free holiday movie on the lawn',0]
 ];
 const AV=['🦊','🐧','🦌','🐻','⭐','🐬'];
-// ---------- state (in-memory for the demo; production saves to the server under the Family Code) ----------
-const S={kids:2,started:false,tab:'passport',got:new Set(),wk:new Set([0]),claimedCore:false,claimedVip:new Set([0]),calm:false,code:'SNOW-'+(400+Math.floor(Math.random()*500))};
+// ================= STATE (in-memory for the demo; production saves under the Family Code) =================
+const S={kids:2,started:false,tab:'passport',got:[],wk:new Set([0]),claimedCore:false,claimedVip:new Set([0]),calm:false,code:'SNOW-'+(400+Math.floor(Math.random()*500)),pending:null};
 const $=s=>document.querySelector(s);
 const app=$('#app');
-function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;app.appendChild(t);setTimeout(()=>t.remove(),1800)}
-function header(){return `<header class="app"><div class="k">Winter Village · Pocket Guide</div><h1>${S.started?'Sticker Passport':'Welcome to Winter Village!'}</h1>
+const V=id=>VENDORS.find(v=>v.id===id);
+const has=id=>S.got.includes(id);
+const hereToday=v=>v.type==='season'||(v.dates||[]).includes(TODAY_DATE);
+function badge(v,size){const got=has(v.id);
+ return v.type==='season'
+  ? `<div class="badge ${got?'got':'lock'}" style="${size?`width:${size}px;height:${size}px;font-size:${size*.5}px`:''}">${v.icon}</div>`
+  : `<div class="badge tpl ${got?'got':'lock'}" style="${size?`width:${size}px;height:${size}px;font-size:${size*.42}px`:''}">${v.icon}<span class="rib">POP-UP</span></div>`}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;app.appendChild(t);setTimeout(()=>t.remove(),2000)}
+function header(){return `<header class="app"><div class="k">Winter Village · Sticker Safari</div><h1>${S.started?'Pocket Guide':'Welcome to Winter Village!'}</h1>
  ${S.started?`<div class="fam"><span class="av">${AV.slice(0,S.kids).join('')}</span><span>${S.kids} collector${S.kids>1?'s':''}</span><span class="code" title="Family Code saves your passport">${S.code}</span></div>`:''}</header>`}
 function render(){
  if(!S.started){app.innerHTML=header()+onboard();return}
- const body={today,passport,weekend,booth}[S.tab]();
+ const body={today,passport,vendors,weekend,booth}[S.tab]();
  app.innerHTML=header()+`<main class="${S.calm?'calm':''}">${body}</main>`+tabs();
 }
 function onboard(){return `<main><div class="card" style="text-align:center">
@@ -183,64 +224,87 @@ function onboard(){return `<main><div class="card" style="text-align:center">
  <div class="avrow">${AV.slice(0,S.kids).join('')}</div>
  <div class="counter"><button aria-label="fewer" onclick="S.kids=Math.max(1,S.kids-1);render()">−</button><span class="n">${S.kids}</span><button aria-label="more" onclick="S.kids=Math.min(6,S.kids+1);render()">+</button></div>
  <p class="small">No names needed. Up to 6 collectors.</p></div>
- <button class="btn" onclick="S.started=true;render()">Start exploring</button>
+ <button class="btn" onclick="start()">Start exploring</button>
  <p class="small" style="text-align:center;margin-top:12px">No app to download. No account. A Family Code keeps your passport safe.</p></main>`}
-function tabs(){const T=[['today','📅','Today'],['passport','🗺️','Passport'],['weekend','⭐','Weekends'],['booth','🎁','Booth']];
+function start(){S.started=true;render();if(S.pending!==null){const c=S.pending;S.pending=null;scan(c)}}
+function tabs(){const T=[['today','📅','Today'],['passport','🗺️','Passport'],['vendors','🛍️','Vendors'],['weekend','⭐','Weekends'],['booth','🎁','Booth']];
  return `<nav class="tabs">${T.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';render()"><span class="i">${i}</span>${l}</button>`).join('')}</nav>`}
-function today(){return `<h2>Today · Sat, Dec 5</h2><p class="sub">Santa Fest Weekend. Here's what's on, at your pace.</p>
+function today(){const pops=VENDORS.filter(v=>v.type==='popup'&&hereToday(v)).length;
+ return `<h2>Today · Sat, Dec 5</h2><p class="sub">Santa Fest Weekend. Here's what's on, at your pace.</p>
  <div class="card toggle"><div><b>Calm Mode</b><div class="small">Flags the busiest moments and suggests quieter times to visit the shops.</div></div><button class="sw ${S.calm?'on':''}" aria-label="Calm Mode" onclick="S.calm=!S.calm;render()"></button></div>
  <div class="card">${TODAY.map(([t,e,loud])=>`<div class="ev ${loud?'loud':''}"><span class="tm">${t}</span><span>${e}${loud?'<span class="busy">Busiest</span>':''}</span></div>`).join('')}
  ${S.calm?`<div class="fact">🌿 Quieter right now: the shops along the river side. Crowds usually peak around the parade and the tree lighting.</div>`:''}</div>
+ <div class="card row" style="cursor:pointer" onclick="S.tab='vendors';render()"><span style="font-size:28px">🛍️</span><div style="flex:1"><b>8 shops + ${pops} pop-ups here today</b><div class="small">Every vendor counts toward your sticker sheet.</div></div><span class="pill">See all</span></div>
  <div class="card row"><span style="font-size:28px">⭐</span><div><b>This weekend's badge is live</b><div class="small">Scan the Weekend QR at the Info Booth.</div></div></div>`}
-function passport(){const n=S.got.size,need=6;
- return `<h2>Meet the Makers</h2><p class="sub">Scan the QR on the outside of each shop. Collect any <b>6 of 8</b> for your Core Sticker Sheet.</p>
- <div class="card"><div class="row" style="justify-content:space-between"><b>${n} of 8 shops</b><span class="pill">${n>=need?'Sheet unlocked! 🎉':(need-n)+' to go'}</span></div>
- <div class="prog"><i style="width:${Math.min(100,n/need*100)}%"></i></div><div class="small">No purchase needed. If a shop is busy or closed, skip it.</div></div>
- <div class="grid">${SHOPS.map(s=>`<div class="cell"><div class="badge ${S.got.has(s.id)?'got':'lock'}" onclick="openShop('${s.id}')">${s.icon}</div><div class="blabel">${s.name.replace('The ','')}</div></div>`).join('')}</div>
- <div class="card" style="margin-top:14px"><div class="row"><span style="font-size:26px">🎪</span><div><b>Pop-Up Maker Bonus</b><div class="small">Find the movable plaque at this week's featured pop-up booth.</div></div></div></div>
- <div class="demo-tools"><button onclick="SHOPS.slice(0,6).forEach(s=>S.got.add(s.id));render()">Demo: jump to 6 of 8</button><button onclick="resetDemo()">Demo: reset</button></div>`}
-function openShop(id){const s=SHOPS.find(x=>x.id===id);const got=S.got.has(id);
+function passport(){const n=S.got.length,slots=Math.max(NEED,n);
+ return `<h2>Sticker Passport</h2><p class="sub">Scan any <b>8 vendors</b> (full-season shops or today's pop-ups) for your Core Sticker Sheet.</p>
+ <div class="card"><div class="row" style="justify-content:space-between"><b>${n} of ${NEED} vendors</b><span class="pill">${n>=NEED?'Sheet unlocked! 🎉':(NEED-n)+' to go'}</span></div>
+ <div class="prog"><i style="width:${Math.min(100,n/NEED*100)}%"></i></div><div class="small">No purchase needed. Busy or closed? Skip it, any vendor counts.</div></div>
+ <div class="grid">${Array.from({length:slots},(_,i)=>{const v=V(S.got[i]);return v?`<div class="cell" onclick="openVendor('${v.id}')">${badge(v)}<div class="blabel">${v.name.replace('The ','')}</div></div>`:`<div class="cell"><div class="badge empty">${i+1}</div><div class="blabel">&nbsp;</div></div>`}).join('')}</div>
+ <button class="btn alt" style="margin-top:14px" onclick="S.tab='vendors';render()">🛍️ Find vendors here today</button>
+ <div class="demo-tools"><button onclick="scan(22)">Demo: scan pop-up card #22</button><button onclick="fillTo8()">Demo: jump to 8</button><button onclick="resetDemo()">Demo: reset</button></div>`}
+function vendors(){const season=VENDORS.filter(v=>v.type==='season'),today=VENDORS.filter(v=>v.type==='popup'&&hereToday(v)),later=VENDORS.filter(v=>v.type==='popup'&&!hereToday(v));
+ const row=v=>`<div class="vrow" onclick="openVendor('${v.id}')">${badge(v,44)}<div style="flex:1;min-width:0"><div class="vn">${v.name}</div><div class="small">${v.cat}${v.type==='popup'&&!hereToday(v)?' · '+v.dates.join(', '):''}</div></div>${has(v.id)?'<span class="pill ok">✓ Collected</span>':`<span class="pill">${v.type==='season'?'Plaque':'Card #'+codesFor(v.id)[0]}</span>`}</div>`;
+ return `<h2>Shops & Vendors</h2><p class="sub">Everyone at Winter Village, in one list. Scan any vendor's code to collect their badge.</p>
+ <div class="sect">Here all season · Shops of Winter Village</div><div class="card">${season.map(row).join('')}</div>
+ <div class="sect">Pop-ups here today · Sat, Dec 5</div><div class="card">${today.map(row).join('')}</div>
+ <div class="sect">Coming up</div><div class="card">${later.map(row).join('')}</div>`}
+// A scan arrives as a numbered link, e.g. /winter-demo/?code=22. Unknown or unassigned codes fail gently.
+function scan(code){const id=CODES[code];
+ if(!S.started){S.pending=code;toast('Welcome! Set up your collectors first.');return}
+ if(id===undefined){toast('We don\'t recognize that code. Try the Info Booth.');return}
+ if(id===null){toast(`Card #${code} isn't set up yet. The Info Booth can help.`);return}
+ openVendor(id,true,code)}
+function socials(v){return v.soc&&v.soc.length?`<div class="q" style="margin-top:16px">Follow ${v.name.replace('The ','the ')}</div><div class="soc">${v.soc.slice(0,2).map(([k,h])=>`<button class="sbtn" onclick="toast('Sample link: opens ${k} for ${h}')"><b>${k}</b><span>${h}</span></button>`).join('')}</div>`:''}
+function openVendor(id,scanned,code){const v=V(id);const got=has(id);
  const el=document.createElement('div');el.className='sheet';el.onclick=e=>{if(e.target===el)el.remove()};
+ const canCollect=scanned&&!got;
  el.innerHTML=`<div class="panel"><div class="grab"></div>
-  ${got?'':`<div class="small" style="text-align:center;margin-bottom:6px">📷 Demo: this opens when you scan the QR on the shop's outside wall</div>`}
-  <div class="shopart ${got?'':'lock'}" style="${got?'':'filter:grayscale(1);opacity:.5'}">${s.icon}</div>
-  <h2 style="text-align:center">${s.name}</h2><p class="small" style="text-align:center;margin:0 0 10px">Sample maker story</p>
-  <p style="font-size:15px;line-height:1.45;margin:0">${s.story}</p>
-  <div id="qa">${got?`<div class="fact">✅ Collected! ${s.fact}</div>`:`<div class="q">${s.q}</div>${s.opts.map(o=>`<button class="opt" onclick="answer('${id}')">${o}</button>`).join('')}<div class="small">Every answer counts. There are no wrong answers.</div>`}</div>
-  <button class="btn alt" style="margin-top:12px" onclick="this.closest('.sheet').remove()">Back to passport</button></div>`;
+  ${scanned?`<div class="small" style="text-align:center;margin-bottom:6px">📷 Scanned ${v.type==='season'?'plaque':'card'} #${code||codesFor(id)[0]}</div>`:''}
+  <div id="topb" style="display:flex;justify-content:center;margin:4px 0 10px">${badge(v,84)}</div>
+  <h2 style="text-align:center">${v.name}</h2><p class="small" style="text-align:center;margin:0 0 10px">${v.cat} · ${v.type==='season'?'Here all season':'Pop-up · '+v.dates.join(', ')} · sample</p>
+  <p style="font-size:15px;line-height:1.45;margin:0">${v.story}</p>
+  <div id="qa">${canCollect?`<div class="q">${v.q}</div>${v.opts.map(o=>`<button class="opt" onclick="answer('${id}')">${o}</button>`).join('')}<div class="small">Every answer counts. There are no wrong answers.</div>`
+   : got?`<div class="fact">✅ Collected!${v.fact?' '+v.fact:''}</div>${socials(v)}`
+   : `<div class="fact">📍 Find ${v.type==='season'?'the QR plaque on the outside of this shop':'the numbered Sticker Safari card at this table'} and scan it to collect this badge.</div>${socials(v)}
+      <button class="btn" style="margin-top:12px" onclick="this.closest('.sheet').remove();scan(${codesFor(id)[0]})">📷 Demo: simulate scan</button>`}</div>
+  <button class="btn alt" style="margin-top:12px" onclick="this.closest('.sheet').remove();render()">Back</button></div>`;
  app.appendChild(el)}
-function answer(id){const s=SHOPS.find(x=>x.id===id);S.got.add(id);
- $('#qa').innerHTML=`<div class="shopart stamp" style="width:64px;height:64px;font-size:32px;margin-top:14px">${s.icon}</div><div class="fact">🎉 Badge collected for every collector! ${s.fact}</div>`;
- document.querySelector('.sheet .shopart:not(.stamp)')?.setAttribute('style','');
- setTimeout(()=>{const sh=document.querySelector('.sheet');sh&&sh.remove();render();if(S.got.size===6)toast('6 of 8! Your Core Sticker Sheet is ready 🎁')},1600)}
+function answer(id){const v=V(id);if(!has(id))S.got.push(id);
+ const tb=$('#topb');if(tb)tb.innerHTML=badge(v,84);
+ $('#qa').innerHTML=`<div class="fact stamp">🎉 Badge collected for ${S.kids===2?'both collectors':S.kids>2?'all '+S.kids+' collectors':'your collector'}! ${v.fact||'Thanks for visiting a local maker.'}</div>${socials(v)}`;
+ if(S.got.length===NEED)setTimeout(()=>toast(NEED+' vendors! Your Core Sticker Sheet is ready 🎁'),400)}
+function fillTo8(){for(const v of VENDORS){if(S.got.length>=NEED)break;if(hereToday(v)&&!has(v.id))S.got.push(v.id)}render()}
 function weekend(){return `<h2>7 Weekends, 7 Badges</h2><p class="sub">Each weekend has its own badge, tied to what's on in the park. Claim a holographic VIP sticker the same day.</p>
  <div class="card">${WEEKENDS.map((w,i)=>`<div class="wk"><div class="b ${S.wk.has(i)?'got':''}">${S.wk.has(i)?w.icon:'🔒'}</div><div style="flex:1"><div class="t">${w.t} ${w.live?'<span class="pill live">This weekend</span>':''}</div><div class="d">${w.d}</div></div></div>`).join('')}</div>
  ${S.wk.has(2)?'':`<button class="btn" onclick="S.wk.add(2);toast('Santa Fest Weekend badge unlocked ⭐');render()">📷 Demo: scan the Weekend QR</button>`}
  <p class="small" style="margin-top:10px">Badge art is original to Winter Village. No licensed characters.</p>`}
-function booth(){const n=S.got.size,core=n>=6&&!S.claimedCore,vipOpen=[...S.wk].filter(i=>!S.claimedVip.has(i));
- const items=[];if(core)items.push(`${S.kids} × Core Sticker Sheet`);if(vipOpen.length)items.push(`${S.kids} × VIP Holo Sticker`);
+function booth(){const n=S.got.length,core=n>=NEED&&!S.claimedCore,vipOpen=[...S.wk].filter(i=>!S.claimedVip.has(i));
  return `<h2>Pick up at the Info Booth</h2><p class="sub">Show your screen to any Info Booth attendant. It takes about five seconds.</p>
- <div class="card"><div class="row" style="justify-content:space-between"><b>Core Sticker Sheet</b><span class="pill">${S.claimedCore?'Picked up ✓':n>=6?'Ready':n+'/6 shops'}</span></div>
+ <div class="card"><div class="row" style="justify-content:space-between"><b>Core Sticker Sheet</b><span class="pill">${S.claimedCore?'Picked up ✓':n>=NEED?'Ready':n+'/'+NEED+' vendors'}</span></div>
  <div class="row" style="justify-content:space-between;margin-top:10px"><b>VIP Holographic Sticker</b><span class="pill">${vipOpen.length?'Ready':'Collect a weekend badge'}</span></div></div>
- <button class="btn go" ${items.length?'':'disabled'} onclick="showPass()">Show my pickup pass</button>
+ <button class="btn go" ${core||vipOpen.length?'':'disabled'} onclick="showPass()">Show my pickup pass</button>
  <p class="small" style="margin-top:10px">No phone? Ask the booth for a paper passport.</p>`}
-function showPass(){const n=S.got.size,core=n>=6&&!S.claimedCore,vipOpen=[...S.wk].filter(i=>!S.claimedVip.has(i));
+function showPass(){const n=S.got.length,core=n>=NEED&&!S.claimedCore,vipOpen=[...S.wk].filter(i=>!S.claimedVip.has(i));
  const el=document.createElement('div');el.className='pass';
- el.innerHTML=`<div class="flake">❄️</div><div style="font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:13px">Valid pickup pass</div>
+ el.innerHTML=`<div class="flake">❄️</div><div style="font-family:var(--ui);font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:13px">Valid pickup pass</div>
  <div class="clock pulse" id="clk"></div><div style="font-size:14px;opacity:.9">${S.code} · ${AV.slice(0,S.kids).join(' ')}</div>
  <div class="give">Hand out:<br>${core?`<b>${S.kids} ×</b> Core Sticker Sheet<br>`:''}${vipOpen.length?`<b>${S.kids} ×</b> VIP Holographic Sticker`:''}</div>
  <button class="btn" onclick="given()">Booth: mark as given</button><div style="font-size:12px;margin-top:10px;opacity:.85">The live clock shows staff it isn't a screenshot.</div>`;
  app.appendChild(el);tick();S._t=setInterval(tick,1000)}
 function tick(){const c=$('#clk');if(!c)return;c.textContent=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'})}
-function given(){clearInterval(S._t);if(S.got.size>=6)S.claimedCore=true;S.wk.forEach(i=>S.claimedVip.add(i));document.querySelector('.pass').remove();survey()}
+function given(){clearInterval(S._t);if(S.got.length>=NEED)S.claimedCore=true;S.wk.forEach(i=>S.claimedVip.add(i));document.querySelector('.pass').remove();survey()}
 function survey(){const el=document.createElement('div');el.className='sheet';el.innerHTML=`<div class="panel survey"><div class="grab"></div>
  <h2>Enjoy your stickers! 🎉</h2><p class="sub">Two optional questions (15 seconds). They help Winter Village support local makers.</p>
- <div class="q">How many Winter Village shops did your family discover today?</div>
- <div class="scale">${['0','1–2','3–4','5–6','7+'].map(v=>`<button onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v}</button>`).join('')}</div>
- <div class="q">A shout-out for our local makers? <span class="small">(optional)</span></div><textarea placeholder="The candle shop was our favorite!"></textarea>
+ <div class="q">How many Winter Village vendors did your family discover today?</div>
+ <div class="scale">${['0–2','3–5','6–8','9–12','13+'].map(v=>`<button onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v}</button>`).join('')}</div>
+ <div class="q">A shout-out for our local makers? <span class="small">(optional)</span></div><textarea placeholder="The cocoa cart kids were our favorite!"></textarea>
  <button class="btn" style="margin-top:12px" onclick="this.closest('.sheet').remove();toast('Thank you! 💙');S.tab='weekend';render()">Send</button>
  <button class="btn alt" style="margin-top:8px" onclick="this.closest('.sheet').remove();S.tab='weekend';render()">Skip</button></div>`;app.appendChild(el)}
-function resetDemo(){S.got.clear();S.wk=new Set([0]);S.claimedCore=false;S.claimedVip=new Set([0]);S.started=false;S.tab='passport';render()}
+function resetDemo(){S.got=[];S.wk=new Set([0]);S.claimedCore=false;S.claimedVip=new Set([0]);S.started=false;S.tab='passport';render()}
+// Deep link: each numbered code is its own URL (?code=22 or #code=22)
+function codeFromURL(){const m=(location.search+location.hash).match(/code=(\d+)/);return m?Number(m[1]):null}
+function boot(){render();const c=codeFromURL();if(c!==null)scan(c)}
 // ---------- password gate (sales demo only; not real security) ----------
 const GATE_HASH='31ff6883bec0e82aedb5841e1a717ff8a4a038074b24522b2992b9aeb9de94c4'; // sha256 of the uppercase password
 const GATE_KEY='cpt-winter-demo-ok';
@@ -256,10 +320,10 @@ function showGate(){
  document.getElementById('phone').appendChild(g);
  document.getElementById('gf').addEventListener('submit',async e=>{e.preventDefault();
   const v=document.getElementById('gp').value.trim().toUpperCase();
-  if(v&&await sha256(v)===GATE_HASH){try{sessionStorage.setItem(GATE_KEY,GATE_HASH)}catch(_){} g.remove();render()}
+  if(v&&await sha256(v)===GATE_HASH){try{sessionStorage.setItem(GATE_KEY,GATE_HASH)}catch(_){} g.remove();boot()}
   else{const f=document.getElementById('gf');f.classList.remove('shake');void f.offsetWidth;f.classList.add('shake');document.getElementById('ge').textContent='That password didn\'t work. Try again.'}});
 }
-if(unlocked())render();else showGate();
+if(unlocked())boot();else showGate();
 </script>
 </body>
 </html>
